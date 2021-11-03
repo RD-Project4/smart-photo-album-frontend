@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
 class GroupedView<T, E> extends StatefulWidget {
-  final Widget Function(BuildContext context, List<T> element) sectionBuilder;
+  final Widget Function(BuildContext context, List<T> currentSectionElementList,
+      List<T> allElements, int overallIndex) sectionBuilder;
 
   /// Items of which [itemBuilder] or [indexedItemBuilder] produce the list.
   final List<T> elements;
@@ -167,7 +168,7 @@ class GroupedView<T, E> extends StatefulWidget {
 
   GroupedView({
     Key? key,
-    required this.elements,
+    required elements,
     required this.groupBy,
     required this.sectionBuilder,
     this.groupComparator,
@@ -198,6 +199,7 @@ class GroupedView<T, E> extends StatefulWidget {
     this.semanticChildCount,
     this.itemExtent,
   })  : assert(groupSeparatorBuilder != null || groupHeaderBuilder != null),
+        this.elements = List.from(elements),
         super(
           key: key,
         );
@@ -241,7 +243,6 @@ class GroupedViewState<T, E> extends State<GroupedView<T, E>> {
   @override
   Widget build(BuildContext context) {
     _sortedElements = _sortElements();
-    var hiddenIndex = widget.reverse ? _sortedElements.length * 2 - 1 : 0;
     var _isSeparator =
         widget.reverse ? (int i) => i.isOdd : (int i) => i.isEven;
 
@@ -251,7 +252,16 @@ class GroupedViewState<T, E> extends State<GroupedView<T, E>> {
       });
     }
 
-    List<T> itemCollectList = [];
+    List<int> eachGroupAmout = [];
+    int currentGroupIndex = 0;
+    for (var i = 0; i < _sortedElements.length; i++) {
+      if (i != 0 &&
+          widget.groupBy(_sortedElements[i - 1]) !=
+              widget.groupBy(_sortedElements[i])) currentGroupIndex++;
+
+      while (eachGroupAmout.length <= currentGroupIndex) eachGroupAmout.add(0);
+      eachGroupAmout[currentGroupIndex]++;
+    }
 
     return Stack(
       key: _key,
@@ -272,41 +282,26 @@ class GroupedViewState<T, E> extends State<GroupedView<T, E>> {
           restorationId: widget.restorationId,
           keyboardDismissBehavior: widget.keyboardDismissBehavior,
           semanticChildCount: widget.semanticChildCount,
-          itemCount: _sortedElements.length * 2,
+          itemCount: eachGroupAmout.length * 2,
           addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
           addRepaintBoundaries: widget.addRepaintBoundaries,
           addSemanticIndexes: widget.addSemanticIndexes,
           cacheExtent: widget.cacheExtent,
           itemBuilder: (context, index) {
-            var actualIndex = index ~/ 2;
-            if (index == hiddenIndex) {
-              return Opacity(
-                opacity: widget.useStickyGroupSeparators ? 0 : 1,
-                child: _buildGroupSeparator(_sortedElements[actualIndex]),
-              );
+            var groupIndex = index ~/ 2;
+            var start = 0;
+            var end = 0;
+            for (var i = 0; i < groupIndex; i++) {
+              start += eachGroupAmout[i];
             }
-            var curr = widget.groupBy(_sortedElements[actualIndex]);
-            var next;
-            var nextIndex = actualIndex - (widget.reverse ? 1 : -1);
-            if (_sortedElements.length > nextIndex)
-              next = widget.groupBy(_sortedElements[nextIndex]);
+            end = start + eachGroupAmout[groupIndex];
+
             if (_isSeparator(index)) {
-              var prev = widget.groupBy(
-                  _sortedElements[actualIndex + (widget.reverse ? 1 : -1)]);
-              if (prev != curr) {
-                return _buildGroupSeparator(_sortedElements[actualIndex]);
-              }
-              return widget.separator;
+              return _buildGroupSeparator(_sortedElements[start]);
+            } else {
+              return widget.sectionBuilder(context,
+                  _sortedElements.sublist(start, end), _sortedElements, start);
             }
-
-            itemCollectList.add(_sortedElements[actualIndex]);
-            if (next != curr) {
-              var temp = widget.sectionBuilder(context, itemCollectList);
-              itemCollectList.clear();
-              return temp;
-            }
-
-            return Container();
           },
         ),
         StreamBuilder<int>(
