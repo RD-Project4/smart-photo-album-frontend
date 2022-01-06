@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_album/PhotoList.dart';
+import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
 
 import 'CatagoryPage.dart';
@@ -13,21 +14,24 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: IndexedStack(
+        body: SafeArea(
+            child: IndexedStack(
           children: [
-            SearchBar(scrollTarget: PhotoList(isHasTopBar: true)),
+            SearchBar(
+              scrollTarget: PhotoList(isHasTopBar: true),
+              tailing: AccountButton(),
+            ),
             CategoryPage(),
             Container()
           ],
           index: _selectedIndex,
-        ),
+        )),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
