@@ -5,7 +5,10 @@ import 'package:smart_album/SearchResult.dart';
 class SearchBar extends StatelessWidget {
   final Widget? scrollTarget;
 
-  const SearchBar({Key? key, this.scrollTarget}) : super(key: key);
+  final Widget? tailing;
+
+  const SearchBar({Key? key, this.scrollTarget, this.tailing})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,13 @@ class SearchBar extends StatelessWidget {
         // Call your model, bloc, controller here.
       },
       clearQueryOnClose: true,
+      actions: [
+        FloatingSearchBarAction(
+          showIfOpened: false,
+          showIfClosed: true,
+          child: tailing,
+        )
+      ],
       leadingActions: [
         FloatingSearchBarAction(
           showIfOpened: true,
