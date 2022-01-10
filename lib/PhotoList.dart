@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:smart_album/widgets/GroupedView.dart';
 
-List _elements = [
-  {'name': 'John', 'group': 'Team A'},
-  {'name': 'Will', 'group': 'Team B'},
-  {'name': 'Beth', 'group': 'Team A'},
-  {'name': 'Miranda', 'group': 'Team B'},
-  {'name': 'Mike', 'group': 'Team C'},
-  {'name': 'Danny', 'group': 'Team C'},
-];
+import 'FakeData.dart';
+import 'PhotoView.dart';
+import 'package:collection/collection.dart';
 
 class PhotoList extends StatelessWidget {
   final bool isHasTopBar;
@@ -17,37 +13,64 @@ class PhotoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GroupedListView<dynamic, String>(
-      padding: isHasTopBar ? const EdgeInsets.only(top: kToolbarHeight) : null,
-      elements: _elements,
-      groupBy: (element) => element['group'],
-      groupComparator: (value1, value2) => value2.compareTo(value1),
-      itemComparator: (item1, item2) => item1['name'].compareTo(item2['name']),
-      order: GroupedListOrder.DESC,
-      floatingHeader: false,
-      groupSeparatorBuilder: (String value) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          value,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return GroupedView<dynamic, DateTime>(
+        padding:
+            isHasTopBar ? const EdgeInsets.only(top: kToolbarHeight) : null,
+        elements: DataProvider.getElements(),
+        groupBy: (element) => element['time'],
+        groupComparator: (value1, value2) => -value2.compareTo(value1),
+        order: GroupedListOrder.DESC,
+        floatingHeader: false,
+        groupSeparatorBuilder: (DateTime date) => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '${date.month}.${date.day}',
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+        sectionBuilder:
+            (context, currentSectionElementList, allElement, overallIndex) {
+          return GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: currentSectionElementList
+                  .mapIndexed((index, element) => InkWell(
+                      child: Container(
+                          decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("images/" + element['name']),
+                          fit: BoxFit.cover,
+                        ),
+                      )),
+                      onTap: () =>
+                          _open(context, allElement, overallIndex + index)))
+                  .toList());
+        });
+  }
+
+  void _open(BuildContext context, List elements, final int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhotoView<dynamic>(
+          imageBuilder: (item) => AssetImage("images/" + item['name']),
+          descBuilder: (item) => Padding(
+              padding: const EdgeInsets.all(12),
+              child: Wrap(
+                spacing: 10,
+                children: (item['tag'] as List<String>)
+                    .map((element) => Chip(label: Text(element)))
+                    .toList(),
+              )),
+          galleryItems: elements,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: index,
         ),
       ),
-      itemBuilder: (c, element) {
-        return Card(
-          elevation: 8.0,
-          margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-          child: Container(
-            child: ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              leading: Icon(Icons.account_circle),
-              title: Text(element['name']),
-              trailing: Icon(Icons.arrow_forward),
-            ),
-          ),
-        );
-      },
     );
   }
 }
