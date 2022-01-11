@@ -1,5 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
 
+/// 获取权限
 class PermissionUtil {
   
   static Future requestAllPermission() async {

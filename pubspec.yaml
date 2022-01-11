@@ -39,7 +39,10 @@ dependencies:
   grouped_list: ^4.1.0
   collection: ^1.15.0
   photo_view: ^0.13.0
-  permission_handler: ^8.3.0
+  permission_handler: ^7.1.0
+  photo_album_manager: ^1.2.0 # 依赖于permission_handler: ^7.1.0（版本限定）
+  fluttertoast: ^8.0.8
+  image_picker: ^0.8.4+4
 
 dev_dependencies:
   flutter_test:

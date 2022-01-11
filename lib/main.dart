@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:smart_album/PhotoList.dart';
 import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
+
+// import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:photo_album_manager/photo_album_manager.dart';
 
 import 'CatagoryPage.dart';
 import 'util/PermissionUtil.dart';
@@ -21,7 +26,16 @@ class MyAppState extends State<MyApp> {
   Future<void> didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    print(await PermissionUtil.requestStoragePermission());
+    // print(await PermissionUtil.requestStoragePermission());
+    PermissionStatus status = await PhotoAlbumManager.checkPermissions();
+    if (status == PermissionStatus.granted) {
+      print('权限同意');
+    } else {
+      print('权限拒绝');
+    }
+    //再获取相册资源
+    List<AlbumModelEntity> photos =
+        await PhotoAlbumManager.getDescAlbum(maxCount: 50);
   }
 
   @override

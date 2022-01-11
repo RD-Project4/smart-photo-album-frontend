@@ -2,9 +2,11 @@
     package="com.example.smart_album">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="smart_album">
+        android:label="smart_album"
+        >
 
 
         <activity
