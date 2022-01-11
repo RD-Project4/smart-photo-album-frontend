@@ -17,11 +17,15 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
+  @override
+  Future<void> didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print(await PermissionUtil.requestStoragePermission());
+  }
 
   @override
   Widget build(BuildContext context) {
-    PermissionUtils.requestStoragePermission();
-
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(

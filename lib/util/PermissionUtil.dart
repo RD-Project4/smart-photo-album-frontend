@@ -1,6 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
 
-class PermissionUtils {
+class PermissionUtil {
   
   static Future requestAllPermission() async {
     Map<Permission, PermissionStatus> permission = await [
@@ -56,97 +56,70 @@ class PermissionUtils {
     }
   }
 
-  static Future requestCameraPermission() async {
+  /// 相机权限
+  static Future<bool> requestCameraPermission() async {
     Map<Permission, PermissionStatus> permission = await [
       Permission.camera,
     ].request();
 
-    if (await Permission.camera.isGranted) {
-      print("相机权限申请通过");
-    } else {
-      print("相机权限申请失败");
-    }
+    return await Permission.camera.isGranted;
   }
 
-  static Future requestPhotosPermission() async {
+  /// 照片权限
+  static Future<bool> requestPhotosPermission() async {
     Map<Permission, PermissionStatus> permission = await [
       Permission.photos,
     ].request();
 
-    if (await Permission.photos.isGranted) {
-      print("照片权限申请通过");
-    } else {
-      print("照片权限申请失败");
-    }
-
+    return await Permission.photos.isGranted;
   }
 
-  static Future requestSpeechPermission() async {
+  /// 语音权限
+  static Future<bool> requestSpeechPermission() async {
     Map<Permission, PermissionStatus> permission = await [
       Permission.speech,
     ].request();
 
 
-
-    if (await Permission.speech.isGranted) {
-      print("语音权限申请通过");
-    } else {
-      print("语音权限申请失败");
-    }
-
+    return await Permission.speech.isGranted;
   }
 
-  static Future requestStoragePermission() async {
+  /// 文件权限
+  static Future<bool> requestStoragePermission() async {
     Map<Permission, PermissionStatus> permission = await [
       Permission.storage,
     ].request();
-
-    if (await Permission.storage.isGranted) {
-      print("文件权限申请通过");
-    } else {
-      print("文件权限申请失败");
-    }
+    return await Permission.storage.isGranted;
   }
 
-  static Future requestLocationPermission() async {
+  /// 定位权限
+  static Future<bool> requestLocationPermission() async {
     Map<Permission, PermissionStatus> permission = await [
 
       Permission.location,
     ].request();
 
-    if (await Permission.location.isGranted) {
-      print("定位权限申请通过");
-    } else {
-      print("定位权限申请失败");
-    }
-
+    return await Permission.location.isGranted;
   }
 
-  static Future requestPhonePermission() async {
+  /// 手机权限
+  static Future<bool> requestPhonePermission() async {
     Map<Permission, PermissionStatus> permission = await [
 
       Permission.phone,
     ].request();
 
-    if (await Permission.phone.isGranted) {
-      print("手机权限申请通过");
-    } else {
-      print("手机权限申请失败");
-    }
-
+    return await Permission.phone.isGranted;
   }
 
-  static Future requestNotificationPermission() async {
+  /// 通知权限
+  static Future<bool> requestNotificationPermission() async {
     Map<Permission, PermissionStatus> permission = await [
 
       Permission.notification,
     ].request();
 
-    if (await Permission.notification.isGranted) {
-      print("通知权限申请通过");
-    } else {
-      print("通知权限申请失败");
-    }
+    return await Permission.notification.isGranted;
   }
 
 }
