@@ -38,6 +38,7 @@ class PhotoList extends StatelessWidget {
               children: currentSectionElementList
                   .mapIndexed((index, element) => InkWell(
                       child: Container(
+                          margin : EdgeInsets.all(3.0),
                           decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage("images/" + element['name']),

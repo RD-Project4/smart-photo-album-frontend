@@ -5,6 +5,7 @@ import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
 
 import 'CatagoryPage.dart';
+import 'util/PermissionUtil.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,8 +17,11 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
 
+
   @override
   Widget build(BuildContext context) {
+    PermissionUtils.requestStoragePermission();
+
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(
