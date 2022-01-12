@@ -28,6 +28,16 @@ class MyAppState extends State<MyApp> {
     if (result.isAuth) {
       // success
       print('success');
+      List<AssetPathEntity> list = await PhotoManager.getAssetPathList(onlyAll: true);
+      list.forEach((e) async{
+        if(e.name == "Recent"){
+          var imgList = await e.assetList;
+          imgList.forEach((img) {
+            print(img.createDateTime);
+            print(img.title);
+          });
+        }
+      });
     } else {
       // fail
       print('fail');
