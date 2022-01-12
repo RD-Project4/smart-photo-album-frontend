@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/PhotoList.dart';
 import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
 
-// import 'package:toast/toast.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:photo_album_manager/photo_album_manager.dart';
 
 import 'CatagoryPage.dart';
 import 'util/PermissionUtil.dart';
@@ -26,16 +23,16 @@ class MyAppState extends State<MyApp> {
   Future<void> didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    // print(await PermissionUtil.requestStoragePermission());
-    PermissionStatus status = await PhotoAlbumManager.checkPermissions();
-    if (status == PermissionStatus.granted) {
-      print('权限同意');
+
+    var result = await PhotoManager.requestPermissionExtend();
+    if (result.isAuth) {
+      // success
+      print('success');
     } else {
-      print('权限拒绝');
+      // fail
+      print('fail');
+      /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
     }
-    //再获取相册资源
-    List<AlbumModelEntity> photos =
-        await PhotoAlbumManager.getDescAlbum(maxCount: 50);
   }
 
   @override

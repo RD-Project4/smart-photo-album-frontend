@@ -6,6 +6,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="smart_album"
+        android:requestLegacyExternalStorage="true"
         >
 
 
