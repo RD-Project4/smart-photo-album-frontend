@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
@@ -5,6 +7,8 @@ import 'package:smart_album/widgets/GroupedView.dart';
 import 'FakeData.dart';
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
+
+import 'common/Global.dart';
 
 class PhotoList extends StatelessWidget {
   final bool isHasTopBar;
@@ -41,7 +45,8 @@ class PhotoList extends StatelessWidget {
                           margin : EdgeInsets.all(3.0),
                           decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("images/" + element['name']),
+                          // image: AssetImage("images/" + element['name']),
+                          image: FileImage(File('${Global.ROOT_PATH}Download/93c2c8a7d0e711e130f3a51f974399bb.jpg')),
                           fit: BoxFit.cover,
                         ),
                       )),
