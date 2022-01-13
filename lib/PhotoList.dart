@@ -33,54 +33,56 @@ class _PhotoListState extends State<PhotoList> {
 
   @override
   Widget build(BuildContext context) {
-    return GroupedView<dynamic, DateTime>(
-        padding: widget.isHasTopBar
-            ? const EdgeInsets.only(top: kToolbarHeight)
-            : null,
-        elements: photos,
-        groupBy: (element) {
-          // 分类
-          DateTime time = element['time'];
-          return DateTime(time.year, time.month, time.day);
-        },
-        groupComparator: (value1, value2) => -value2.compareTo(value1),
-        order: GroupedListOrder.DESC,
-        floatingHeader: false,
-        groupSeparatorBuilder: (DateTime date) => Padding(
-              // 日期栏
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                (() {
-                  DateFormat formatter = DateFormat.yMMMEd('en_US');
-                  return formatter.format(date);
-                }()),
-                textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-        sectionBuilder:
-            (context, currentSectionElementList, allElement, overallIndex) {
-          return GridView.count(
-              // 照片
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: currentSectionElementList
-                  .mapIndexed((index, element) => InkWell(
-                      child: Container(
-                          margin: EdgeInsets.all(3.0),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              // image: AssetImage(element['name']),
-                              image: FileImage(
-                                  File(Global.ROOT_PATH + element['name'])),
-                              fit: BoxFit.cover,
-                            ),
-                          )),
-                      onTap: () =>
-                          _open(context, allElement, overallIndex + index)))
-                  .toList());
-        });
+    return photos != null
+        ? GroupedView<dynamic, DateTime>(
+            padding: widget.isHasTopBar
+                ? const EdgeInsets.only(top: kToolbarHeight)
+                : null,
+            elements: photos,
+            groupBy: (element) {
+              // 分类
+              DateTime time = element['time'];
+              return DateTime(time.year, time.month, time.day);
+            },
+            groupComparator: (value1, value2) => -value2.compareTo(value1),
+            order: GroupedListOrder.DESC,
+            floatingHeader: false,
+            groupSeparatorBuilder: (DateTime date) => Padding(
+                  // 日期栏
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    (() {
+                      DateFormat formatter = DateFormat.yMMMEd('en_US');
+                      return formatter.format(date);
+                    }()),
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+            sectionBuilder:
+                (context, currentSectionElementList, allElement, overallIndex) {
+              return GridView.count(
+                  // 照片
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: currentSectionElementList
+                      .mapIndexed((index, element) => InkWell(
+                          child: Container(
+                              margin: EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  // image: AssetImage(element['name']),
+                                  image: FileImage(
+                                      File(Global.ROOT_PATH + element['name'])),
+                                  fit: BoxFit.cover,
+                                ),
+                              )),
+                          onTap: () =>
+                              _open(context, allElement, overallIndex + index)))
+                      .toList());
+            })
+        : Scaffold();
   }
 
   Future<List?> _loadPhotos() async {
