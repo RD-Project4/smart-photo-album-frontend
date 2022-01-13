@@ -2,60 +2,12 @@ import 'package:permission_handler/permission_handler.dart';
 
 /// 获取权限
 class PermissionUtil {
-  
-  static Future requestAllPermission() async {
-    Map<Permission, PermissionStatus> permission = await [
-      Permission.camera,
-      Permission.photos,
-      Permission.speech,
-      Permission.storage,
-      Permission.location,
-      Permission.phone,
-      Permission.notification,
-    ].request();
 
-    if (await Permission.camera.isGranted) {
-      print("相机权限申请通过");
-    } else {
-      print("相机权限申请失败");
-    }
-
-    if (await Permission.photos.isGranted) {
-      print("照片权限申请通过");
-    } else {
-      print("照片权限申请失败");
-    }
-
-    if (await Permission.speech.isGranted) {
-      print("语音权限申请通过");
-    } else {
-      print("语音权限申请失败");
-    }
-
-    if (await Permission.storage.isGranted) {
-      print("文件权限申请通过");
-    } else {
-      print("文件权限申请失败");
-    }
-
-    if (await Permission.location.isGranted) {
-      print("定位权限申请通过");
-    } else {
-      print("定位权限申请失败");
-    }
-
-    if (await Permission.phone.isGranted) {
-      print("手机权限申请通过");
-    } else {
-      print("手机权限申请失败");
-    }
-
-    if (await Permission.notification.isGranted) {
-      print("通知权限申请通过");
-    } else {
-      print("通知权限申请失败");
-    }
+  /// 检查相机权限
+  static Future<bool> checkCameraPermission() async{
+    return await Permission.camera.isGranted;
   }
+
 
   /// 相机权限
   static Future<bool> requestCameraPermission() async {
@@ -63,7 +15,12 @@ class PermissionUtil {
       Permission.camera,
     ].request();
 
-    return await Permission.camera.isGranted;
+    return await checkCameraPermission();
+  }
+
+  /// 检查照片权限
+  static Future<bool> checkPhotosPermission() async{
+    return await Permission.photos.isGranted;
   }
 
   /// 照片权限
@@ -72,7 +29,12 @@ class PermissionUtil {
       Permission.photos,
     ].request();
 
-    return await Permission.photos.isGranted;
+    return await checkPhotosPermission();
+  }
+
+  /// 检查语音权限
+  static Future<bool> checkSpeechPermission() async{
+    return await Permission.speech.isGranted;
   }
 
   /// 语音权限
@@ -82,7 +44,12 @@ class PermissionUtil {
     ].request();
 
 
-    return await Permission.speech.isGranted;
+    return await checkSpeechPermission();
+  }
+
+  /// 检查文件权限
+  static Future<bool> checkStoragePermission() async{
+    return await Permission.storage.isGranted;
   }
 
   /// 文件权限
@@ -90,7 +57,12 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.storage,
     ].request();
-    return await Permission.storage.isGranted;
+    return await checkStoragePermission();
+  }
+
+  /// 检查定位权限
+  static Future<bool> checkLocationPermission() async{
+    return await Permission.location.isGranted;
   }
 
   /// 定位权限
@@ -100,7 +72,12 @@ class PermissionUtil {
       Permission.location,
     ].request();
 
-    return await Permission.location.isGranted;
+    return await checkLocationPermission();
+  }
+
+  /// 检查手机权限
+  static Future<bool> checkPhonePermission() async{
+    return await Permission.phone.isGranted;
   }
 
   /// 手机权限
@@ -110,7 +87,12 @@ class PermissionUtil {
       Permission.phone,
     ].request();
 
-    return await Permission.phone.isGranted;
+    return await checkPhonePermission();
+  }
+
+  /// 检查通知权限
+  static Future<bool> checkNotificationPermission() async{
+    return await Permission.notification.isGranted;
   }
 
   /// 通知权限
@@ -120,7 +102,7 @@ class PermissionUtil {
       Permission.notification,
     ].request();
 
-    return await Permission.notification.isGranted;
+    return await checkNotificationPermission();
   }
 
 }
