@@ -116,15 +116,16 @@ class _PhotoListState extends State<PhotoList> {
       context,
       MaterialPageRoute(
         builder: (context) => PhotoView<dynamic>(
-          imageBuilder: (item) =>
-              FileImage(File(Global.ROOT_PATH + item['name'])),
+          imageBuilder: (item){
+            return FileImage(File(Global.ROOT_PATH + item['name']));
+          },
           descBuilder: (item) => Padding(
               padding: const EdgeInsets.all(12),
               child: Wrap(
                 spacing: 10,
-                children: (item['tag'] as List<String>)
-                    .map((element) => Chip(label: Text(element)))
-                    .toList(),
+                // children: (item['tag'] as List<String>)
+                //     .map((element) => Chip(label: Text(element)))
+                //     .toList(),
               )),
           galleryItems: elements,
           backgroundDecoration: const BoxDecoration(
