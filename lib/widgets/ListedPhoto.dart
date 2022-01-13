@@ -13,17 +13,37 @@ class ListedPhoto extends StatefulWidget {
 }
 
 class _ListedPhotoState extends State<ListedPhoto> {
+  bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        child: Container(
-            margin: EdgeInsets.all(3.0),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: FileImage(File(widget.path)),
-                fit: BoxFit.cover,
-              ),
-            )),
-        onTap: widget.onTap);
+        child: GestureDetector(
+      child: Stack(
+        children: [
+          Container(
+              margin: EdgeInsets.all(3.0),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: FileImage(File(widget.path)),
+                  fit: BoxFit.cover,
+                ),
+              )),
+          Checkbox(
+            value: isChecked,
+            side: BorderSide(color: Colors.white, width: 2),
+            onChanged: (status) {},
+          )
+        ],
+      ),
+      onTap: () {
+        widget.onTap();
+      },
+      onLongPress: () {
+        setState(() {
+          isChecked = !isChecked;
+        });
+      },
+    ));
   }
 }
