@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
+import 'package:smart_album/widgets/ListedPhoto.dart';
 
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
@@ -67,19 +68,11 @@ class _PhotoListState extends State<PhotoList> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: currentSectionElementList
-                      .mapIndexed((index, element) => InkWell(
-                          child: Container(
-                              margin: EdgeInsets.all(3.0),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  // image: AssetImage(element['name']),
-                                  image: FileImage(
-                                      File(Global.ROOT_PATH + element['name'])),
-                                  fit: BoxFit.cover,
-                                ),
-                              )),
-                          onTap: () =>
-                              _open(context, allElement, overallIndex + index)))
+                      .mapIndexed((index, element) => ListedPhoto(
+                            path: Global.ROOT_PATH + element['name'],
+                            onTap: () => _open(
+                                context, allElement, overallIndex + index),
+                          ))
                       .toList());
             })
         : Scaffold();
@@ -116,7 +109,7 @@ class _PhotoListState extends State<PhotoList> {
       context,
       MaterialPageRoute(
         builder: (context) => PhotoView<dynamic>(
-          imageBuilder: (item){
+          imageBuilder: (item) {
             return FileImage(File(Global.ROOT_PATH + item['name']));
           },
           descBuilder: (item) => Padding(
