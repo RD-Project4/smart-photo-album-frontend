@@ -24,17 +24,21 @@ class PhotoList extends StatefulWidget {
 
 class _PhotoListState extends State<PhotoList> {
   var photos;
+  var isReady = false;
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
     photos = await _loadPhotos();
+    setState(() {
+      isReady = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return photos != null
+    return isReady
         ? GroupedView<dynamic, DateTime>(
             padding: widget.isHasTopBar
                 ? const EdgeInsets.only(top: kToolbarHeight)

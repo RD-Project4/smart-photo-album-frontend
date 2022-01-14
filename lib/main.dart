@@ -1,17 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:smart_album/PhotoList.dart';
+import 'package:smart_album/store/PhotoListModeState.dart';
 import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
 
 import 'CatagoryPage.dart';
 import 'util/PermissionUtil.dart';
-import 'common/Global.dart';
 
-void main() => runApp(MyApp());
+void main(){
+  final photoListModeStore = Store<PhotoListModeState>(PhotoListModeState.reducer,initialState: PhotoListModeState.initState());
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -52,12 +54,12 @@ class MyAppState extends State<MyApp> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.category_outlined),
+              icon: Icon(Icons.category),
               label: 'Category',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.backup_outlined),
-              label: 'Backup',
+              icon: Icon(Icons.person),
+              label: 'My',
             ),
           ],
           currentIndex: _selectedIndex,

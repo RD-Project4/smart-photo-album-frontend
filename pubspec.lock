@@ -139,6 +139,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.4"
+  flutter_redux:
+    dependency: "direct main"
+    description:
+      name: flutter_redux
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.8.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -314,6 +321,13 @@ packages:
     dependency: transitive
     description:
       name: provider
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.0.0"
+  redux:
+    dependency: transitive
+    description:
+      name: redux
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.0.0"
