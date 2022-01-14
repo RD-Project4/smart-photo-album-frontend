@@ -23,17 +23,37 @@ class MyApp extends StatelessWidget {
 class LayoutDemo extends StatelessWidget {
   Widget _getListData(context, index) {
     return Container(
-      child: Column(
+      child: Stack(
         children: [
-          Image.network(listData[index]['imageUrl']),
-          SizedBox(height: 12),
-          Text(
-            listData[index]['title'],
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 15),
+          AspectRatio(
+            aspectRatio: 1.0 / 1.0,
+            child: Image.network(
+              listData[index]['imageUrl'],
+              fit: BoxFit.cover,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+              listData[index]['title'],
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 15, color: Colors.white),
+            ),
           )
         ],
       ),
+
+      // Column(
+      //   children: [
+      //     Image.network(listData[index]['imageUrl']),
+      //     SizedBox(height: 12),
+      //     Text(
+      //       listData[index]['title'],
+      //       textAlign: TextAlign.center,
+      //       style: TextStyle(fontSize: 15),
+      //     )
+      //   ],
+      // ),
     );
   }
 
