@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 
 enum PhotoListMode { View, Selection }
 
-class PhotoListModeCubit extends Cubit<PhotoListMode> {
-  PhotoListModeCubit() : super(PhotoListMode.View);
+class PhotoListCubit extends Cubit<PhotoListMode> {
+  PhotoListCubit() : super(PhotoListMode.View);
 
   void setModeView() => emit(PhotoListMode.View);
 
@@ -17,5 +17,4 @@ class PhotoListModeCubit extends Cubit<PhotoListMode> {
       setModeView();
     }
   }
-
 }

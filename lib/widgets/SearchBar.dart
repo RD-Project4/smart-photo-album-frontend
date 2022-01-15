@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:smart_album/SearchResult.dart';
-import 'package:smart_album/bloc/photo_list_mode/PhotoListModeCubit.dart';
+import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 
 class SearchBar extends StatelessWidget {
   final Widget? scrollTarget;
@@ -18,8 +18,8 @@ class SearchBar extends StatelessWidget {
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     return BlocProvider(
-        create: (_) => PhotoListModeCubit(),
-        child: BlocBuilder<PhotoListModeCubit, PhotoListMode>(
+        create: (_) => PhotoListCubit(),
+        child: BlocBuilder<PhotoListCubit, PhotoListMode>(
           builder: (context, state) {
             return FloatingSearchBar(
               hint: '',

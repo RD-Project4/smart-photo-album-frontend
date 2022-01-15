@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/bloc/photo_list_mode/PhotoListModeCubit.dart';
+import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 
 class ListedPhoto extends StatefulWidget {
   final path;
@@ -19,38 +19,45 @@ class _ListedPhotoState extends State<ListedPhoto> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        child: GestureDetector(
-      child: Stack(
-        children: [
-          Container(
-              margin: EdgeInsets.all(3.0),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(File(widget.path)),
-                  fit: BoxFit.cover,
-                ),
-              )),
-          BlocBuilder<PhotoListModeCubit, PhotoListMode>(
-            builder: (context, state) {
-              return state == PhotoListMode.Selection ? Checkbox(
-                value: isChecked,
-                side: BorderSide(color: Colors.white, width: 2),
-                onChanged: (status) {},
-              ) : Container();
-            },
-          )
-        ],
-      ),
-      onTap: () {
-        widget.onTap();
-      },
-      onLongPress: () {
-        context.read<PhotoListModeCubit>().switchMode();
-        setState(() {
-          isChecked = !isChecked;
-        });
-      },
-    ));
+    return BlocBuilder<PhotoListCubit, PhotoListMode>(
+        builder: (context, state) {
+      return InkWell(
+          child: GestureDetector(
+        child: Stack(
+          children: [
+            Container(
+                margin: EdgeInsets.all(3.0),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(File(widget.path)),
+                    fit: BoxFit.cover,
+                  ),
+                )),
+            state == PhotoListMode.Selection
+                ? Checkbox(
+                    value: isChecked,
+                    side: BorderSide(color: Colors.white, width: 2),
+                    onChanged: (status) {},
+                  )
+                : Container()
+          ],
+        ),
+        onTap: () {
+          if (state == PhotoListMode.View) {
+            widget.onTap();
+          } else if (state == PhotoListMode.Selection) {
+            setState(() {
+              isChecked = !isChecked;
+            });
+          }
+        },
+        onLongPress: () {
+          context.read<PhotoListCubit>().switchMode();
+          setState(() {
+            isChecked = !isChecked;
+          });
+        },
+      ));
+    });
   }
 }
