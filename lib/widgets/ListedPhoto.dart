@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_album/bloc/photo_list_mode/PhotoListModeCubit.dart';
 
 class ListedPhoto extends StatefulWidget {
   final path;
@@ -29,10 +31,14 @@ class _ListedPhotoState extends State<ListedPhoto> {
                   fit: BoxFit.cover,
                 ),
               )),
-          Checkbox(
-            value: isChecked,
-            side: BorderSide(color: Colors.white, width: 2),
-            onChanged: (status) {},
+          BlocBuilder<PhotoListModeCubit, PhotoListMode>(
+            builder: (context, state) {
+              return state == PhotoListMode.Selection ? Checkbox(
+                value: isChecked,
+                side: BorderSide(color: Colors.white, width: 2),
+                onChanged: (status) {},
+              ) : Container();
+            },
           )
         ],
       ),
@@ -40,6 +46,7 @@ class _ListedPhotoState extends State<ListedPhoto> {
         widget.onTap();
       },
       onLongPress: () {
+        context.read<PhotoListModeCubit>().switchMode();
         setState(() {
           isChecked = !isChecked;
         });
