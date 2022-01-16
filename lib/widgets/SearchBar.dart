@@ -4,13 +4,10 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:smart_album/SearchResult.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 
+import 'AccountButton.dart';
+
 class SearchBar extends StatelessWidget {
-  final Widget? scrollTarget;
-
-  final Widget? tailing;
-
-  const SearchBar({Key? key, this.scrollTarget, this.tailing})
-      : super(key: key);
+  const SearchBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +37,7 @@ class SearchBar extends StatelessWidget {
                 FloatingSearchBarAction(
                   showIfOpened: false,
                   showIfClosed: true,
-                  child: tailing,
+                  child: AccountButton(),
                 )
               ],
               leadingActions: [
@@ -59,9 +56,6 @@ class SearchBar extends StatelessWidget {
               builder: (context, transition) {
                 return SearchResult();
               },
-              body: this.scrollTarget != null
-                  ? FloatingSearchBarScrollNotifier(child: scrollTarget!)
-                  : null,
             );
           },
         ));

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_album/HomePage.dart';
 import 'package:smart_album/PhotoList.dart';
 import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
@@ -36,10 +37,7 @@ class MyAppState extends State<MyApp> {
         body: SafeArea(
             child: IndexedStack(
           children: [
-            SearchBar(
-              scrollTarget: PhotoList(isHasTopBar: true),
-              tailing: AccountButton(),
-            ),
+            HomePage(),
             CategoryPage(),
             Container()
           ],

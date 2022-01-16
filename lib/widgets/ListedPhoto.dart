@@ -19,45 +19,48 @@ class _ListedPhotoState extends State<ListedPhoto> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PhotoListCubit, PhotoListMode>(
-        builder: (context, state) {
-      return InkWell(
-          child: GestureDetector(
-        child: Stack(
-          children: [
-            Container(
-                margin: EdgeInsets.all(3.0),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: FileImage(File(widget.path)),
-                    fit: BoxFit.cover,
-                  ),
-                )),
-            state == PhotoListMode.Selection
-                ? Checkbox(
-                    value: isChecked,
-                    side: BorderSide(color: Colors.white, width: 2),
-                    onChanged: (status) {},
-                  )
-                : Container()
-          ],
-        ),
-        onTap: () {
-          if (state == PhotoListMode.View) {
-            widget.onTap();
-          } else if (state == PhotoListMode.Selection) {
+    return BlocProvider(
+      create: (_) => PhotoListCubit(),
+      child:
+          BlocBuilder<PhotoListCubit, PhotoListMode>(builder: (context, state) {
+        return InkWell(
+            child: GestureDetector(
+          child: Stack(
+            children: [
+              Container(
+                  margin: EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(File(widget.path)),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              state == PhotoListMode.Selection
+                  ? Checkbox(
+                      value: isChecked,
+                      side: BorderSide(color: Colors.white, width: 2),
+                      onChanged: (status) {},
+                    )
+                  : Container()
+            ],
+          ),
+          onTap: () {
+            if (state == PhotoListMode.View) {
+              widget.onTap();
+            } else if (state == PhotoListMode.Selection) {
+              setState(() {
+                isChecked = !isChecked;
+              });
+            }
+          },
+          onLongPress: () {
+            context.read<PhotoListCubit>().switchMode();
             setState(() {
               isChecked = !isChecked;
             });
-          }
-        },
-        onLongPress: () {
-          context.read<PhotoListCubit>().switchMode();
-          setState(() {
-            isChecked = !isChecked;
-          });
-        },
-      ));
-    });
+          },
+        ));
+      }),
+    );
   }
 }
