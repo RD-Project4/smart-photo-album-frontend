@@ -18,18 +18,18 @@ class ListedPhoto extends StatefulWidget {
 }
 
 class _ListedPhotoState extends State<ListedPhoto> {
-  bool isChecked = false;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PhotoListCubit, PhotoListState>(
         builder: (context, state) {
+      final photoListMode = state.mode;
+      final selectedPhotos = state.selectedPhotos;
       // 当照片在选择模式下被点击
       void onPhotoTappedInSelectionMode() {
         var cubit = context.read<PhotoListCubit>();
         setState(() {
-          isChecked = !isChecked;
-          if (isChecked) {
+          if (selectedPhotos.indexOf(widget.entity) == -1) {
+            // 如果照片不在选中列表中
             cubit.addSelectedPhoto(widget.entity);
           } else {
             cubit.removeSelectedPhoto(widget.entity);
@@ -40,7 +40,6 @@ class _ListedPhotoState extends State<ListedPhoto> {
         });
       }
 
-      final photoListMode = state.mode;
       return InkWell(
           child: GestureDetector(
         child: Stack(
@@ -55,7 +54,7 @@ class _ListedPhotoState extends State<ListedPhoto> {
                 )),
             photoListMode == PhotoListMode.Selection
                 ? Checkbox(
-                    value: isChecked,
+                    value: selectedPhotos.indexOf(widget.entity) != -1,
                     side: BorderSide(color: Colors.white, width: 2),
                     onChanged: (status) {},
                   )
