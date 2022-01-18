@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/res/listData.dart';
-import 'package:smart_album/res/listData.dart';
 
 class Setting extends StatefulWidget {
   Setting({Key? key}) : super(key: key);
@@ -71,7 +70,23 @@ class _SettingState extends State<Setting> {
                 Expanded(
                     flex: 4,
                     child: ListTile(
-                      title: Text("添加其他账号"),
+                      title: Text("Add Other Accounts"),
+                    ))
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Icon(Icons.app_blocking_rounded),
+                  flex: 1,
+                ),
+                Expanded(
+                    flex: 4,
+                    child: ListTile(
+                      title: Text(
+                        "Quit Your Account",
+                        style: TextStyle(color: Colors.red[600]),
+                      ),
                     ))
               ],
             ),
@@ -81,7 +96,7 @@ class _SettingState extends State<Setting> {
 
             RaisedButton(
               onPressed: () {},
-              child: Text("管理您的账户"),
+              child: Text("Manage your account"),
             ),
             Card(
               child: Row(
@@ -93,8 +108,8 @@ class _SettingState extends State<Setting> {
                   Expanded(
                       flex: 4,
                       child: ListTile(
-                        title: Text("账号存储空间"),
-                        subtitle: Text("已使用：1GB，共15GB"),
+                        title: Text("Storage"),
+                        subtitle: Text("Used：1GB，total 15GB"),
                       ))
                 ],
               ),
@@ -109,7 +124,8 @@ class _SettingState extends State<Setting> {
                   Expanded(
                       flex: 4,
                       child: ListTile(
-                        title: Text("可从此设备中删除400项内容"),
+                        title:
+                            Text("400 items can be deleted from this device"),
                       ))
                 ],
               ),
@@ -124,7 +140,7 @@ class _SettingState extends State<Setting> {
                   Expanded(
                       flex: 4,
                       child: ListTile(
-                        title: Text("您在相册中的数据"),
+                        title: Text("Your data in the album"),
                       ))
                 ],
               ),
@@ -139,7 +155,7 @@ class _SettingState extends State<Setting> {
                   Expanded(
                       flex: 4,
                       child: ListTile(
-                        title: Text("帮助与反馈"),
+                        title: Text("Help and Feedback"),
                       ))
                 ],
               ),
