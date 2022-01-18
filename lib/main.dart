@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_album/HomePage.dart';
 import 'package:smart_album/PhotoList.dart';
+import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
 
@@ -36,11 +37,7 @@ class MyAppState extends State<MyApp> {
       home: Scaffold(
         body: SafeArea(
             child: IndexedStack(
-          children: [
-            HomePage(),
-            CategoryPage(),
-            Container()
-          ],
+          children: [HomePage(), CategoryPage(), Setting()],
           index: _selectedIndex,
         )),
         bottomNavigationBar: BottomNavigationBar(
