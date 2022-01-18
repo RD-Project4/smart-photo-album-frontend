@@ -1,53 +1,113 @@
-import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
-import 'package:smart_album/widgets/GroupedView.dart';
+import 'dart:io';
 
-import 'FakeData.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/widgets/GroupedView.dart';
+import 'package:smart_album/widgets/ListedPhoto.dart';
+
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
 
-class PhotoList extends StatelessWidget {
+import 'common/Global.dart';
+import 'util/PermissionUtil.dart';
+
+class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
 
   const PhotoList({Key? key, this.isHasTopBar = false}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => _PhotoListState();
+}
+
+class _PhotoListState extends State<PhotoList> {
+  var photos;
+  var isReady = false;
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    photos = await _loadPhotos();
+    setState(() {
+      isReady = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GroupedView<dynamic, DateTime>(
-        padding:
-            isHasTopBar ? const EdgeInsets.only(top: kToolbarHeight) : null,
-        elements: DataProvider.getElements(),
-        groupBy: (element) => element['time'],
-        groupComparator: (value1, value2) => -value2.compareTo(value1),
-        order: GroupedListOrder.DESC,
-        floatingHeader: false,
-        groupSeparatorBuilder: (DateTime date) => Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${date.month}.${date.day}',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-        sectionBuilder:
-            (context, currentSectionElementList, allElement, overallIndex) {
-          return GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: currentSectionElementList
-                  .mapIndexed((index, element) => InkWell(
-                      child: Container(
-                          decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("images/" + element['name']),
-                          fit: BoxFit.cover,
-                        ),
-                      )),
-                      onTap: () =>
-                          _open(context, allElement, overallIndex + index)))
-                  .toList());
+    return isReady
+        ? GroupedView<dynamic, DateTime>(
+            padding: widget.isHasTopBar
+                ? const EdgeInsets.only(top: kToolbarHeight)
+                : null,
+            elements: photos,
+            groupBy: (element) {
+              // 分类
+              DateTime time = element['time'];
+              return DateTime(time.year, time.month, time.day);
+            },
+            groupComparator: (value1, value2) => -value2.compareTo(value1),
+            order: GroupedListOrder.DESC,
+            floatingHeader: false,
+            groupSeparatorBuilder: (DateTime date) => Padding(
+                  // 日期栏
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    (() {
+                      DateFormat formatter = DateFormat.yMMMEd('en_US');
+                      return formatter.format(date);
+                    }()),
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+            sectionBuilder:
+                (context, currentSectionElementList, allElement, overallIndex) {
+              return GridView.count(
+                  // 照片
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: currentSectionElementList
+                      .mapIndexed((index, element) => ListedPhoto(
+                            path: Global.ROOT_PATH + element['name'],
+                            entity: element['entity'],
+                            onTap: () => _open(
+                                context, allElement, overallIndex + index),
+                          ))
+                      .toList());
+            })
+        : Scaffold();
+  }
+
+  Future<List?> _loadPhotos() async {
+    if (!(await PermissionUtil.checkStoragePermission())) {
+      PermissionUtil.requestStoragePermission();
+      return null;
+    }
+    var res = [];
+
+    List<AssetPathEntity> list =
+        await PhotoManager.getAssetPathList(onlyAll: true);
+
+    await Future.forEach(list, (e) async {  // 遍历图片文件夹
+      e = e as AssetPathEntity;
+      if (e.name == "Recent") { // 只处理名为Recent的文件夹（后期可能处理其他的）
+        var imgList = await e.assetList;
+        imgList.forEach((img) { // 遍历文件夹中的图片
+          res.add({
+            "time": img.createDateTime,
+            "name": '${img.relativePath}${img.title}',
+            "entity": img
+          });
         });
+      }
+    });
+
+    return res;
   }
 
   void _open(BuildContext context, List elements, final int index) {
@@ -55,14 +115,16 @@ class PhotoList extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => PhotoView<dynamic>(
-          imageBuilder: (item) => AssetImage("images/" + item['name']),
+          imageBuilder: (item) {
+            return FileImage(File(Global.ROOT_PATH + item['name']));
+          },
           descBuilder: (item) => Padding(
               padding: const EdgeInsets.all(12),
               child: Wrap(
                 spacing: 10,
-                children: (item['tag'] as List<String>)
-                    .map((element) => Chip(label: Text(element)))
-                    .toList(),
+                // children: (item['tag'] as List<String>)
+                //     .map((element) => Chip(label: Text(element)))
+                //     .toList(),
               )),
           galleryItems: elements,
           backgroundDecoration: const BoxDecoration(
