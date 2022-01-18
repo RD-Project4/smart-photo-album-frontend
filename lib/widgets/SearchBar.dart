@@ -16,7 +16,7 @@ class SearchBar extends StatelessWidget {
 
     return BlocProvider(
         create: (_) => PhotoListCubit(),
-        child: BlocBuilder<PhotoListCubit, PhotoListMode>(
+        child: BlocBuilder<PhotoListCubit, PhotoListState>(
           builder: (context, state) {
             return FloatingSearchBar(
               hint: '',

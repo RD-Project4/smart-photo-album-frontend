@@ -1,20 +1,49 @@
+import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 enum PhotoListMode { View, Selection }
 
-class PhotoListCubit extends Cubit<PhotoListMode> {
-  PhotoListCubit() : super(PhotoListMode.View);
+class PhotoListCubit extends Cubit<PhotoListState> {
+  PhotoListCubit() : super(PhotoListState().init());
 
-  void setModeView() => emit(PhotoListMode.View);
+  void setModeView() => emit(state.clone()..mode = PhotoListMode.View);
 
-  void setModeSelection() => emit(PhotoListMode.Selection);
+  void setModeSelection() =>
+      emit(state.clone()..mode = PhotoListMode.Selection);
 
-  // 切换模式（不确定将来是否只有这两个模式，如果有多个则可以通过传参来解决）
-  void switchMode() {
-    if (state == PhotoListMode.View) {
-      setModeSelection();
-    } else if (state == PhotoListMode.Selection) {
-      setModeView();
-    }
+  void addSelectedPhoto(AssetEntity photo) {
+    var newList = state.clone().selectedPhotos;
+    newList.add(photo);
+    emit(state.clone()..selectedPhotos = newList);
+  }
+
+  void removeSelectedPhoto(AssetEntity photo) {
+    var newList = state.clone().selectedPhotos;
+    newList.remove(photo);
+    emit(state.clone()..selectedPhotos = newList);
+  }
+
+  // 清空选中列表
+  void clearSelectedPhotos() {
+    emit(state.clone()..selectedPhotos = <AssetEntity>[]);
+  }
+}
+
+class PhotoListState {
+  late PhotoListMode mode;
+  late List<AssetEntity> selectedPhotos;
+
+  PhotoListState init() {
+    return PhotoListState()
+      ..mode = PhotoListMode.View
+      ..selectedPhotos = [];
+  }
+
+  PhotoListState clone() {
+    return PhotoListState()
+      ..mode = mode
+      ..selectedPhotos = selectedPhotos;
   }
 }

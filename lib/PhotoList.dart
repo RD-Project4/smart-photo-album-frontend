@@ -74,6 +74,7 @@ class _PhotoListState extends State<PhotoList> {
                   children: currentSectionElementList
                       .mapIndexed((index, element) => ListedPhoto(
                             path: Global.ROOT_PATH + element['name'],
+                            entity: element['entity'],
                             onTap: () => _open(
                                 context, allElement, overallIndex + index),
                           ))
@@ -92,14 +93,15 @@ class _PhotoListState extends State<PhotoList> {
     List<AssetPathEntity> list =
         await PhotoManager.getAssetPathList(onlyAll: true);
 
-    await Future.forEach(list, (e) async {
+    await Future.forEach(list, (e) async {  // 遍历图片文件夹
       e = e as AssetPathEntity;
-      if (e.name == "Recent") {
+      if (e.name == "Recent") { // 只处理名为Recent的文件夹（后期可能处理其他的）
         var imgList = await e.assetList;
-        imgList.forEach((img) {
+        imgList.forEach((img) { // 遍历文件夹中的图片
           res.add({
             "time": img.createDateTime,
-            "name": '${img.relativePath}${img.title}'
+            "name": '${img.relativePath}${img.title}',
+            "entity": img
           });
         });
       }
