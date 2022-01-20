@@ -5,7 +5,8 @@ import 'package:smart_album/common/Global.dart';
 
 class PhotoEditPage extends StatefulWidget {
   final AssetEntity entity;
-  const PhotoEditPage({Key? key,required this.entity}) : super(key: key);
+
+  const PhotoEditPage({Key? key, required this.entity}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PhotoEditPage();
@@ -16,12 +17,18 @@ class _PhotoEditPage extends State<PhotoEditPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(children: [
-        Image.file(File('${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}')),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: Center(
+              child: Image.file(File(
+                  '${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}'))),
+        ),
         Positioned(
           bottom: 0,
           left: 0,
@@ -63,7 +70,8 @@ class _PhotoEditPage extends State<PhotoEditPage> {
                       onPressed: ableToSave ? saveEditing : null,
                       child: Text(
                         'Save',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: ableToSave ? Colors.white : Colors.grey),
                       )),
                 ],
               )
