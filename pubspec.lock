@@ -107,6 +107,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "8.0.8"
+  group_button:
+    dependency: "direct main"
+    description:
+      name: group_button
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.1.0"
   grouped_list:
     dependency: "direct main"
     description:
@@ -128,6 +135,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.3"
+  lint:
+    dependency: transitive
+    description:
+      name: lint
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.8.2"
   lints:
     dependency: transitive
     description:
@@ -274,5 +288,5 @@ packages:
     source: hosted
     version: "2.1.1"
 sdks:
-  dart: ">=2.14.0 <3.0.0"
+  dart: ">=2.15.0-7.0.dev <3.0.0"
   flutter: ">=2.5.0"

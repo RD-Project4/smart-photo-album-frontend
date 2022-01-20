@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/common/Global.dart';
+import 'package:group_button/group_button.dart';
 
 class PhotoEditPage extends StatefulWidget {
   final AssetEntity entity;
@@ -36,24 +37,25 @@ class _PhotoEditPage extends State<PhotoEditPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                      onPressed: () {},
-                      child:
-                          Text('Crop', style: TextStyle(color: Colors.white))),
-                  TextButton(
-                      onPressed: () {},
-                      child: Text('Adjust',
-                          style: TextStyle(color: Colors.white))),
-                  TextButton(
-                      onPressed: () {},
-                      child:
-                          Text('Markup', style: TextStyle(color: Colors.white)))
-                ],
+              GroupButton.radio(
+                buttons: ['Crop', 'Adjust', 'Markup'],
+                onSelected: (i) => debugPrint('Button $i selected'),
+                selectedButton: 0,  // 默认选中
+                borderRadius: BorderRadius.circular(1000),
+                selectedColor: Color.fromARGB(255, 68, 71, 70),
+                selectedTextStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Color.fromARGB(255,227, 227, 227),
+                ),
+                unselectedColor: Colors.black,
+                unselectedTextStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: Color.fromARGB(255, 117, 117, 117),
+                ),
               ),
+
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
