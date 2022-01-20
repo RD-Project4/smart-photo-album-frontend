@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
         create: (_) => PhotoListCubit(),
         child: BlocBuilder<PhotoListCubit, PhotoListState>(
             builder: (context, state) {
-              final photoListMode = state.mode;
+          final photoListMode = state.mode;
           return Stack(
             children: [
               Positioned(child: PhotoList(isHasTopBar: true)),

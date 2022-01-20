@@ -14,50 +14,44 @@ class SearchBar extends StatelessWidget {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    return BlocProvider(
-        create: (_) => PhotoListCubit(),
-        child: BlocBuilder<PhotoListCubit, PhotoListState>(
-          builder: (context, state) {
-            return FloatingSearchBar(
-              hint: '',
-              backdropColor: Colors.white,
-              scrollPadding: EdgeInsets.zero,
-              transitionDuration: const Duration(milliseconds: 300),
-              transitionCurve: Curves.easeInOut,
-              physics: const BouncingScrollPhysics(),
-              axisAlignment: 0.0,
-              openAxisAlignment: 0.0,
-              width: isPortrait ? 600 : 500,
-              debounceDelay: const Duration(milliseconds: 500),
-              onQueryChanged: (query) {
-                // Call your model, bloc, controller here.
-              },
-              clearQueryOnClose: true,
-              actions: [
-                FloatingSearchBarAction(
-                  showIfOpened: false,
-                  showIfClosed: true,
-                  child: AccountButton(),
-                )
-              ],
-              leadingActions: [
-                FloatingSearchBarAction(
-                  showIfOpened: true,
-                  showIfClosed: false,
-                  child: CircularButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.maybePop(context);
-                    },
-                  ),
-                )
-              ],
-              transition: ExpandingFloatingSearchBarTransition(),
-              builder: (context, transition) {
-                return SearchResult();
-              },
-            );
-          },
-        ));
+    return FloatingSearchBar(
+      hint: '',
+      backdropColor: Colors.white,
+      scrollPadding: EdgeInsets.zero,
+      transitionDuration: const Duration(milliseconds: 300),
+      transitionCurve: Curves.easeInOut,
+      physics: const BouncingScrollPhysics(),
+      axisAlignment: 0.0,
+      openAxisAlignment: 0.0,
+      width: isPortrait ? 600 : 500,
+      debounceDelay: const Duration(milliseconds: 500),
+      onQueryChanged: (query) {
+        // Call your model, bloc, controller here.
+      },
+      clearQueryOnClose: true,
+      actions: [
+        FloatingSearchBarAction(
+          showIfOpened: false,
+          showIfClosed: true,
+          child: AccountButton(),
+        )
+      ],
+      leadingActions: [
+        FloatingSearchBarAction(
+          showIfOpened: true,
+          showIfClosed: false,
+          child: CircularButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.maybePop(context);
+            },
+          ),
+        )
+      ],
+      transition: ExpandingFloatingSearchBarTransition(),
+      builder: (context, transition) {
+        return SearchResult();
+      },
+    );
   }
 }

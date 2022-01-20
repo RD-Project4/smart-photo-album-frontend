@@ -16,9 +16,7 @@ class _PhotoEditPage extends State<PhotoEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('*****************');
-    print(widget.entity);
-    print('*****************');
+
 
     return Scaffold(
       backgroundColor: Colors.black,

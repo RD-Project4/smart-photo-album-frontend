@@ -13,8 +13,10 @@ class PhotoView<T> extends StatefulWidget {
   final PageController pageController;
   final List<T> galleryItems;
   final Axis scrollDirection;
+  final BuildContext context;
 
   PhotoView({
+    required this.context,
     required this.imageBuilder,
     this.descBuilder,
     this.backgroundDecoration,
@@ -80,6 +82,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     var item = widget.galleryItems[index];
+
     return PhotoViewGalleryPageOptions(
       imageProvider: widget.imageBuilder(item),
       initialScale: PhotoViewComputedScale.contained,
