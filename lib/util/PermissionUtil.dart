@@ -2,12 +2,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 /// 获取权限
 class PermissionUtil {
-
   /// 检查相机权限
-  static Future<bool> checkCameraPermission() async{
+  static Future<bool> checkCameraPermission() async {
     return await Permission.camera.isGranted;
   }
-
 
   /// 相机权限
   static Future<bool> requestCameraPermission() async {
@@ -15,11 +13,11 @@ class PermissionUtil {
       Permission.camera,
     ].request();
 
-    return await checkCameraPermission();
+    return permission[Permission.camera] == PermissionStatus.granted;
   }
 
   /// 检查照片权限
-  static Future<bool> checkPhotosPermission() async{
+  static Future<bool> checkPhotosPermission() async {
     return await Permission.photos.isGranted;
   }
 
@@ -29,11 +27,11 @@ class PermissionUtil {
       Permission.photos,
     ].request();
 
-    return await checkPhotosPermission();
+    return permission[Permission.photos] == PermissionStatus.granted;
   }
 
   /// 检查语音权限
-  static Future<bool> checkSpeechPermission() async{
+  static Future<bool> checkSpeechPermission() async {
     return await Permission.speech.isGranted;
   }
 
@@ -43,12 +41,11 @@ class PermissionUtil {
       Permission.speech,
     ].request();
 
-
     return await checkSpeechPermission();
   }
 
   /// 检查文件权限
-  static Future<bool> checkStoragePermission() async{
+  static Future<bool> checkStoragePermission() async {
     return await Permission.storage.isGranted;
   }
 
@@ -61,14 +58,13 @@ class PermissionUtil {
   }
 
   /// 检查定位权限
-  static Future<bool> checkLocationPermission() async{
+  static Future<bool> checkLocationPermission() async {
     return await Permission.location.isGranted;
   }
 
   /// 定位权限
   static Future<bool> requestLocationPermission() async {
     Map<Permission, PermissionStatus> permission = await [
-
       Permission.location,
     ].request();
 
@@ -76,14 +72,13 @@ class PermissionUtil {
   }
 
   /// 检查手机权限
-  static Future<bool> checkPhonePermission() async{
+  static Future<bool> checkPhonePermission() async {
     return await Permission.phone.isGranted;
   }
 
   /// 手机权限
   static Future<bool> requestPhonePermission() async {
     Map<Permission, PermissionStatus> permission = await [
-
       Permission.phone,
     ].request();
 
@@ -91,18 +86,16 @@ class PermissionUtil {
   }
 
   /// 检查通知权限
-  static Future<bool> checkNotificationPermission() async{
+  static Future<bool> checkNotificationPermission() async {
     return await Permission.notification.isGranted;
   }
 
   /// 通知权限
   static Future<bool> requestNotificationPermission() async {
     Map<Permission, PermissionStatus> permission = await [
-
       Permission.notification,
     ].request();
 
     return await checkNotificationPermission();
   }
-
 }
