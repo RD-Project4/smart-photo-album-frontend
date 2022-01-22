@@ -7,14 +7,14 @@ class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  _LoginFormState createState() {
+    return _LoginFormState();
   }
 }
 
 // Create a corresponding State class.
 // This class holds data related to the form.
-class MyCustomFormState extends State<LoginForm> {
+class _LoginFormState extends State<LoginForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
@@ -27,7 +27,6 @@ class MyCustomFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
       child: Column(
@@ -36,13 +35,6 @@ class MyCustomFormState extends State<LoginForm> {
           TextFormField(
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), hintText: 'E-mail'),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
             onChanged: (value) {
               setState(() {
                 account = value;
@@ -52,81 +44,61 @@ class MyCustomFormState extends State<LoginForm> {
               account = value!;
             },
           ),
+          SizedBox(
+            height: 20,
+          ),
           TextFormField(
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), hintText: 'Password'),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
             onChanged: (value) {
               setState(() {
                 password = value;
               });
             },
-            onSaved: (value) {
-              password = value!;
-            },
           ),
-          GestureDetector(
-              child: Stack(
-            alignment: Alignment.center,
-            children: [
-              account != '' && password != ''
-                  ? Positioned(
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundImage:
-                            AssetImage('images/login_page/login_btn_bg2.gif'),
-                      ),
-                    )
-                  : Positioned(
-                      child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.grey,
-                    )),
-              Positioned(
-                  child: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-              ))
-            ],
-          )),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-          //   child: ElevatedButton(
-          //     onPressed: () {
-          //       // Validate returns true if the form is valid, or false otherwise.
-          //       if (_formKey.currentState!.validate()) {
-          //         _formKey.currentState!.save();
-          //         if (account == "test@test.com" && password == "123456") {
-          //           // If the form is valid, display a snackbar. In the real world,
-          //           // you'd often call a server or save the information in a database.
-          //           ScaffoldMessenger.of(context).showSnackBar(
-          //             const SnackBar(content: Text('Processing Data')),
-          //           );
-          //           Timer(const Duration(seconds: 1), () {
-          //             Navigator.maybePop(context);
-          //           });
-          //         } else
-          //           ScaffoldMessenger.of(context).showSnackBar(
-          //             const SnackBar(
-          //                 backgroundColor: Colors.redAccent,
-          //                 content: Text('Verification error')),
-          //           );
-          //       }
-          //     },
-          //     child: const Text('Login'),
-          //   ),
-          // ),
+          SizedBox(
+            height: 20,
+          ),
+          LoginButton(ableToLogin: account != '' && password != '')
         ],
       ),
     );
+  }
+}
+
+class LoginButton extends StatelessWidget {
+  final bool ableToLogin;
+
+  const LoginButton({Key? key, required this.ableToLogin}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        child: Stack(
+      alignment: Alignment.center,
+      children: [
+        ableToLogin
+            ? Positioned(
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundImage:
+                      AssetImage('images/login_page/login_btn_bg2.gif'),
+                ),
+              )
+            : Positioned(
+                child: CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.grey,
+              )),
+        Positioned(
+            child: Icon(
+          Icons.arrow_forward_ios,
+          color: Colors.white,
+        ))
+      ],
+    ));
   }
 }
