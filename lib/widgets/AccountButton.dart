@@ -10,7 +10,7 @@ class AccountButton extends StatelessWidget {
       icon: const Icon(Icons.account_circle_outlined),
       onPressed: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Login()));
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       },
     );
   }
