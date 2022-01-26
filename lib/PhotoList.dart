@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 
@@ -31,6 +33,7 @@ class _PhotoListState extends State<PhotoList> {
     super.didChangeDependencies();
 
     photos = await _loadPhotos();
+
     setState(() {
       isReady = true;
     });
@@ -46,7 +49,7 @@ class _PhotoListState extends State<PhotoList> {
             elements: photos,
             groupBy: (element) {
               // 分类
-              DateTime time = element['time'];
+              DateTime time = element.createDateTime;
               return DateTime(time.year, time.month, time.day);
             },
             groupComparator: (value1, value2) => -value2.compareTo(value1),
@@ -66,6 +69,8 @@ class _PhotoListState extends State<PhotoList> {
                 ),
             sectionBuilder:
                 (context, currentSectionElementList, allElement, overallIndex) {
+
+              BlocProvider.of<PhotoListCubit>(context).setPhotoList(allElement);
               return GridView.count(
                   // 照片
                   crossAxisCount: 2,
@@ -73,8 +78,10 @@ class _PhotoListState extends State<PhotoList> {
                   physics: const NeverScrollableScrollPhysics(),
                   children: currentSectionElementList
                       .mapIndexed((index, element) => ListedPhoto(
-                            path: Global.ROOT_PATH + element['name'],
-                            entity: element['entity'],
+                            path: Global.ROOT_PATH +
+                                element.relativePath +
+                                element.title,
+                            entity: element,
                             onTap: () => _open(
                                 context, allElement, overallIndex + index),
                           ))
@@ -88,50 +95,63 @@ class _PhotoListState extends State<PhotoList> {
       PermissionUtil.requestStoragePermission();
       return null;
     }
-    var res = [];
+    // var res = [];
 
     List<AssetPathEntity> list =
         await PhotoManager.getAssetPathList(onlyAll: true);
 
-    await Future.forEach(list, (e) async {  // 遍历图片文件夹
+    var imgList;
+    await Future.forEach(list, (e) async {
+      // 遍历图片文件夹
       e = e as AssetPathEntity;
-      if (e.name == "Recent") { // 只处理名为Recent的文件夹（后期可能处理其他的）
-        var imgList = await e.assetList;
-        imgList.forEach((img) { // 遍历文件夹中的图片
-          res.add({
-            "time": img.createDateTime,
-            "name": '${img.relativePath}${img.title}',
-            "entity": img
-          });
-        });
+      if (e.name == "Recent") {
+        // 只处理名为Recent的文件夹（后期可能处理其他的）
+        imgList = await e.assetList;
+
+        // imgList.forEach((img) {
+        //   // 遍历文件夹中的图片
+        //   res.add({
+        //     "time": img.createDateTime,
+        //     "name": '${img.relativePath}${img.title}',
+        //     "entity": img
+        //   });
+        // });
       }
     });
 
-    return res;
+    return imgList;
   }
 
   void _open(BuildContext context, List elements, final int index) {
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PhotoView<dynamic>(
-          imageBuilder: (item) {
-            return FileImage(File(Global.ROOT_PATH + item['name']));
-          },
-          descBuilder: (item) => Padding(
-              padding: const EdgeInsets.all(12),
-              child: Wrap(
-                spacing: 10,
-                // children: (item['tag'] as List<String>)
-                //     .map((element) => Chip(label: Text(element)))
-                //     .toList(),
-              )),
-          galleryItems: elements,
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          initialIndex: index,
-        ),
+        builder: (_) {
+          return BlocProvider.value(
+            value: BlocProvider.of<PhotoListCubit>(context),
+            child: PhotoView<dynamic>(
+              context: context,
+              imageBuilder: (item) {
+                return FileImage(
+                    File(Global.ROOT_PATH + item.relativePath + item.title));
+              },
+              descBuilder: (item) => Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Wrap(
+                    spacing: 10,
+                    // children: (item['tag'] as List<String>)
+                    //     .map((element) => Chip(label: Text(element)))
+                    //     .toList(),
+                  )),
+              galleryItems: elements,
+              backgroundDecoration: const BoxDecoration(
+                color: Colors.black,
+              ),
+              initialIndex: index,
+            ),
+          );
+        },
       ),
     );
   }

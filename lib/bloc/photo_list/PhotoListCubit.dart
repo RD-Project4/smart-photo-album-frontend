@@ -29,5 +29,9 @@ class PhotoListCubit extends Cubit<PhotoListState> {
   void clearSelectedPhotos() {
     emit(state.clone()..selectedPhotos = <AssetEntity>[]);
   }
+
+  void setPhotoList(list){
+    emit(state.clone()..photos = list);
+  }
 }
 

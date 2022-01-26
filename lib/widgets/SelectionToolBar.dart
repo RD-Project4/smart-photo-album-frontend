@@ -3,12 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 
-class SelectionToolBar extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _SelectionToolBarState();
-}
-
-class _SelectionToolBarState extends State<SelectionToolBar> {
+/// 多选工具栏，当进入多选模式时出现在应用上方
+class SelectionToolBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PhotoListCubit, PhotoListState>(
@@ -32,7 +28,7 @@ class _SelectionToolBarState extends State<SelectionToolBar> {
                   },
                 ),
                 SizedBox(width: 10),
-                Text('${state.selectedPhotos.length}'),
+                Text('${state.selectedPhotos.length}',style: TextStyle(fontSize: 25),),
               ],
             ),
             Row(

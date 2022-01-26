@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:smart_album/widgets/PhotoToolBar.dart';
 
 class PhotoView<T> extends StatefulWidget {
   final ImageProvider Function(T item) imageBuilder;
@@ -12,8 +13,10 @@ class PhotoView<T> extends StatefulWidget {
   final PageController pageController;
   final List<T> galleryItems;
   final Axis scrollDirection;
+  final BuildContext context;
 
   PhotoView({
+    required this.context,
     required this.imageBuilder,
     this.descBuilder,
     this.backgroundDecoration,
@@ -70,6 +73,7 @@ class _PhotoViewState extends State<PhotoView> {
                   ? widget.descBuilder!(widget.galleryItems[currentIndex])
                   : Container(),
             ),
+            Positioned(child: PhotoToolBar(photoIndex: currentIndex))
           ],
         ),
       ),
@@ -78,6 +82,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     var item = widget.galleryItems[index];
+
     return PhotoViewGalleryPageOptions(
       imageProvider: widget.imageBuilder(item),
       initialScale: PhotoViewComputedScale.contained,
