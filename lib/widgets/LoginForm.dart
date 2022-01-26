@@ -1,6 +1,7 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
@@ -62,43 +63,110 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
             height: 20,
           ),
-          LoginButton(ableToLogin: account != '' && password != '')
+          LoginButton(
+            ableToLogin: account != '' && password != '',
+            account: account,
+            password: password,
+          )
         ],
       ),
     );
   }
 }
 
-class LoginButton extends StatelessWidget {
+class LoginButton extends StatefulWidget {
   final bool ableToLogin;
+  final String password;
+  final String account;
+  LoginButton(
+      {Key? key,
+      required this.ableToLogin,
+      required this.account,
+      required this.password})
+      : super(key: key);
 
-  const LoginButton({Key? key, required this.ableToLogin}) : super(key: key);
+  @override
+  _LoginButtonState createState() => _LoginButtonState(
+      ableToLogin: this.ableToLogin,
+      account: this.account,
+      password: this.password);
+}
+
+class _LoginButtonState extends State<LoginButton> {
+  final bool ableToLogin;
+  final String password;
+  final String account;
+  _LoginButtonState({
+    required this.ableToLogin,
+    required this.password,
+    required this.account,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+        onTap: () {
+          print(this.ableToLogin);
+          print(this.account);
+          print(this.password);
+        },
         child: Stack(
-      alignment: Alignment.center,
-      children: [
-        ableToLogin
-            ? Positioned(
-                child: CircleAvatar(
-                  radius: 40,
-                  backgroundImage:
-                      AssetImage('images/login_page/login_btn_bg2.gif'),
-                ),
-              )
-            : Positioned(
-                child: CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.grey,
-              )),
-        Positioned(
-            child: Icon(
-          Icons.arrow_forward_ios,
-          color: Colors.white,
-        ))
-      ],
-    ));
+          alignment: Alignment.center,
+          children: [
+            ableToLogin
+                ? Positioned(
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundImage:
+                          AssetImage('images/login_page/login_btn_bg2.gif'),
+                    ),
+                  )
+                : Positioned(
+                    child: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.grey,
+                  )),
+            Positioned(
+                child: Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.white,
+            ))
+          ],
+        ));
   }
 }
+
+// class LoginButton extends StatelessWidget {
+//   final bool ableToLogin;
+
+//   const LoginButton({Key? key, required this.ableToLogin}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//         onTap: () {},
+//         child: Stack(
+//           alignment: Alignment.center,
+//           children: [
+//             ableToLogin
+//                 ? Positioned(
+//                     child: CircleAvatar(
+//                       radius: 40,
+//                       backgroundImage:
+//                           AssetImage('images/login_page/login_btn_bg2.gif'),
+//                     ),
+//                   )
+//                 : Positioned(
+//                     child: CircleAvatar(
+//                     radius: 40,
+//                     backgroundColor: Colors.grey,
+//                   )),
+//             Positioned(
+//                 child: Icon(
+//               Icons.arrow_forward_ios,
+//               color: Colors.white,
+//             ))
+//           ],
+//         ));
+//   }
+// }
