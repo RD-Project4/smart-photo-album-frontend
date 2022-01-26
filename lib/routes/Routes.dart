@@ -1,0 +1,44 @@
+import 'package:flutter/material.dart';
+
+import '../pages/Tabs.dart';
+
+import '../user/Login.dart';
+import '../user/RegisterFirst.dart';
+import '../user/RegisterSecond.dart';
+import '../pages/tabs/Setting.dart';
+import '../user/RegisterThird.dart';
+import '../LoginPage.dart';
+
+//配置路由
+final routes = {
+  '/': (context) => Tabs(),
+
+  // '/search': (context, {arguments}) => SearchPage(arguments: arguments), //需要传值
+  // '/productinfo': (context, {arguments}) =>
+  //     ProductInfoPage(arguments: arguments),
+  '/login': (context) => LoginPage(),
+  '/loginPage': (context) => Login(),
+  '/registerfirst': (context) => RegisterFirstPage(),
+  '/registersecond': (context) => RegisterSecondPage(),
+  '/registerthird': (context) => RegisterThirdPage(),
+  '/setting': (context) => Setting(),
+};
+//固定写法
+var onGenerateRoute = (RouteSettings settings) {
+  final String? name = settings.name;
+  print(settings.name);
+  print(settings.arguments);
+  final Function pageContentBuilder = routes[name] as Function;
+  if (pageContentBuilder != null) {
+    if (settings.arguments != null) {
+      final Route route = MaterialPageRoute(
+          builder: (context) =>
+              pageContentBuilder(context, arguments: settings.arguments));
+      return route;
+    } else {
+      final Route route =
+          MaterialPageRoute(builder: (context) => pageContentBuilder(context));
+      return route;
+    }
+  }
+};
