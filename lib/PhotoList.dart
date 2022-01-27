@@ -32,7 +32,7 @@ class _PhotoListState extends State<PhotoList> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    photos = await _loadPhotos();
+    photos = await _loadPhotos() ?? [];
 
     setState(() {
       isReady = true;
@@ -69,7 +69,6 @@ class _PhotoListState extends State<PhotoList> {
                 ),
             sectionBuilder:
                 (context, currentSectionElementList, allElement, overallIndex) {
-
               BlocProvider.of<PhotoListCubit>(context).setPhotoList(allElement);
               return GridView.count(
                   // 照片
@@ -92,8 +91,10 @@ class _PhotoListState extends State<PhotoList> {
 
   Future<List?> _loadPhotos() async {
     if (!(await PermissionUtil.checkStoragePermission())) {
-      PermissionUtil.requestStoragePermission();
-      return null;
+      var res = await PermissionUtil.requestStoragePermission();
+      if (res == false) {
+        return [];
+      }
     }
     // var res = [];
 
@@ -123,7 +124,6 @@ class _PhotoListState extends State<PhotoList> {
   }
 
   void _open(BuildContext context, List elements, final int index) {
-
     Navigator.push(
       context,
       MaterialPageRoute(

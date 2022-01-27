@@ -29,7 +29,7 @@ class MyAppState extends State<MyApp> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
-    await PermissionUtil.requestStoragePermission();
+    // await PermissionUtil.requestStoragePermission();
   }
 
   @override
