@@ -9,6 +9,7 @@ import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 
+import 'TensorflowResultChipBar.dart';
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
 
@@ -69,7 +70,6 @@ class _PhotoListState extends State<PhotoList> {
                 ),
             sectionBuilder:
                 (context, currentSectionElementList, allElement, overallIndex) {
-
               BlocProvider.of<PhotoListCubit>(context).setPhotoList(allElement);
               return GridView.count(
                   // 照片
@@ -123,7 +123,6 @@ class _PhotoListState extends State<PhotoList> {
   }
 
   void _open(BuildContext context, List elements, final int index) {
-
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -136,14 +135,7 @@ class _PhotoListState extends State<PhotoList> {
                 return FileImage(
                     File(Global.ROOT_PATH + item.relativePath + item.title));
               },
-              descBuilder: (item) => Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Wrap(
-                    spacing: 10,
-                    // children: (item['tag'] as List<String>)
-                    //     .map((element) => Chip(label: Text(element)))
-                    //     .toList(),
-                  )),
+              descBuilder: (item) => ChipBar(element: item),
               galleryItems: elements,
               backgroundDecoration: const BoxDecoration(
                 color: Colors.black,
