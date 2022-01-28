@@ -34,7 +34,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   animations: ^2.0.2
-  #  multiutillib: ^1.1.7
+  http: ^0.13.1
+#  multiutillib: ^1.1.7
   material_floating_search_bar: ^0.3.6
   grouped_list: ^4.1.0
   collection: ^1.15.0
@@ -71,7 +72,9 @@ flutter:
 
   assets:
     - images/
+    - images/login_page/
     - assets/
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -100,6 +103,11 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
+
+  fonts:
+    - family: BeauRivageOne
+      fonts:
+        - asset: fonts/BeauRivageOne.ttf
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -5,6 +5,7 @@ import 'package:smart_album/PhotoList.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/AccountButton.dart';
 import 'package:smart_album/widgets/SearchBar.dart';
+import 'package:smart_album/routes/Routes.dart';
 
 import 'CatagoryPage.dart';
 import 'util/PermissionUtil.dart';
@@ -34,32 +35,35 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
-            child: IndexedStack(
-          children: [HomePage(), CategoryPage(), Setting()],
-          index: _selectedIndex,
-        )),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              label: 'Category',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'My',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.indigo,
-          onTap: _onItemTapped,
-        ),
-      ),
+      onGenerateRoute: onGenerateRoute,
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      // home: Scaffold(
+      //   body: SafeArea(
+      //       child: IndexedStack(
+      //     children: [HomePage(), CategoryPage(), Setting()],
+      //     index: _selectedIndex,
+      //   )),
+      //   bottomNavigationBar: BottomNavigationBar(
+      //     items: const <BottomNavigationBarItem>[
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.home),
+      //         label: 'Home',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.category),
+      //         label: 'Category',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.person),
+      //         label: 'My',
+      //       ),
+      //     ],
+      //     currentIndex: _selectedIndex,
+      //     selectedItemColor: Colors.indigo,
+      //     onTap: _onItemTapped,
+      //   ),
+      // ),
     );
   }
 

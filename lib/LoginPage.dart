@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_album/widgets/Form.dart';
+import 'package:smart_album/widgets/LoginForm.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -22,7 +23,24 @@ class Login extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.account_circle_outlined, size: 120),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Image.asset(
+                        'images/logo.png',
+                        width: 60,
+                      ),
+                      Text(
+                        "Smart Album",
+                        style: TextStyle(
+                            fontFamily: 'BeauRivageOne', fontSize: 50),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   LoginForm()
                 ]),
           ))

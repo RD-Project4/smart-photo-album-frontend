@@ -1,6 +1,7 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
@@ -25,6 +26,54 @@ class MyCustomFormState extends State<LoginForm> {
   late String account;
   late String password;
 
+  int _status = 4;
+  String _msg = '';
+
+  getData() async {
+    print('getting data');
+    var apiurl = Uri.parse(
+        'http://124.223.68.12:8233/smartAlbum/login.do?userAccount=administrator&userPwd=123456');
+    var response = await http.get(apiurl);
+
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+    });
+    if (this._status == 5) {
+      print('jump to setting');
+      Navigator.of(context).pushReplacementNamed('/');
+    } else {
+      print('jump to login');
+      Navigator.of(context).pushReplacementNamed('/loginPage');
+    }
+    print(_status);
+  }
+
+  postData() async {
+    print('posting data');
+    print(this.account);
+    print(this.password);
+    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
+
+    var response = await http.post(apiurl,
+        body: {"userAccount": this.account, "userPwd": this.password});
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+    });
+    if (this._status == 5) {
+      print('jump to setting');
+      Navigator.of(context).pushReplacementNamed('/');
+    } else {
+      print('jump to login');
+    }
+    print(_status);
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -43,6 +92,11 @@ class MyCustomFormState extends State<LoginForm> {
               }
               return null;
             },
+            onChanged: (value) {
+              setState(() {
+                this.account = value;
+              });
+            },
             onSaved: (value) {
               account = value!;
             },
@@ -60,6 +114,11 @@ class MyCustomFormState extends State<LoginForm> {
               }
               return null;
             },
+            onChanged: (value) {
+              setState(() {
+                this.password = value;
+              });
+            },
             onSaved: (value) {
               password = value!;
             },
@@ -68,27 +127,37 @@ class MyCustomFormState extends State<LoginForm> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
               onPressed: () {
+                print('you have pressed');
+                postData();
                 // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  if (account == "test@test.com" && password == "123456") {
-                    // If the form is valid, display a snackbar. In the real world,
-                    // you'd often call a server or save the information in a database.
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
-                    );
-                    Timer(const Duration(seconds: 1), () {
-                      Navigator.maybePop(context);
-                    });
-                  } else
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          backgroundColor: Colors.redAccent,
-                          content: Text('Verification error')),
-                    );
-                }
+                // if (_formKey.currentState!.validate()) {
+                //   _formKey.currentState!.save();
+                //   if (account == "test@test.com" && password == "123456") {
+                //     // If the form is valid, display a snackbar. In the real world,
+                //     // you'd often call a server or save the information in a database.
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(content: Text('Processing Data')),
+                //     );
+                //     Timer(const Duration(seconds: 1), () {
+                //       Navigator.maybePop(context);
+                //     });
+                //   } else
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(
+                //           backgroundColor: Colors.redAccent,
+                //           content: Text('Verification error')),
+                //     );
+                // }
               },
               child: const Text('Login'),
+            ),
+          ),
+          Container(
+            child: ListTile(
+              title: Text(
+                "${this._msg}",
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ),
         ],
