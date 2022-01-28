@@ -14,13 +14,13 @@ class ChipBar<T extends dynamic> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Category>>(
-      future: TensorflowProvider.recognize(
-          File(Global.ROOT_PATH + element.relativePath + element.title)),
+      future: TensorflowProvider.get().then((provider) => provider.recognize(
+          File(Global.ROOT_PATH + element.relativePath + element.title))),
       initialData: List.empty(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return Container(
             height: 60,
-            child: snapshot.connectionState == ConnectionState.done
+            child: snapshot.data != null
                 ? ListView(
                     scrollDirection: Axis.horizontal,
                     children: (snapshot.data as List<Category>)
