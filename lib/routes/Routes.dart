@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_album/RegisterPage.dart';
 
 import '../pages/Tabs.dart';
 
@@ -18,6 +19,7 @@ final routes = {
   //     ProductInfoPage(arguments: arguments),
   // '/login': (context) => LoginPage(),
   '/login-page': (context) => LoginPage(),
+  '/register-page': (context) => RegisterPage(),
   '/register-first': (context) => RegisterFirstPage(),
   '/register-second': (context) => RegisterSecondPage(),
   '/register-third': (context) => RegisterThirdPage(),

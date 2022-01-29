@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:smart_album/widgets/HiddenAppbar.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _RegisterPageState();
 }
@@ -8,7 +9,15 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: HiddenAppbar(),
+      body: Center(
+        child: Stepper(type: StepperType.horizontal, steps: <Step>[
+          Step(title: Text(''), content: Container()),
+          Step(title: Text(''), content: Container()),
+          Step(title: Text(''), content: Container())
+        ]),
+      ),
+    );
   }
 }
