@@ -16,6 +16,7 @@ class _SettingState extends State<Setting> {
   IconData changeIcon = Icons.arrow_drop_up_outlined;
   int _status = 4;
   String _msg = '';
+
   postData() async {
     print('posting data');
 
@@ -89,59 +90,24 @@ class _SettingState extends State<Setting> {
                     ))
               ],
             ),
-            RaisedButton(
-              color: Colors.white,
-              elevation: 0,
+            SettingSelection(
+              icon: Icons.group_add,
+              title: Text("Add Other Accounts"),
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushNamed(context, '/login-page');
               },
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Icon(Icons.group_add),
-                    flex: 1,
-                  ),
-                  Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title: Text("Add Other Accounts"),
-                      ))
-                ],
-              ),
             ),
-            RaisedButton(
-              elevation: 0,
-              color: Colors.white,
-              onPressed: () {
-                postData();
-              },
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Icon(Icons.app_blocking_rounded),
-                    flex: 1,
-                  ),
-                  Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title: Text(
-                          "Quit Your Account",
-                          style: TextStyle(color: Colors.red[600]),
-                        ),
-                      ))
-                ],
-              ),
-            ),
+            SettingSelection(
+                icon: Icons.app_blocking_rounded,
+                title: Text(
+                  "Quit Your Account",
+                  style: TextStyle(color: Colors.red[600]),
+                ),
+                onPressed: () {
+                  postData();
+                }),
 
-            // RaisedButton(
-            //   elevation: 0,
-            //   color: Colors.white,
-            //   onPressed: () {},
-            //   child: Text("Manage your account"),
-            // ),
-            RaisedButton(
-              elevation: 0,
-              color: Colors.white,
+            TextButton(
               onPressed: () {},
               child: Row(
                 children: [
@@ -158,64 +124,64 @@ class _SettingState extends State<Setting> {
                 ],
               ),
             ),
-            RaisedButton(
-              elevation: 0,
-              color: Colors.white,
+            SettingSelection(
+              icon: Icons.phone_iphone,
+              title: Text('400 items can be deleted from this device'),
               onPressed: () {},
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Icon(Icons.phone_iphone),
-                  ),
-                  Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title:
-                            Text("400 items can be deleted from this device"),
-                      ))
-                ],
-              ),
             ),
-            RaisedButton(
-              elevation: 0,
-              color: Colors.white,
+            SettingSelection(
+              icon: Icons.health_and_safety_outlined,
+              title: Text("Your data in the album"),
               onPressed: () {},
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Icon(Icons.health_and_safety_outlined),
-                  ),
-                  Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title: Text("Your data in the album"),
-                      ))
-                ],
-              ),
             ),
-            RaisedButton(
-              elevation: 0,
-              color: Colors.white,
+            SettingSelection(
+              icon: Icons.help,
+              title: Text("Help and Feedback"),
               onPressed: () {},
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Icon(Icons.help),
-                  ),
-                  Expanded(
-                      flex: 4,
-                      child: ListTile(
-                        title: Text("Help and Feedback"),
-                      ))
-                ],
-              ),
             ),
           ],
         );
       }).toList(),
+    );
+  }
+}
+
+class SettingSelection extends StatelessWidget {
+  final IconData icon;
+  final Widget title;
+  final void Function() onPressed;
+
+  const SettingSelection(
+      {Key? key,
+      required this.icon,
+      required this.title,
+      required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      // style: ButtonStyle(
+      //   backgroundColor: MaterialStateProperty.all(Colors.white),
+      //   overlayColor: MaterialStateProperty.all(Colors.grey[200]),
+      // ),
+      onPressed: onPressed,
+      child: Row(
+        children: [
+          Expanded(
+            child: Icon(
+              icon,
+              color: Colors.black,
+            ),
+            flex: 1,
+          ),
+          Expanded(
+              flex: 4,
+              child: ListTile(
+                title: title,
+              ))
+        ],
+      ),
     );
   }
 }
