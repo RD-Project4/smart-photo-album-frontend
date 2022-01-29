@@ -6,6 +6,8 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false, // 防止调起软键盘顶起页面
+        extendBodyBehindAppBar: true, // 不计算AppBar的体积
         appBar: AppBar(
           iconTheme: IconThemeData(
             color: Colors.black, //change your color here
@@ -14,7 +16,6 @@ class LoginPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        extendBodyBehindAppBar: true,
         body: Stack(children: [
           Align(
               child: Padding(
@@ -41,7 +42,23 @@ class LoginPage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  LoginForm()
+                  LoginForm(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/register-first');
+                          },
+                          child: Text('Registry')),
+                      Text('|'),
+                      TextButton(
+                          onPressed: () {}, child: Text('Forgot password?'))
+                    ],
+                  )
                 ]),
           ))
         ]));
