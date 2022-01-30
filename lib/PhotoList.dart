@@ -33,7 +33,7 @@ class _PhotoListState extends State<PhotoList> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    photos = await _loadPhotos();
+    photos = await _loadPhotos() ?? [];
 
     setState(() {
       isReady = true;
@@ -92,8 +92,10 @@ class _PhotoListState extends State<PhotoList> {
 
   Future<List?> _loadPhotos() async {
     if (!(await PermissionUtil.checkStoragePermission())) {
-      PermissionUtil.requestStoragePermission();
-      return null;
+      var res = await PermissionUtil.requestStoragePermission();
+      if (res == false) {
+        return [];
+      }
     }
     // var res = [];
 

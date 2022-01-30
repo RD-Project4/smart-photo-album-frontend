@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:smart_album/RegisterPage.dart';
 
+import '../HomePage.dart';
 import '../pages/Tabs.dart';
 
 import '../user/Login.dart';
@@ -16,12 +18,14 @@ final routes = {
   // '/search': (context, {arguments}) => SearchPage(arguments: arguments), //需要传值
   // '/productinfo': (context, {arguments}) =>
   //     ProductInfoPage(arguments: arguments),
-  '/login': (context) => LoginPage(),
-  '/loginPage': (context) => Login(),
-  '/registerfirst': (context) => RegisterFirstPage(),
-  '/registersecond': (context) => RegisterSecondPage(),
-  '/registerthird': (context) => RegisterThirdPage(),
+  // '/login': (context) => LoginPage(),
+  '/login-page': (context) => LoginPage(),
+  '/register-page': (context) => RegisterPage(),
+  // '/register-first': (context) => RegisterFirstPage(),
+  // '/register-second': (context) => RegisterSecondPage(),
+  // '/register-third': (context) => RegisterThirdPage(),
   '/setting': (context) => Setting(),
+  '/main': (context) => Tabs()
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

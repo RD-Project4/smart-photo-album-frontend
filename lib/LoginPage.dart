@@ -1,20 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_album/widgets/HiddenAppbar.dart';
 import 'package:smart_album/widgets/LoginForm.dart';
 
-class Login extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
-          ),
-          title: Text('Login'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        extendBodyBehindAppBar: true,
+        resizeToAvoidBottomInset: false, // 防止调起软键盘顶起页面
+        extendBodyBehindAppBar: true, // 不计算AppBar的体积
+        appBar: HiddenAppbar(),
         body: Stack(children: [
           Align(
               child: Padding(
@@ -41,7 +36,23 @@ class Login extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  LoginForm()
+                  LoginForm(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/register-page');
+                          },
+                          child: Text('Registry')),
+                      Text('|'),
+                      TextButton(
+                          onPressed: () {}, child: Text('Forgot password?'))
+                    ],
+                  )
                 ]),
           ))
         ]));
