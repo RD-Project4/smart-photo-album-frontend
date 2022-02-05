@@ -22,9 +22,12 @@ class LoginPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Image.asset(
-                        'images/logo.png',
-                        width: 60,
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Image.asset(
+                          'images/logo.png',
+                          width: 90,
+                        ),
                       ),
                       Text(
                         "Smart Album",

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import '../pages/Tabs.dart';
 
+
+@Deprecated('使用RegisterPage')
 class RegisterThirdPage extends StatelessWidget {
   const RegisterThirdPage({Key? key}) : super(key: key);
 

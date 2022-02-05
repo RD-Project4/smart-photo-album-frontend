@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+@Deprecated('使用RegisterPage')
 class RegisterFirstPage extends StatefulWidget {
   RegisterFirstPage({Key? key}) : super(key: key);
 
