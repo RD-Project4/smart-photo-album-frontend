@@ -35,14 +35,11 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           TextFormField(
             decoration: const InputDecoration(
-                border: OutlineInputBorder(), hintText: 'E-mail'),
+                border: OutlineInputBorder(), hintText: 'Email'),
             onChanged: (value) {
               setState(() {
                 account = value;
               });
-            },
-            onSaved: (value) {
-              account = value!;
             },
           ),
           SizedBox(
