@@ -1,4 +1,4 @@
-class RegExpStr {
+class RegExpUtil {
   static const EMAIL = r'^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$';
   static const URL =
       r'[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?';

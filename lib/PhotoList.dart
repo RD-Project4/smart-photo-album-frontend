@@ -12,7 +12,7 @@ import 'package:smart_album/widgets/ListedPhoto.dart';
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
 
-import 'common/Global.dart';
+import 'util/Global.dart';
 import 'util/PermissionUtil.dart';
 
 class PhotoList extends StatefulWidget {

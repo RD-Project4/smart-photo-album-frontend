@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:smart_album/common/RegExpStr.dart';
+import 'package:smart_album/util/RegExpUtil.dart';
+import 'package:smart_album/util/CommonUtil.dart';
 
 class RegisterForm extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _RegisterFormState extends State<RegisterForm> {
   var _sendCodeCooling = 0; // 倒计时冷却
   late Timer _timer;
   final _formKey = GlobalKey<FormState>();
+  var _ableToContinue = false;
+  var _ableToCancel = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +34,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       child: TextFormField(
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), hintText: 'Email'),
-                    validator: (v) {
-                      if (!RegExp(RegExpStr.EMAIL).hasMatch(v!)) {
-                        return 'Please enter your vaild email ';
-                      }
-                    },
+                    validator: _step1Validator,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                   ))),
               Step(
@@ -79,8 +78,8 @@ class _RegisterFormState extends State<RegisterForm> {
             ]));
   }
 
+  /// 当点击取消按钮时
   void _onStepCancel() {
-    // 当点击取消按钮时
     if (_index > 0) {
       setState(() {
         _index -= 1;
@@ -90,8 +89,12 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
+  /// 当点击继续按钮时
   void _onStepContinue() {
-    // 当点击继续按钮时
+    if (!_ableToContinue) {
+      return;
+    }
+
     if (_index < 2) {
       setState(() {
         _index += 1;
@@ -101,7 +104,33 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
+  String? _step1Validator(v) {
+    if (!RegExp(RegExpUtil.EMAIL).hasMatch(v!)) {
+      CommonUtil.nextTick(() {
+        if (_ableToContinue) {
+          setState(() {
+            _ableToContinue = false;
+          });
+        }
+      });
+
+      return 'Please enter a valid email';
+    } else {
+      CommonUtil.nextTick(() {
+        if (!_ableToContinue) {
+          setState(() {
+            _ableToContinue = true;
+          });
+        }
+      });
+      return null;
+    }
+  }
+
+  /// 点击发送邮箱验证码按钮
   void _sendCode() {
+    // TODO: 对接请求邮箱验证码api
+
     setState(() {
       _sendCodeCooling = 60;
     });
@@ -119,4 +148,7 @@ class _RegisterFormState extends State<RegisterForm> {
         };
     _timer = Timer.periodic(oneSec, callback);
   }
+
+  /// 验证邮箱验证码是否正确
+  void _verifyCode() {}
 }

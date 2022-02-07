@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:smart_album/common/Global.dart';
+import 'package:smart_album/util/Global.dart';
 import 'package:group_button/group_button.dart';
 
 class PhotoEditPage extends StatefulWidget {
