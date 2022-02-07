@@ -254,6 +254,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  passwordfield:
+    dependency: "direct main"
+    description:
+      name: passwordfield
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
   path:
     dependency: transitive
     description:

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:passwordfield/passwordfield.dart';
 
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
@@ -41,19 +42,17 @@ class _LoginFormState extends State<LoginForm> {
                 account = value;
               });
             },
+
           ),
           SizedBox(
             height: 20,
           ),
-          TextFormField(
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: const InputDecoration(
-                border: OutlineInputBorder(), hintText: 'Password'),
-            onChanged: (value) {
+          PasswordField(
+            passwordConstraint: '.*',
+            border: PasswordBorder(border: OutlineInputBorder()),
+            onChanged: (v) {
               setState(() {
-                password = value;
+                password = v;
               });
             },
           ),
@@ -124,7 +123,6 @@ class _LoginFormState extends State<LoginForm> {
 //         ));
 //   }
 // }
-
 
 class LoginButton extends StatelessWidget {
   final bool ableToLogin;

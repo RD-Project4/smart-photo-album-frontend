@@ -48,6 +48,7 @@ dependencies:
   group_button: ^4.1.0
   tflite_flutter: ^0.9.0
   tflite_flutter_helper: ^0.3.1
+  passwordfield: ^0.1.0
 
 dev_dependencies:
   flutter_test:
