@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/widgets/HiddenAppbar.dart';
-import 'package:smart_album/widgets/RegisterForm.dart';
+import 'package:smart_album/widgets/user/RegisterForm.dart';
 
 class RegisterPage extends StatelessWidget {
   @override

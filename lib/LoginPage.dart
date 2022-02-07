@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_album/widgets/HiddenAppbar.dart';
-import 'package:smart_album/widgets/LoginForm.dart';
+import 'package:smart_album/widgets/user/LoginForm.dart';
 
 class LoginPage extends StatelessWidget {
   @override
