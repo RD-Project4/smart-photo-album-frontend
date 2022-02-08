@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// 侧边栏，点击Home页面中的搜索框最左边的三条杠调出
 class TabsDrawer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _TabsDrawerState();

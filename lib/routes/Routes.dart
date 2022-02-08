@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/RegisterPage.dart';
-import 'package:smart_album/pages/ContactsListPage.dart';
-import 'package:smart_album/pages/Friends.dart';
+import 'package:smart_album/pages/FriendsPage.dart';
 
 import '../HomePage.dart';
 import '../pages/Tabs.dart';
@@ -28,7 +27,7 @@ final routes = {
   // '/register-third': (context) => RegisterThirdPage(),
   '/setting': (context) => Setting(),
   '/main': (context) => Tabs(),
-  '/friends': (context) => ContactListPage()
+  '/friends': (context) => FriendsPage()
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

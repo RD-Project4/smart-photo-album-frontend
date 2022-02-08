@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 
-class ContactListPage extends StatefulWidget {
+class FriendsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _ContactListPageState();
+    return new _FriendsPageState();
   }
 }
 
-class _ContactListPageState extends State<ContactListPage> {
-  List<ContactInfo> _contacts = [];
+class _FriendsPageState extends State<FriendsPage> {
+  List<FriendInfo> _friends = [];
   double susItemHeight = 40;
 
   @override
@@ -24,16 +24,16 @@ class _ContactListPageState extends State<ContactListPage> {
 
   void loadData() async {
     //加载联系人列表
-    rootBundle.loadString('assets/data/contacts.json').then((value) {
+    rootBundle.loadString('assets/data/friends.json').then((value) {
       List list = json.decode(value);
       list.forEach((v) {
-        _contacts.add(ContactInfo.fromJson(v));
+        _friends.add(FriendInfo.fromJson(v));
       });
-      _handleList(_contacts);
+      _handleList(_friends);
     });
   }
 
-  void _handleList(List<ContactInfo> list) {
+  void _handleList(List<FriendInfo> list) {
     if (list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
       String pinyin = PinyinHelper.getPinyinE(list[i].name);
@@ -46,17 +46,18 @@ class _ContactListPageState extends State<ContactListPage> {
       }
     }
     // A-Z sort.
-    SuspensionUtil.sortListBySuspensionTag(_contacts);
+    SuspensionUtil.sortListBySuspensionTag(_friends);
 
     // show sus tag.
-    SuspensionUtil.setShowSuspensionStatus(_contacts);
+    SuspensionUtil.setShowSuspensionStatus(_friends);
 
     // add header.
-    _contacts.insert(0, ContactInfo(name: 'header', tagIndex: '↑'));
+    _friends.insert(0, FriendInfo(name: 'header', tagIndex: '↑'));
 
     setState(() {});
   }
 
+  /// 用户个人信息
   Widget _buildHeader() {
     return Container(
       padding: EdgeInsets.all(20),
@@ -65,23 +66,24 @@ class _ContactListPageState extends State<ContactListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           ClipOval(
-              child: Image.asset(
-            "./assets/images/avatar.png",
+              child: Image.network(
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf",
             width: 80.0,
           )),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "远行",
+              "fkmog",
               textScaleFactor: 1.2,
             ),
           ),
-          Text("+86 182-286-44678"),
+          Text("1073638314@qq.com"),
         ],
       ),
     );
   }
 
+  /// 悬停效果
   Widget _buildSusWidget(String susTag) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -104,7 +106,8 @@ class _ContactListPageState extends State<ContactListPage> {
     );
   }
 
-  Widget _buildListItem(ContactInfo model) {
+  /// 好友列表项
+  Widget _buildListItem(FriendInfo model) {
     String susTag = model.getSuspensionTag();
     return Column(
       children: <Widget>[
@@ -152,15 +155,15 @@ class _ContactListPageState extends State<ContactListPage> {
           elevation: 0,
         ),
         body: AzListView(
-          data: _contacts,
-          itemCount: _contacts.length,
+          data: _friends,
+          itemCount: _friends.length,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) return _buildHeader();
-            ContactInfo model = _contacts[index];
+            FriendInfo model = _friends[index];
             return _buildListItem(model);
           },
           physics: BouncingScrollPhysics(),
-          indexBarData: SuspensionUtil.getTagIndexList(_contacts),
+          indexBarData: SuspensionUtil.getTagIndexList(_friends),
           indexHintBuilder: (context, hint) {
             return Container(
               alignment: Alignment.center,
@@ -184,7 +187,7 @@ class _ContactListPageState extends State<ContactListPage> {
   }
 }
 
-class ContactInfo extends ISuspensionBean {
+class FriendInfo extends ISuspensionBean {
   String name;
   String? tagIndex;
   String? namePinyin;
@@ -194,9 +197,9 @@ class ContactInfo extends ISuspensionBean {
 
   String? img;
   String? id;
-  String? firstletter;
+  String? firstLetter;
 
-  ContactInfo({
+  FriendInfo({
     required this.name,
     this.tagIndex,
     this.namePinyin,
@@ -204,14 +207,14 @@ class ContactInfo extends ISuspensionBean {
     this.iconData,
     this.img,
     this.id,
-    this.firstletter,
+    this.firstLetter,
   });
 
-  ContactInfo.fromJson(Map<String, dynamic> json)
+  FriendInfo.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         img = json['img'],
         id = json['id']?.toString(),
-        firstletter = json['firstletter'];
+        firstLetter = json['firstletter'];
 
   Map<String, dynamic> toJson() => {
 //        'id': id,
