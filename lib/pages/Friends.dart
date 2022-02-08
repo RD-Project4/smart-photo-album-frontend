@@ -1,3 +1,4 @@
+import 'package:azlistview/azlistview.dart';
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -10,53 +11,50 @@ class Friends extends StatefulWidget {
 }
 
 class _FriendsState extends State<Friends> {
-  var friends = <Map>[
-    {'name': 'aaa'},
-    {'name': 'baa'},
-    {'name': 'Daa'}
+  var friends = <FriendInfo>[
+    FriendInfo(name: 'dsad'),
+    FriendInfo(name: 'fad'),
+    FriendInfo(name: 'awqerfdw'),
+    FriendInfo(name: 'qwe'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'My Friends',
-          style: TextStyle(color: Colors.black),
+        appBar: AppBar(
+          title: Text(
+            'My Friends',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(
+            color: Colors.black, //change your color here
+          ),
         ),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
-          color: Colors.black, //change your color here
-        ),
-      ),
-      body: GroupedView<dynamic, String>(
-          padding: null,
-          elements: friends,
-          groupBy: (element) {
-            return element['name'];
+        body: AzListView(
+          data: friends,
+          itemCount: friends.length,
+          itemBuilder: (context, index) {
+            FriendInfo model = friends[index];
+            return _buildListItem(model);
           },
-          groupComparator: (value1, value2) => -value2.compareTo(value1),
-          order: GroupedListOrder.DESC,
-          floatingHeader: false,
-          groupSeparatorBuilder: (String str) => Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  str,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-          sectionBuilder:
-              (context, currentSectionElementList, allElement, overallIndex) {
-            return GridView.count(
-                // 照片
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: currentSectionElementList
-                    .mapIndexed((index, element) => Text(element['name']))
-                    .toList());
-          }),
+        ));
+  }
+
+  Widget _buildListItem(FriendInfo model) {
+    return Row(
+      children: [Text(model.name)],
     );
+  }
+}
+
+class FriendInfo extends ISuspensionBean {
+  final String name;
+
+  FriendInfo({required this.name});
+
+  @override
+  String getSuspensionTag() {
+    return name;
   }
 }
