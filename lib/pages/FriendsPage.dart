@@ -126,7 +126,7 @@ class _FriendsPageState extends State<FriendsPage> {
           title: Text(model.name),
           onTap: () {
             print("OnItemClick: $model");
-            Navigator.pop(context, model);
+            // Navigator.pop(context, model);
           },
         )
       ],
@@ -153,6 +153,13 @@ class _FriendsPageState extends State<FriendsPage> {
             color: Colors.black, //change your color here
           ),
           elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  print('add friends');
+                },
+                icon: Icon(Icons.person_add))
+          ],
         ),
         body: AzListView(
           data: _friends,
