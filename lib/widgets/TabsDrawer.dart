@@ -41,9 +41,12 @@ class _TabsDrawerState extends State<TabsDrawer> {
           Divider(),
           ListTile(
             leading: CircleAvatar(
-              child: Icon(Icons.home),
+              child: Icon(Icons.people),
             ),
-            title: Text('User Center'),
+            title: Text('My Friends'),
+            onTap: (){
+              Navigator.pushNamed(context, '/friends');
+            },
           ),
           Divider(),
           ListTile(
