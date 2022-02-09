@@ -25,6 +25,31 @@ class _LoginFormState extends State<LoginForm> {
 
   String account = '';
   String password = '';
+  var _status = 4;
+  var _msg = '';
+
+  postData() async {
+    print('posting data');
+    print(this.account);
+    print(this.password);
+    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
+
+    var response = await http.post(apiurl,
+        body: {"userAccount": this.account, "userPwd": this.password});
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+    });
+    if (this._status == 5) {
+      print('jump to setting');
+      Navigator.of(context).pushReplacementNamed('/');
+    } else {
+      print('jump to login');
+    }
+    print(_status);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +93,14 @@ class _LoginFormState extends State<LoginForm> {
             onTap: () {
               print('account $account');
               print('password $password');
+              postData();
             },
+          ),
+          Container(
+            child: Text(
+              "${this._msg}",
+              style: TextStyle(color: Colors.red),
+            ),
           )
         ],
       ),
@@ -127,7 +159,6 @@ class _LoginFormState extends State<LoginForm> {
 //         ));
 //   }
 // }
-
 
 class LoginButton extends StatelessWidget {
   final bool ableToLogin;
