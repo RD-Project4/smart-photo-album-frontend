@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_album/PhotoEditPage.dart';
+import 'package:smart_album/TensorflowResultPanel.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:flutter/services.dart';
 
@@ -20,6 +21,15 @@ class PhotoToolBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          IconText(
+            icon: Icons.search,
+            text: "Find Similar",
+            onTap: () {
+              var photos =
+                  BlocProvider.of<PhotoListCubit>(context).state.photos;
+              TensorflowResultPanel.open(context, photos[photoIndex]);
+            },
+          ),
           IconText(
               icon: Icons.share,
               text: "Share",

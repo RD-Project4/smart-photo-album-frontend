@@ -5,11 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/FakeData.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 
-import 'TensorflowResultChipBar.dart';
+import 'TensorflowResultPanel.dart';
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
 
@@ -34,6 +35,8 @@ class _PhotoListState extends State<PhotoList> {
     super.didChangeDependencies();
 
     photos = await _loadPhotos() ?? [];
+
+    DataProvider.setElements(photos);
 
     setState(() {
       isReady = true;
@@ -128,7 +131,6 @@ class _PhotoListState extends State<PhotoList> {
                 return FileImage(
                     File(Global.ROOT_PATH + item.relativePath + item.title));
               },
-              descBuilder: (item) => ChipBar(element: item),
               galleryItems: elements,
               backgroundDecoration: const BoxDecoration(
                 color: Colors.black,

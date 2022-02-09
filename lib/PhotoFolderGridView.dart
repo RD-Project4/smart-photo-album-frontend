@@ -1,16 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class PhotoFolderGridView<T extends Map> extends StatelessWidget {
   final List<T> photoList;
+  final void Function(MapEntry<String, List<Map>> entry)? onTap;
 
-  const PhotoFolderGridView(this.photoList);
+  const PhotoFolderGridView({required this.photoList, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     Map<String, List<T>> folderList = Map();
     photoList.forEach((photo) {
-      if (photo["tag"] != null && photo["tag"] is List)
-        for (var tag in photo["tag"]) {
+      if (photo["labels"] != null && photo["labels"] is List)
+        for (var tag in photo["labels"]) {
           if (folderList[tag] == null) {
             folderList[tag] = [];
           }
@@ -21,7 +24,6 @@ class PhotoFolderGridView<T extends Map> extends StatelessWidget {
     return GridView.count(
         crossAxisCount: 2,
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
         children: folderList.entries
             .map((entry) => Padding(
                 padding: EdgeInsets.all(10),
@@ -35,14 +37,19 @@ class PhotoFolderGridView<T extends Map> extends StatelessWidget {
                           colors: <Color>[Colors.black, Colors.white],
                         ).createShader(bounds);
                       },
-                      child: Container(
-                          decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                          image: AssetImage("images/" + entry.value[0]['name']),
-                          fit: BoxFit.cover,
-                        ),
-                      )),
+                      child: InkWell(
+                        child: Container(
+                            decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          image: DecorationImage(
+                            image: FileImage(File(entry.value[0]['path'])),
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+                        onTap: () {
+                          if (onTap != null) onTap!(entry);
+                        },
+                      ),
                     ),
                     Positioned(
                         bottom: 20,
