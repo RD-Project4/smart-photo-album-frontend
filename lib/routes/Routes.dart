@@ -22,10 +22,12 @@ final routes = {
   // '/login': (context) => LoginPage(),
   '/login-page': (context) => LoginPage(),
   '/register-page': (context) => RegisterPage(),
-  // '/register-first': (context) => RegisterFirstPage(),
+  '/register-first': (context) => RegisterFirstPage(),
   // '/register-second': (context) => RegisterSecondPage(),
   // '/register-third': (context) => RegisterThirdPage(),
-  '/setting': (context) => Setting(),
+  '/setting': (context, {arguments}) => Setting(
+        arguments: arguments,
+      ),
   '/main': (context) => Tabs(),
   '/friends': (context) => FriendsPage()
 };

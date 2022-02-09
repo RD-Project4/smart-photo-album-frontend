@@ -5,6 +5,10 @@ import '../HomePage.dart';
 import 'tabs/Setting.dart';
 import 'package:smart_album/util/Global.dart';
 
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 class Tabs extends StatefulWidget {
   final index;
 
@@ -43,16 +47,18 @@ class _TabsState extends State<Tabs> {
           currentIndex: this._currentIndex, //表示当前默认选中哪一个
           onTap: (int index) {
             setState(() {
-              this._currentIndex = index;
+              if (index == 2 && Setting.state == 0) {
+                Navigator.pushNamed(context, '/login-page');
+              } else {
+                this._currentIndex = index;
+              }
             });
           },
           items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.category), label: "Category"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person), label: "My"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "My"),
           ],
         ),
         drawer: TabsDrawer());

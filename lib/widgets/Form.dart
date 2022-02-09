@@ -27,8 +27,8 @@ class MyCustomFormState extends State<LoginForm> {
   late String account;
   late String password;
 
-  int _status = 4;
-  String _msg = '';
+  var _status = 4;
+  var _msg = '';
 
   getData() async {
     print('getting data');

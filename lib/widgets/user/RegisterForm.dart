@@ -5,6 +5,10 @@ import 'package:smart_album/util/RegExpUtil.dart';
 import 'package:smart_album/util/CommonUtil.dart';
 import 'package:smart_album/widgets/user/CountdownButton.dart';
 
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 class RegisterForm extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _RegisterFormState();
@@ -13,10 +17,18 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   var _index = 0; // 当前在第几步（从0计数）
   final _formKey = GlobalKey<FormState>();
+
+  var _sendCodeCooling = 0; // 倒计时冷却
+  late Timer _timer;
+
   var _ableToContinue = false;
   var _ableToCancel = true;
   var _username = '';
   var _password = '';
+  var email = '';
+  var _validatecode = '';
+  var _status = 4;
+  var _msg = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +46,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   content: TextFormField(
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), hintText: 'Email'),
-                    validator: _emailValidator,
+                    validator: emailValidator,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                   )),
               Step(
@@ -47,8 +59,22 @@ class _RegisterFormState extends State<RegisterForm> {
                         decoration: const InputDecoration(
                             // border: OutlineInputBorder(),
                             hintText: 'Validate code'),
+                        onChanged: (value) {
+                          setState(() {
+                            this._validatecode = value;
+                          });
+                        },
                       ),
-                      CountdownButton()
+                      TextButton(
+                          onPressed: _sendCodeCooling == 0 ? _sendCode : null,
+                          child: Text(
+                              'SEND CODE${_sendCodeCooling == 0 ? '' : '($_sendCodeCooling)'}')),
+                      Container(
+                        child: Text(
+                          "${this._msg}",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      )
                     ],
                   )),
               Step(
@@ -108,15 +134,25 @@ class _RegisterFormState extends State<RegisterForm> {
     }
 
     if (_index < 2) {
-      setState(() {
-        _index += 1;
-      });
+      if (_index == 1) {
+        _verifyCode();
+      }
+      if (_index == 0) {
+        setState(() {
+          _index += 1;
+        });
+      }
     } else if (_index == 2) {
-      Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+      print(this._username);
+      print(this.email);
+      print(this._password);
+
+      _register();
+      // Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
     }
   }
 
-  String? _emailValidator(v) {
+  String? emailValidator(v) {
     if (!RegExp(RegExpUtil.EMAIL).hasMatch(v!)) {
       CommonUtil.nextTick(() {
         if (_ableToContinue) {
@@ -132,6 +168,9 @@ class _RegisterFormState extends State<RegisterForm> {
         if (!_ableToContinue) {
           setState(() {
             _ableToContinue = true;
+            print(v);
+            email = v;
+            print(this.email);
           });
         }
       });
@@ -171,7 +210,86 @@ class _RegisterFormState extends State<RegisterForm> {
     }
   }
 
-
   /// 验证邮箱验证码是否正确
-  void _verifyCode() {}
+  void _verifyCode() async {
+    var apiurl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
+    var response = await http.post(apiurl,
+        body: {"emailCode": this._validatecode, "userEmail": this.email});
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+    });
+    if (this._status == 0) {
+      setState(() {
+        _index += 1;
+      });
+    }
+  }
+
+  void _sendCode() {
+    // TODO: 对接请求邮箱验证码api
+    // print('you have send code');
+    // print(this.email);
+
+    postData();
+    setState(() {
+      _sendCodeCooling = 60;
+    });
+
+    const oneSec = const Duration(seconds: 1);
+
+    var callback = (timer) => {
+          setState(() {
+            if (_sendCodeCooling < 1) {
+              _timer.cancel();
+            } else {
+              _sendCodeCooling--;
+            }
+          })
+        };
+    _timer = Timer.periodic(oneSec, callback);
+  }
+
+  postData() async {
+    print('posting data');
+    print(this.email);
+
+    var apiurl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/sendemailcode.do');
+
+    var response = await http.post(apiurl, body: {"userEmail": this.email});
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+    });
+  }
+
+  _register() async {
+    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/register.do');
+
+    var response = await http.post(apiurl, body: {
+      "userAccount": "${this.email}",
+      "userPwd": "${this._password}",
+      "userName": "${this._username}",
+      "userEmail": "${this.email}",
+      "userPhone": "18857561268"
+    });
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+    });
+    if (this._status == 0) {
+      // Navigator.of(context).pushReplacementNamed('/loginPage');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/');
+    }
+    print(_status);
+  }
 }

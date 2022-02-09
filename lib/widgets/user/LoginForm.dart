@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:passwordfield/passwordfield.dart';
+import 'package:smart_album/pages/tabs/Setting.dart';
 
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
@@ -27,6 +29,46 @@ class _LoginFormState extends State<LoginForm> {
   String account = '';
   String password = '';
 
+  var userId;
+  var userAccount = '';
+  var userName = '';
+  var userEmail = '';
+  var userProfile = '';
+  var userPhone = '';
+
+  var _status = 4;
+  var _msg = '';
+
+  postData() async {
+    print('posting data');
+    print(this.account);
+    print(this.password);
+    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
+
+    var response = await http.post(apiurl,
+        body: {"userAccount": this.account, "userPwd": this.password});
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      this._status = jsonDecode(response.body)["status"];
+      Setting.state = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+      this.userId = jsonDecode(response.body)["data"]["userId"];
+      this.userAccount = jsonDecode(response.body)["data"]["userAccount"];
+      this.userName = jsonDecode(response.body)["data"]["userName"];
+      this.userEmail = jsonDecode(response.body)["data"]["userEmail"];
+      this.userProfile = jsonDecode(response.body)["data"]["userProfile"];
+      this.userPhone = jsonDecode(response.body)["data"]["userPhone"];
+    });
+    if (this._status == 5) {
+      print(' login jump to setting');
+      Navigator.pushNamed(context, '/setting',
+          arguments: {"userId": this.userId, "userEmail": this.userEmail});
+    } else {
+      print('jump to login');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -42,7 +84,6 @@ class _LoginFormState extends State<LoginForm> {
                 account = value;
               });
             },
-
           ),
           SizedBox(
             height: 20,
@@ -62,9 +103,14 @@ class _LoginFormState extends State<LoginForm> {
           LoginButton(
             ableToLogin: account != '' && password != '',
             onTap: () {
-              print('account $account');
-              print('password $password');
+              postData();
             },
+          ),
+          Container(
+            child: Text(
+              "${this._msg}",
+              style: TextStyle(color: Colors.red),
+            ),
           )
         ],
       ),
