@@ -25,7 +25,9 @@ final routes = {
   '/register-first': (context) => RegisterFirstPage(),
   // '/register-second': (context) => RegisterSecondPage(),
   // '/register-third': (context) => RegisterThirdPage(),
-  '/setting': (context) => Setting(),
+  '/setting': (context, {arguments}) => Setting(
+        arguments: arguments,
+      ),
   '/main': (context) => Tabs(),
   '/friends': (context) => FriendsPage()
 };
