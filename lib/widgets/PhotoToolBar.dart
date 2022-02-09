@@ -22,7 +22,8 @@ class PhotoToolBar extends StatelessWidget {
               icon: Icons.share,
               text: "Share",
               onTap: () {
-                Fluttertoast.showToast(msg: "Share");
+                // Fluttertoast.showToast(msg: "Share");
+                _openShareBottomSheet(context, 1);
               }),
           IconText(
               icon: Icons.edit,
@@ -31,7 +32,6 @@ class PhotoToolBar extends StatelessWidget {
                 var photos =
                     BlocProvider.of<PhotoListCubit>(context).state.photos;
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-
                   return PhotoEditPage(
                     entity: photos[photoIndex],
                   );
@@ -42,6 +42,66 @@ class PhotoToolBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future _openShareBottomSheet(BuildContext context, int photoNum) async {
+    final option = await showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  title: RichText(
+                    text: TextSpan(
+                      text: 'Share ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: '$photoNum',
+                            style: TextStyle(color: Colors.blueAccent)),
+                        TextSpan(
+                            text: ' photo${photoNum > 1 ? 's' : ''} with:'),
+                      ],
+                    ),
+                  ),
+                  // title: RichText(
+                  //   text: TextSpan(text: ),'Share $photoNum photo${photoNum > 1 ? 's' : ''} with:',
+                  //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  // ),
+                ),
+                ListTile(
+                  title: Text('Everyone', textAlign: TextAlign.center),
+                  onTap: () {
+                    Navigator.pop(context, '分享给所有人');
+                  },
+                ),
+                ListTile(
+                  title: Text('Only my friends', textAlign: TextAlign.center),
+                  onTap: () {
+                    Navigator.pop(context, '只分享给朋友');
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    'Cancel',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context, '取消');
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+
+    print(option);
   }
 }
 
