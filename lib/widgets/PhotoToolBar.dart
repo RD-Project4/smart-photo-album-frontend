@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_album/PhotoEditPage.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:flutter/services.dart';
@@ -101,21 +102,28 @@ class PhotoToolBar extends StatelessWidget {
 
   Future _shareToEveryone(BuildContext context) async {
     // TODO: 从api获取分享链接并赋值给shareUrl
-    var shareUrl = 'https://www.baidu.com';
+    var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
 
     final option = await showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
+            QrImage(
+              data: shareUrl,
+              version: QrVersions.auto,
+              size: 200.0,
+              embeddedImage: AssetImage('images/logo_white_bg.png'),
+              errorCorrectionLevel: QrErrorCorrectLevel.H,
+            ),
             ListTile(
               title: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.qr_code_2),
-                    onPressed: () {},
-                  ),
+                  // IconButton(
+                  //   icon: Icon(Icons.qr_code_2),
+                  //   onPressed: () {},
+                  // ),
                   Expanded(
                     child: Text(
                       shareUrl,
