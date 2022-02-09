@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smart_album/PhotoEditPage.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
+import 'package:flutter/services.dart';
 
 class PhotoToolBar extends StatelessWidget {
   final photoIndex;
@@ -99,6 +100,9 @@ class PhotoToolBar extends StatelessWidget {
   }
 
   Future _shareToEveryone(BuildContext context) async {
+    // TODO: 从api获取分享链接并赋值给shareUrl
+    var shareUrl = 'https://www.baidu.com';
+
     final option = await showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -114,11 +118,13 @@ class PhotoToolBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'https://www.baidu.com',
+                      shareUrl,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  CopyBtn()
+                  CopyBtn(
+                    text: shareUrl,
+                  )
                 ],
               ),
             ),
@@ -171,6 +177,10 @@ class IconText extends StatelessWidget {
 }
 
 class CopyBtn extends StatefulWidget {
+  final String text;
+
+  CopyBtn({Key? key, required this.text}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _CopyBtnState();
 }
@@ -182,6 +192,7 @@ class _CopyBtnState extends State<CopyBtn> {
   Widget build(BuildContext context) {
     return TextButton(
         onPressed: () {
+          Clipboard.setData(ClipboardData(text: widget.text));
           setState(() {
             hasCopied = true;
           });
