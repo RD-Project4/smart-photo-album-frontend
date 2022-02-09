@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // Create a Form widget.
+@Deprecated("使用LoginPage")
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 

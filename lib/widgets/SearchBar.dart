@@ -29,25 +29,25 @@ class SearchBar extends StatelessWidget {
         // Call your model, bloc, controller here.
       },
       clearQueryOnClose: true,
-      actions: [
-        FloatingSearchBarAction(
-          showIfOpened: false,
-          showIfClosed: true,
-          child: AccountButton(),
-        )
-      ],
-      leadingActions: [
-        FloatingSearchBarAction(
-          showIfOpened: true,
-          showIfClosed: false,
-          child: CircularButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.maybePop(context);
-            },
-          ),
-        )
-      ],
+      // actions: [
+      //   FloatingSearchBarAction(
+      //     showIfOpened: false,
+      //     showIfClosed: true,
+      //     child: AccountButton(),
+      //   )
+      // ],
+      // leadingActions: [
+      //   FloatingSearchBarAction(
+      //     showIfOpened: true,
+      //     showIfClosed: false,
+      //     child: CircularButton(
+      //       icon: const Icon(Icons.arrow_back),
+      //       onPressed: () {
+      //         Navigator.maybePop(context);
+      //       },
+      //     ),
+      //   )
+      // ],
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
         return SearchResult();

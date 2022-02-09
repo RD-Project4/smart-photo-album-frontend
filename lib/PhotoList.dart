@@ -12,7 +12,7 @@ import 'package:smart_album/widgets/ListedPhoto.dart';
 import 'PhotoView.dart';
 import 'package:collection/collection.dart';
 
-import 'common/Global.dart';
+import 'util/Global.dart';
 import 'util/PermissionUtil.dart';
 
 class PhotoList extends StatefulWidget {
@@ -108,15 +108,6 @@ class _PhotoListState extends State<PhotoList> {
       if (e.name == "Recent") {
         // 只处理名为Recent的文件夹（后期可能处理其他的）
         imgList = await e.assetList;
-
-        // imgList.forEach((img) {
-        //   // 遍历文件夹中的图片
-        //   res.add({
-        //     "time": img.createDateTime,
-        //     "name": '${img.relativePath}${img.title}',
-        //     "entity": img
-        //   });
-        // });
       }
     });
 
