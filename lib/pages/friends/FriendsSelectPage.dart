@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:smart_album/model/FriendInfo.dart';
+import 'package:smart_album/util/ShareUtil.dart';
 
 class FriendsSelectPage extends StatefulWidget {
   @override
@@ -129,8 +130,9 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   }
 
   /// 分享
-  void _share(){
-    
+  void _share() {
+    Navigator.pop(context);
+    ShareUtil.shareToFriends(context, _selectedFriends);
   }
 
   @override

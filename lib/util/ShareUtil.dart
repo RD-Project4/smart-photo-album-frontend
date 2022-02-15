@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_album/widgets/PhotoToolBar.dart';
+import 'package:smart_album/model/FriendInfo.dart';
 
 class ShareUtil {
   static Future openShareBottomSheet(BuildContext context, int photoNum) async {
@@ -30,7 +31,7 @@ class ShareUtil {
                 title: Text('Everyone', textAlign: TextAlign.center),
                 onTap: () {
                   Navigator.pop(context, '分享给所有人');
-                  _shareToEveryone(context);
+                  shareToEveryone(context);
                 },
               ),
               ListTile(
@@ -57,11 +58,22 @@ class ShareUtil {
     print(option);
   }
 
-  static Future _shareToEveryone(BuildContext context) async {
+  static void shareToEveryone(BuildContext context) {
     // TODO: 从api获取分享链接并赋值给shareUrl
     var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
+    _showLink(context, shareUrl);
+  }
 
-    final option = await showModalBottomSheet(
+  static void shareToFriends(BuildContext context, List<FriendInfo> friends) {
+    print(friends);
+
+    // TODO: 从api获取分享链接并赋值给shareUrl
+    var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
+    _showLink(context, shareUrl);
+  }
+
+  static _showLink(BuildContext context, String shareUrl) {
+    showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -101,7 +113,5 @@ class ShareUtil {
             ),
           ]);
         });
-
-    print(option);
   }
 }
