@@ -40,23 +40,27 @@ class _PhotoEditPage extends State<PhotoEditPage> {
               GroupButton(
                 isRadio: true,
                 buttons: ['Crop', 'Adjust', 'Markup'],
-                onSelected: (index,isSelected) => debugPrint('Button $index selected'),
-                selectedButton: 0,  // 默认选中
-                borderRadius: BorderRadius.circular(1000),
-                selectedColor: Color.fromARGB(255, 68, 71, 70),
-                selectedTextStyle: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: Color.fromARGB(255,227, 227, 227),
+                onSelected: (index, isSelected) =>
+                    debugPrint('Button $index selected'),
+                controller: GroupButtonController(
+                  selectedIndex: 0, // 默认选中
                 ),
-                unselectedColor: Colors.black,
-                unselectedTextStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: Color.fromARGB(255, 117, 117, 117),
+                options: GroupButtonOptions(
+                  borderRadius: BorderRadius.circular(1000),
+                  selectedColor: Color.fromARGB(255, 68, 71, 70),
+                  selectedTextStyle: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 227, 227, 227),
+                  ),
+                  unselectedColor: Colors.black,
+                  unselectedTextStyle: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                  ),
                 ),
               ),
-
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
