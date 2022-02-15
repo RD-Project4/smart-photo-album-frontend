@@ -17,7 +17,7 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       onGenerateRoute: onGenerateRoute,
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login-page',
+      initialRoute: '/',
     );
   }
 }

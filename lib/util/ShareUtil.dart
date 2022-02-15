@@ -37,6 +37,7 @@ class ShareUtil {
                 title: Text('Only my friends', textAlign: TextAlign.center),
                 onTap: () {
                   Navigator.pop(context, '只分享给朋友');
+                  Navigator.pushNamed(context, '/friends-select');
                 },
               ),
               ListTile(

@@ -4,6 +4,7 @@ import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
+import 'package:smart_album/model/FriendInfo.dart';
 
 class FriendsPage extends StatefulWidget {
   @override
@@ -194,48 +195,3 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 }
 
-class FriendInfo extends ISuspensionBean {
-  String name;
-  String? tagIndex;
-  String? namePinyin;
-
-  Color? bgColor;
-  IconData? iconData;
-
-  String? img;
-  String? id;
-  String? firstLetter;
-
-  FriendInfo({
-    required this.name,
-    this.tagIndex,
-    this.namePinyin,
-    this.bgColor,
-    this.iconData,
-    this.img,
-    this.id,
-    this.firstLetter,
-  });
-
-  FriendInfo.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        img = json['img'],
-        id = json['id']?.toString(),
-        firstLetter = json['firstletter'];
-
-  Map<String, dynamic> toJson() => {
-//        'id': id,
-        'name': name,
-        'img': img,
-//        'firstletter': firstletter,
-//        'tagIndex': tagIndex,
-//        'namePinyin': namePinyin,
-//        'isShowSuspension': isShowSuspension
-      };
-
-  @override
-  String getSuspensionTag() => tagIndex!;
-
-  @override
-  String toString() => json.encode(this);
-}
