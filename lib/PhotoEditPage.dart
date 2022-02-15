@@ -37,9 +37,10 @@ class _PhotoEditPage extends State<PhotoEditPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              GroupButton.radio(
+              GroupButton(
+                isRadio: true,
                 buttons: ['Crop', 'Adjust', 'Markup'],
-                onSelected: (i) => debugPrint('Button $i selected'),
+                onSelected: (index,isSelected) => debugPrint('Button $index selected'),
                 selectedButton: 0,  // 默认选中
                 borderRadius: BorderRadius.circular(1000),
                 selectedColor: Color.fromARGB(255, 68, 71, 70),
