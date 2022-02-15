@@ -51,9 +51,6 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     // show sus tag.
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
-    // 加在底部
-    _friends.insert(_friends.length, FriendInfo(name: 'bottom',tagIndex: ""));
-
     setState(() {});
   }
 
@@ -84,6 +81,7 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   Widget _buildListItem(FriendInfo model) {
     String susTag = model.getSuspensionTag();
     bool _isSelected = _selectedFriends.indexOf(model) != -1;
+
     void _changeSelection() {
       setState(() {
         if (_isSelected) {
@@ -123,19 +121,16 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     );
   }
 
-  /// 底部占位空间
-  Widget _buildBottom() {
-    return Container(
-      width: double.infinity,
-      height: 50,
-    );
-  }
-
   Decoration getIndexBarDecoration(Color color) {
     return BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(20.0),
         border: Border.all(color: Colors.grey[300]!, width: .5));
+  }
+
+  /// 分享
+  void _share(){
+    
   }
 
   @override
@@ -158,15 +153,28 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
               data: _friends,
               itemCount: _friends.length,
               itemBuilder: (BuildContext context, int index) {
-                if (index == _friends.length - 1) {
-                  return _buildBottom();
-                }
                 FriendInfo model = _friends[index];
+
+                if (index == _friends.length - 1) {
+                  // 最后一个在末尾增加占位空格
+
+                  return Column(
+                    children: [
+                      _buildListItem(model),
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                      )
+                    ],
+                  );
+                }
+
                 return _buildListItem(model);
               },
               physics: BouncingScrollPhysics(),
               indexBarData: SuspensionUtil.getTagIndexList(_friends),
               indexHintBuilder: (context, hint) {
+                // 头像
                 return Container(
                   alignment: Alignment.center,
                   width: 60.0,
@@ -201,6 +209,9 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
                       _selectedFriends = [];
                     });
                   },
+                  haveSelectAll: _friends.length != 0 &&
+                      _selectedFriends.length == _friends.length,
+                  share: _selectedFriends.length != 0 ? _share : null,
                 )),
           ],
         ));
@@ -209,18 +220,28 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
 
 class BottomBar extends StatefulWidget {
   final selectAll, selectNone;
+  final share;
+  final bool haveSelectAll;
 
-  BottomBar({Key? key, this.selectAll, this.selectNone}) : super(key: key);
+  BottomBar({
+    Key? key,
+    this.selectAll,
+    this.selectNone,
+    this.share,
+    this.haveSelectAll = false,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  bool _haveSelectAll = false; // 是否已全选
-
   @override
   Widget build(BuildContext context) {
+    bool _haveSelectAll = widget.haveSelectAll;
+
+    print('widget.haveSelectAll ${widget.haveSelectAll}');
+
     return Container(
       padding: EdgeInsets.only(left: 10, right: 10),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -234,7 +255,7 @@ class _BottomBarState extends State<BottomBar> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ElevatedButton(onPressed: () {}, child: Text('Share')),
+          ElevatedButton(onPressed: widget.share, child: Text('Share')),
           Row(
             children: [
               Text('Select all'),
