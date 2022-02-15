@@ -51,6 +51,9 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     // show sus tag.
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
+    // 加在底部
+    _friends.insert(_friends.length, FriendInfo(name: 'bottom',tagIndex: ""));
+
     setState(() {});
   }
 
@@ -76,7 +79,6 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
       ),
     );
   }
-
 
   /// 好友列表项
   Widget _buildListItem(FriendInfo model) {
@@ -121,6 +123,14 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     );
   }
 
+  /// 底部占位空间
+  Widget _buildBottom() {
+    return Container(
+      width: double.infinity,
+      height: 50,
+    );
+  }
+
   Decoration getIndexBarDecoration(Color color) {
     return BoxDecoration(
         color: color,
@@ -133,7 +143,7 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Share with friends',
+            'Share with ${_selectedFriends.length} friend${_selectedFriends.length > 1 ? 's' : ''}',
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.white,
@@ -148,6 +158,9 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
               data: _friends,
               itemCount: _friends.length,
               itemBuilder: (BuildContext context, int index) {
+                if (index == _friends.length - 1) {
+                  return _buildBottom();
+                }
                 FriendInfo model = _friends[index];
                 return _buildListItem(model);
               },
@@ -177,13 +190,28 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
                 bottom: 0,
                 // height: 100,
                 width: MediaQuery.of(context).size.width,
-                child: BottomBar()),
+                child: BottomBar(
+                  selectAll: () {
+                    setState(() {
+                      _selectedFriends = [..._friends];
+                    });
+                  },
+                  selectNone: () {
+                    setState(() {
+                      _selectedFriends = [];
+                    });
+                  },
+                )),
           ],
         ));
   }
 }
 
 class BottomBar extends StatefulWidget {
+  final selectAll, selectNone;
+
+  BottomBar({Key? key, this.selectAll, this.selectNone}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _BottomBarState();
 }
@@ -194,7 +222,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left:10,right: 10),
+      padding: EdgeInsets.only(left: 10, right: 10),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(
             color: Colors.grey,
@@ -211,19 +239,16 @@ class _BottomBarState extends State<BottomBar> {
             children: [
               Text('Select all'),
               Checkbox(
-                value: _haveSelectAll,
-                onChanged: (bool? newValue) {
-                  setState(() {
-                    // if (_haveSelectAll) {
-                    //   _selectedFriends = [];
-                    //   _haveSelectAll = false;
-                    // } else {
-                    //   _selectedFriends = [..._friends];
-                    //   _haveSelectAll = true;
-                    // }
-                  });
-                },
-              ),
+                  value: _haveSelectAll,
+                  onChanged: (newValue) {
+                    if (!_haveSelectAll) {
+                      widget.selectAll();
+                      _haveSelectAll = true;
+                    } else {
+                      widget.selectNone();
+                      _haveSelectAll = false;
+                    }
+                  }),
             ],
           )
         ],
