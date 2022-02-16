@@ -143,33 +143,12 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 
   void addFriend() {
-    FriendInfo _model = FriendInfo.copy(_friends[1]);
-    _model.isShowSuspension = false;
-
     DialogUtil.showCustomDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text("Add new friend"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Friend\'s email')),
-              _buildListItem(_model)
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
+        return AddFriend(
+          buildItemFn: _buildListItem,
+          friends: _friends,
         );
       },
     );
@@ -222,5 +201,94 @@ class _FriendsPageState extends State<FriendsPage> {
             downDecoration: getIndexBarDecoration(Colors.grey[200]!),
           ),
         ));
+  }
+}
+
+class AddFriend extends StatefulWidget {
+  final buildItemFn;
+  final List<FriendInfo> friends; // 临时变量，在对接接口需删除
+
+  AddFriend({Key? key, this.buildItemFn, required this.friends})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _AddFriendState();
+}
+
+class _AddFriendState extends State<AddFriend> {
+  String _newFriendEmail = "";
+  Widget? searchRes;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Add new friend"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), hintText: 'Friend\'s email'),
+            onChanged: (val) {
+              print(val);
+              setState(() {
+                _newFriendEmail = val;
+              });
+            },
+          ),
+          searchRes ?? Container(),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Colors.red),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          child: Text(
+            "Search",
+          ),
+          onPressed: _newFriendEmail != "" ? searchFriend : null,
+        ),
+      ],
+    );
+  }
+
+  void searchFriend() {
+    print(_newFriendEmail);
+
+    // TODO: 从api获取输入的email所对应的用户，并赋值给_model，这里暂时用friends列表中的一项代替
+    FriendInfo _model = FriendInfo.copy(widget.friends[1]);
+    _model.isShowSuspension = false;
+
+    setState(() {
+      if (_model != null) {
+        // 输入的email有对应的用户
+        // TODO: 处理搜索的用户已在好友列表的情况
+
+        searchRes = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            widget.buildItemFn(_model),
+            Container(
+              padding: EdgeInsets.only(left: 15),
+              child:
+                  TextButton(onPressed: () {}, child: Text('Send invitation')),
+            ),
+          ],
+        );
+      } else {
+        searchRes = Container(
+          width: double.infinity,
+          child: Text(
+            "User does not exist",
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+      }
+    });
   }
 }
