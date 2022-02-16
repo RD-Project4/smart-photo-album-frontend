@@ -21,7 +21,7 @@ class _PassResetFormState extends State<PassResetForm> {
   var _sendCodeCooling = 0; // 倒计时冷却
   late Timer _timer;
 
-  var _ableToContinue = false;
+  var _ableToContinue = true;
   var _ableToCancel = true;
   var _username = '';
   var _password = '';
@@ -42,7 +42,7 @@ class _PassResetFormState extends State<PassResetForm> {
             steps: <Step>[
               Step(
                   title: Text(''),
-                  isActive: _index >= 1,
+                  isActive: _index >= 0,
                   content: Stack(
                     alignment: Alignment(1.0, 1.0),
                     children: [
@@ -70,17 +70,8 @@ class _PassResetFormState extends State<PassResetForm> {
                   )),
               Step(
                   title: Text(''),
-                  isActive: _index >= 2,
+                  isActive: _index >= 1,
                   content: Column(children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), hintText: 'Username'),
-                      validator: _usernameValidator,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
                     TextFormField(
                       obscureText: true,
                       decoration: const InputDecoration(
@@ -143,46 +134,7 @@ class _PassResetFormState extends State<PassResetForm> {
     }
   }
 
-  String? emailValidator(v) {
-    if (!RegExp(RegExpUtil.EMAIL).hasMatch(v!)) {
-      CommonUtil.nextTick(() {
-        if (_ableToContinue) {
-          setState(() {
-            _ableToContinue = false;
-          });
-        }
-      });
 
-      return 'Please enter a valid email';
-    } else {
-      CommonUtil.nextTick(() {
-        if (!_ableToContinue) {
-          setState(() {
-            _ableToContinue = true;
-            print(v);
-            email = v;
-            print(this.email);
-          });
-        }
-      });
-    }
-  }
-
-  String? _usernameValidator(v) {
-    if (v.length < 2) {
-      return 'Username is too short';
-    } else if (v.length > 20) {
-      return 'Username is too long';
-    } else if (!RegExp(r'^[\u4e00-\u9fa5_\-a-zA-Z0-9]+$').hasMatch(v)) {
-      return 'Username contains invalid characters';
-    } else {
-      CommonUtil.nextTick(() {
-        setState(() {
-          _username = v;
-        });
-      });
-    }
-  }
 
   String? _passwordValidator(v) {
     if (v.length < 6) {
@@ -203,9 +155,9 @@ class _PassResetFormState extends State<PassResetForm> {
 
   /// 验证邮箱验证码是否正确
   void _verifyCode() async {
-    var apiurl =
+    var apiUrl =
     Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
-    var response = await http.post(apiurl,
+    var response = await http.post(apiUrl,
         body: {"emailCode": this._validateCode, "userEmail": this.email});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
