@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/TabsDrawer.dart';
+import 'package:smart_album/model/FriendInfo.dart';
 
 class FriendsPage extends StatefulWidget {
   @override
@@ -27,26 +28,43 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 
   void loadData() async {
+    print('showing friends');
+    print(Setting.userAccount);
+    var apiurl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    var response =
+        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
+
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      TabsDrawer.list = jsonDecode(response.body)["data"];
+    });
+
     //加载联系人列表
     // rootBundle.loadString('assets/data/friends.json').then((value) {
+    //   print(value);
     //   List list = json.decode(value);
+    //   print(list);
     //   list.forEach((v) {
     //     _friends.add(FriendInfo.fromJson(v));
     //   });
     //   _handleList(_friends);
     // });
+    print(TabsDrawer.list);
 
     TabsDrawer.list.forEach((v) {
       _friends.add(FriendInfo.fromJson(v));
     });
+    _handleList(_friends);
   }
 
   void _handleList(List<FriendInfo> list) {
     if (list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin = PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].userName);
       String tag = pinyin.substring(0, 1).toUpperCase();
-      list[i].namePinyin = pinyin;
+      list[i].userNamePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
         list[i].tagIndex = tag;
       } else {
@@ -60,7 +78,7 @@ class _FriendsPageState extends State<FriendsPage> {
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
     // add header.
-    _friends.insert(0, FriendInfo(name: 'header', tagIndex: '↑'));
+    _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑'));
 
     setState(() {});
   }
@@ -127,14 +145,14 @@ class _FriendsPageState extends State<FriendsPage> {
           leading: CircleAvatar(
             backgroundColor: Colors.blue[700],
             child: Text(
-              model.name[0],
+              model.userName[0],
               style: TextStyle(color: Colors.white),
             ),
           ),
-          title: Text(model.name),
+          title: Text(model.userName),
           onTap: () {
             print("OnItemClick: $model");
-            Navigator.pop(context, model);
+            // Navigator.pop(context, model);
           },
         )
       ],
@@ -161,6 +179,13 @@ class _FriendsPageState extends State<FriendsPage> {
             color: Colors.black, //change your color here
           ),
           elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  print('add friends');
+                },
+                icon: Icon(Icons.person_add))
+          ],
         ),
         body: AzListView(
           data: _friends,
@@ -196,9 +221,9 @@ class _FriendsPageState extends State<FriendsPage> {
 }
 
 class FriendInfo extends ISuspensionBean {
-  String name;
+  String userName;
   String? tagIndex;
-  String? namePinyin;
+  String? userNamePinyin;
 
   Color? bgColor;
   IconData? iconData;
@@ -208,9 +233,9 @@ class FriendInfo extends ISuspensionBean {
   String? firstLetter;
 
   FriendInfo({
-    required this.name,
+    required this.userName,
     this.tagIndex,
-    this.namePinyin,
+    this.userNamePinyin,
     this.bgColor,
     this.iconData,
     this.img,
@@ -219,18 +244,18 @@ class FriendInfo extends ISuspensionBean {
   });
 
   FriendInfo.fromJson(Map<String, dynamic> json)
-      : name = json['UserName'],
+      : userName = json['userName'],
         img = json['img'],
         id = json['id']?.toString(),
         firstLetter = json['firstletter'];
 
   Map<String, dynamic> toJson() => {
 //        'id': id,
-        'name': name,
-        'img': img,
+        'userName': userName,
+        // 'img': img,
 //        'firstletter': firstletter,
 //        'tagIndex': tagIndex,
-//        'namePinyin': namePinyin,
+//        'userNamePinyin': userNamePinyin,
 //        'isShowSuspension': isShowSuspension
       };
 

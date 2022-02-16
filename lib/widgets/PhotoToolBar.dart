@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smart_album/PhotoEditPage.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
+import 'package:flutter/services.dart';
+import 'package:smart_album/util/ShareUtil.dart';
 
 class PhotoToolBar extends StatelessWidget {
   final photoIndex;
@@ -22,7 +23,9 @@ class PhotoToolBar extends StatelessWidget {
               icon: Icons.share,
               text: "Share",
               onTap: () {
-                Fluttertoast.showToast(msg: "Share");
+                // Fluttertoast.showToast(msg: "Share");
+                ShareUtil.openShareBottomSheet(context, 1);
+                // _shareToEveryone(context);
               }),
           IconText(
               icon: Icons.edit,
@@ -31,7 +34,6 @@ class PhotoToolBar extends StatelessWidget {
                 var photos =
                     BlocProvider.of<PhotoListCubit>(context).state.photos;
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-
                   return PhotoEditPage(
                     entity: photos[photoIndex],
                   );
@@ -43,6 +45,8 @@ class PhotoToolBar extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 class IconText extends StatelessWidget {
@@ -73,5 +77,30 @@ class IconText extends StatelessWidget {
       ),
       onTap: onTap,
     );
+  }
+}
+
+class CopyBtn extends StatefulWidget {
+  final String text;
+
+  CopyBtn({Key? key, required this.text}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _CopyBtnState();
+}
+
+class _CopyBtnState extends State<CopyBtn> {
+  var hasCopied = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          Clipboard.setData(ClipboardData(text: widget.text));
+          setState(() {
+            hasCopied = true;
+          });
+        },
+        child: Text(hasCopied ? 'Copied' : 'Copy'));
   }
 }
