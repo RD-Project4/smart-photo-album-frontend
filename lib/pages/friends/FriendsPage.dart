@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:smart_album/model/FriendInfo.dart';
+import 'package:smart_album/util/DialogUtil.dart';
 
 class FriendsPage extends StatefulWidget {
   @override
@@ -84,7 +85,7 @@ class _FriendsPageState extends State<FriendsPage> {
     );
   }
 
-  /// 悬停效果
+  /// 首字母分割线
   Widget _buildSusWidget(String susTag) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -114,7 +115,7 @@ class _FriendsPageState extends State<FriendsPage> {
       children: <Widget>[
         Offstage(
           offstage: model.isShowSuspension != true,
-          child: _buildSusWidget(susTag),
+          child: model.isShowSuspension ? _buildSusWidget(susTag) : Container(),
         ),
         ListTile(
           leading: CircleAvatar(
@@ -141,6 +142,39 @@ class _FriendsPageState extends State<FriendsPage> {
         border: Border.all(color: Colors.grey[300]!, width: .5));
   }
 
+  void addFriend() {
+    FriendInfo _model = FriendInfo.copy(_friends[1]);
+    _model.isShowSuspension = false;
+
+    DialogUtil.showCustomDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Add new friend"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Friend\'s email')),
+              _buildListItem(_model)
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,11 +189,7 @@ class _FriendsPageState extends State<FriendsPage> {
           ),
           elevation: 0,
           actions: [
-            IconButton(
-                onPressed: () {
-                  print('add friends');
-                },
-                icon: Icon(Icons.person_add))
+            IconButton(onPressed: addFriend, icon: Icon(Icons.person_add))
           ],
         ),
         body: AzListView(
@@ -194,4 +224,3 @@ class _FriendsPageState extends State<FriendsPage> {
         ));
   }
 }
-
