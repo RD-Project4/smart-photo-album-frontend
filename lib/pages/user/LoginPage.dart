@@ -54,7 +54,9 @@ class LoginPage extends StatelessWidget {
                           child: Text('Registry')),
                       Text('|'),
                       TextButton(
-                          onPressed: () {}, child: Text('Forgot password?'))
+                          onPressed: () {
+                            Navigator.pushNamed(context,'/pass-reset');
+                          }, child: Text('Forgot password?'))
                     ],
                   )
                 ]),

@@ -9,12 +9,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class RegisterForm extends StatefulWidget {
+class PassResetForm extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _RegisterFormState();
+  State<StatefulWidget> createState() => _PassResetFormState();
 }
 
-class _RegisterFormState extends State<RegisterForm> {
+class _PassResetFormState extends State<PassResetForm> {
   var _index = 0; // 当前在第几步（从0计数）
   final _formKey = GlobalKey<FormState>();
 
@@ -42,22 +42,13 @@ class _RegisterFormState extends State<RegisterForm> {
             steps: <Step>[
               Step(
                   title: Text(''),
-                  isActive: _index >= 0,
-                  content: TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), hintText: 'Email'),
-                    validator: emailValidator,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                  )),
-              Step(
-                  title: Text(''),
                   isActive: _index >= 1,
                   content: Stack(
                     alignment: Alignment(1.0, 1.0),
                     children: [
                       TextField(
                         decoration: const InputDecoration(
-                            // border: OutlineInputBorder(),
+                          // border: OutlineInputBorder(),
                             hintText: 'Validate code'),
                         onChanged: (value) {
                           setState(() {
@@ -213,7 +204,7 @@ class _RegisterFormState extends State<RegisterForm> {
   /// 验证邮箱验证码是否正确
   void _verifyCode() async {
     var apiurl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
+    Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
     var response = await http.post(apiurl,
         body: {"emailCode": this._validateCode, "userEmail": this.email});
     print('Response status : ${response.statusCode}');
@@ -242,14 +233,14 @@ class _RegisterFormState extends State<RegisterForm> {
     const oneSec = const Duration(seconds: 1);
 
     var callback = (timer) => {
-          setState(() {
-            if (_sendCodeCooling < 1) {
-              _timer.cancel();
-            } else {
-              _sendCodeCooling--;
-            }
-          })
-        };
+      setState(() {
+        if (_sendCodeCooling < 1) {
+          _timer.cancel();
+        } else {
+          _sendCodeCooling--;
+        }
+      })
+    };
     _timer = Timer.periodic(oneSec, callback);
   }
 
@@ -258,7 +249,7 @@ class _RegisterFormState extends State<RegisterForm> {
     print(this.email);
 
     var apiurl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/sendemailcode.do');
+    Uri.parse('http://124.223.68.12:8233/smartAlbum/sendemailcode.do');
 
     var response = await http.post(apiurl, body: {"userEmail": this.email});
     print('Response status : ${response.statusCode}');

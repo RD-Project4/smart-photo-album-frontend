@@ -40,15 +40,15 @@ class _LoginFormState extends State<LoginForm> {
   var _msg = '';
 
   postData() async {
-    print('posting data');
-    print(this.account);
-    print(this.password);
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
+    // print('posting data');
+    // print(this.account);
+    // print(this.password);
+    var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
 
-    var response = await http.post(apiurl,
+    var response = await http.post(apiUrl,
         body: {"userAccount": this.account, "userPwd": this.password});
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
+    // print('Response status : ${response.statusCode}');
+    // print('Response status : ${response.body}');
     setState(() {
       this._status = jsonDecode(response.body)["status"];
       Setting.state = jsonDecode(response.body)["status"];
@@ -117,58 +117,6 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 }
-
-// class LoginButton extends StatefulWidget {
-//   final bool ableToLogin;
-//   final String password;
-//   final String account;
-//
-//   LoginButton(
-//       {Key? key,
-//       required this.ableToLogin,
-//       required this.account,
-//       required this.password})
-//       : super(key: key);
-//
-//   @override
-//   _LoginButtonState createState() => _LoginButtonState();
-// }
-//
-// class _LoginButtonState extends State<LoginButton> {
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//         onTap: () {
-//           print(widget.ableToLogin);
-//           print(widget.account);
-//           print(widget.password);
-//         },
-//         child: Stack(
-//           alignment: Alignment.center,
-//           children: [
-//             widget.ableToLogin
-//                 ? Positioned(
-//                     child: CircleAvatar(
-//                       radius: 40,
-//                       backgroundImage:
-//                           AssetImage('images/login_page/login_btn_bg2.gif'),
-//                     ),
-//                   )
-//                 : Positioned(
-//                     child: CircleAvatar(
-//                     radius: 40,
-//                     backgroundColor: Colors.grey,
-//                   )),
-//             Positioned(
-//                 child: Icon(
-//               Icons.arrow_forward_ios,
-//               color: Colors.white,
-//             ))
-//           ],
-//         ));
-//   }
-// }
 
 class LoginButton extends StatelessWidget {
   final bool ableToLogin;
