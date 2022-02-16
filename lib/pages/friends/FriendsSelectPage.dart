@@ -37,7 +37,7 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   void _handleList(List<FriendInfo> list) {
     if (list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin = PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].userName);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -103,11 +103,11 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
             leading: CircleAvatar(
               backgroundColor: Colors.blue[700],
               child: Text(
-                model.name[0],
+                model.userName[0],
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            title: Text(model.name),
+            title: Text(model.userName),
             onTap: _changeSelection,
             trailing: Container(
               margin: EdgeInsets.only(right: 20),

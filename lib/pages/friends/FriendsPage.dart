@@ -29,35 +29,36 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 
   void loadData() async {
-    print('showing friends');
-    print(Setting.userAccount);
-    var apiurl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
-    var response =
-        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
-
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      TabsDrawer.list = jsonDecode(response.body)["data"];
-    });
+    // print('showing friends');
+    // print(Setting.userAccount);
+    // var apiUrl =
+    //     Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    // var response =
+    //     await http.post(apiUrl, body: {"userAccount": Setting.userAccount});
+    //
+    // print('Response status : ${response.statusCode}');
+    // print('Response status : ${response.body}');
+    // setState(() {
+    //   TabsDrawer.list = jsonDecode(response.body)["data"];
+    //
+    // });
 
     //加载联系人列表
-    // rootBundle.loadString('assets/data/friends.json').then((value) {
-    //   print(value);
-    //   List list = json.decode(value);
-    //   print(list);
-    //   list.forEach((v) {
-    //     _friends.add(FriendInfo.fromJson(v));
-    //   });
-    //   _handleList(_friends);
-    // });
-    print(TabsDrawer.list);
-
-    TabsDrawer.list.forEach((v) {
-      _friends.add(FriendInfo.fromJson(v));
+    rootBundle.loadString('assets/data/friends.json').then((value) {
+      // print(value);
+      List list = json.decode(value);
+      // print(list);
+      list.forEach((v) {
+        _friends.add(FriendInfo.fromJson(v));
+      });
+      _handleList(_friends);
     });
-    _handleList(_friends);
+    // print(TabsDrawer.list);
+
+    // TabsDrawer.list.forEach((v) {
+    //   _friends.add(FriendInfo.fromJson(v));
+    // });
+    // _handleList(_friends);
   }
 
   void _handleList(List<FriendInfo> list) {

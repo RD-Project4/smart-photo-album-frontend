@@ -52,6 +52,7 @@ dependencies:
   lpinyin: ^2.0.3
   azlistview: ^1.1.1
   qr_flutter: ^4.0.0
+  oktoast: ^3.1.5
 
 dev_dependencies:
   flutter_test:

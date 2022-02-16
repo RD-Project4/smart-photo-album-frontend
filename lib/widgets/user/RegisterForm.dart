@@ -212,13 +212,13 @@ class _RegisterFormState extends State<RegisterForm> {
 
   /// 验证邮箱验证码是否正确
   void _verifyCode() async {
-    print(this._validatecode);
+    print(this._validateCode);
     print(this.email);
     var apiurl =
         Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
     var response = await http.post(apiurl, body: {
       "userEmail": this.email,
-      "emailCode": this._validatecode
+      "emailCode": this._validateCode
     }); //, "userEmail": this.email
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');

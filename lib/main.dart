@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_album/routes/Routes.dart';
+import 'package:oktoast/oktoast.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(OKToast(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {

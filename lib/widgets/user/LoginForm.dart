@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:oktoast/oktoast.dart';
 import 'package:passwordfield/passwordfield.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
@@ -49,8 +51,20 @@ class _LoginFormState extends State<LoginForm> {
 
     var response = await http.post(apiUrl,
         body: {"userAccount": this.account, "userPwd": this.password});
-    // print('Response status : ${response.statusCode}');
-    // print('Response status : ${response.body}');
+
+    var res = jsonDecode(response.body);
+    print(res['status']);
+
+    if (res['status'] == 3) {
+      // 用户已经登录
+
+      print('The user is logged in');
+      showToast(
+        "The user is logged in",
+        textStyle: TextStyle(fontSize: 20)
+      );
+    }
+
     setState(() {
       this._status = jsonDecode(response.body)["status"];
       Setting.state = jsonDecode(response.body)["status"];
@@ -73,7 +87,7 @@ class _LoginFormState extends State<LoginForm> {
         '/',
       ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
     } else {
-      print('jump to login');
+      // print('jump to login');
     }
   }
 
@@ -122,12 +136,12 @@ class _LoginFormState extends State<LoginForm> {
               postData();
             },
           ),
-          Container(
-            child: Text(
-              "${this._msg}",
-              style: TextStyle(color: Colors.red),
-            ),
-          )
+          // Container(
+          //   child: Text(
+          //     "${this._msg}",
+          //     style: TextStyle(color: Colors.red),
+          //   ),
+          // )
         ],
       ),
     );

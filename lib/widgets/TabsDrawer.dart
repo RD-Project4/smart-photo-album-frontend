@@ -17,44 +17,44 @@ class TabsDrawer extends StatefulWidget {
 class _TabsDrawerState extends State<TabsDrawer> {
   @override
   Widget build(BuildContext context) {
-    if (Tabs.loginstate == 1) {
-      return Drawer(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: UserAccountsDrawerHeader(
-                    accountName: Text('welcome'),
-                    accountEmail: Text('please login first'),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf"),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.deepOrangeAccent,
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              'https://www.itying.com/images/flutter/3.png'),
-                          fit: BoxFit.cover),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                child: Icon(Icons.favorite),
-              ),
-              title: Text('Please login first'),
-              onTap: () {
-                Navigator.pushNamed(context, '/login-page');
-              },
-            ),
-          ],
-        ),
-      );
-    }
+    // if (Tabs.loginstate == 1) {
+    //   return Drawer(
+    //     child: Column(
+    //       children: [
+    //         Row(
+    //           children: [
+    //             Expanded(
+    //               child: UserAccountsDrawerHeader(
+    //                 accountName: Text('welcome'),
+    //                 accountEmail: Text('please login first'),
+    //                 currentAccountPicture: CircleAvatar(
+    //                   backgroundImage: NetworkImage(
+    //                       "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf"),
+    //                 ),
+    //                 decoration: BoxDecoration(
+    //                   color: Colors.deepOrangeAccent,
+    //                   image: DecorationImage(
+    //                       image: NetworkImage(
+    //                           'https://www.itying.com/images/flutter/3.png'),
+    //                       fit: BoxFit.cover),
+    //                 ),
+    //               ),
+    //             )
+    //           ],
+    //         ),
+    //         ListTile(
+    //           leading: CircleAvatar(
+    //             child: Icon(Icons.favorite),
+    //           ),
+    //           title: Text('Please login first'),
+    //           onTap: () {
+    //             Navigator.pushNamed(context, '/login-page');
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     return Drawer(
       child: Column(
@@ -80,6 +80,7 @@ class _TabsDrawerState extends State<TabsDrawer> {
               )
             ],
           ),
+
           ListTile(
             leading: CircleAvatar(
               child: Icon(Icons.favorite),
@@ -87,7 +88,15 @@ class _TabsDrawerState extends State<TabsDrawer> {
             title: Text('My Favorite'),
             onTap: () {},
           ),
-          Divider(),
+          ItemDivider(),
+          ListTile(
+            leading: CircleAvatar(
+              child: Icon(Icons.auto_delete_rounded),
+            ),
+            title: Text('Recent Delete'),
+            onTap: () {},
+          ),
+          ItemDivider(),
           ListTile(
             leading: CircleAvatar(
               child: Icon(Icons.people),
@@ -96,29 +105,31 @@ class _TabsDrawerState extends State<TabsDrawer> {
             onTap: () {
               print('you tap my friends');
               print(Setting.userAccount);
-              _friends();
+              // _friends();
               Navigator.pushNamed(context, '/friends');
             },
           ),
-          Divider(),
+          ItemDivider(),
+
           ListTile(
             leading: CircleAvatar(
-              child: Icon(Icons.auto_delete_rounded),
+              child: Icon(Icons.notifications),
             ),
-            title: Text('Recent Delete'),
+            title: Text('Notifications'),
             onTap: () {},
           ),
-          Divider(),
-          ListTile(
-            leading: CircleAvatar(
-              child: Icon(Icons.add_reaction_rounded),
-            ),
-            title: Text('Add Friends!'),
-            onTap: () {
-              Navigator.pushNamed(context, '/add-friends');
-            },
-          ),
-          Divider(),
+          ItemDivider(),
+
+          // ListTile(
+          //   leading: CircleAvatar(
+          //     child: Icon(Icons.add_reaction_rounded),
+          //   ),
+          //   title: Text('Add Friends!'),
+          //   onTap: () {
+          //     Navigator.pushNamed(context, '/add-friends');
+          //   },
+          // ),
+          // Divider(),
         ],
       ),
     );
@@ -127,10 +138,10 @@ class _TabsDrawerState extends State<TabsDrawer> {
   _friends() async {
     print('showing friends');
     print(Setting.userAccount);
-    var apiurl =
+    var apiUrl =
         Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
     var response =
-        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
+        await http.post(apiUrl, body: {"userAccount": Setting.userAccount});
 
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
@@ -138,5 +149,21 @@ class _TabsDrawerState extends State<TabsDrawer> {
       TabsDrawer.list = jsonDecode(response.body)["data"];
       print(TabsDrawer.list);
     });
+  }
+}
+
+class ItemDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 260,
+      child: Divider(
+        color: Colors.grey[300],
+        height: 20,
+        thickness: 1,
+        indent: 1,
+        endIndent: 1,
+      ),
+    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:azlistview/azlistview.dart';
 import 'package:flutter/cupertino.dart';
 
 class FriendInfo extends ISuspensionBean {
-  String name;
+  String userName;
   String? tagIndex;
   String? namePinyin;
 
@@ -17,7 +17,7 @@ class FriendInfo extends ISuspensionBean {
   String? firstLetter;
 
   FriendInfo({
-    required this.name,
+    required this.userName,
     this.tagIndex,
     this.namePinyin,
     this.bgColor,
@@ -28,7 +28,7 @@ class FriendInfo extends ISuspensionBean {
   });
 
   FriendInfo.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
+      : userName = json['userName'],
         img = json['img'],
         id = json['id']?.toString(),
         firstLetter = json['firstLetter'],
@@ -37,7 +37,7 @@ class FriendInfo extends ISuspensionBean {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'name': name,
+        'userName': userName,
         'img': img,
         'firstLetter': firstLetter,
         'tagIndex': tagIndex,
