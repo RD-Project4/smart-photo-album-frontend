@@ -212,10 +212,14 @@ class _RegisterFormState extends State<RegisterForm> {
 
   /// 验证邮箱验证码是否正确
   void _verifyCode() async {
+    print(this._validatecode);
+    print(this.email);
     var apiurl =
         Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
-    var response = await http.post(apiurl,
-        body: {"emailCode": this._validatecode, "userEmail": this.email});
+    var response = await http.post(apiurl, body: {
+      "userEmail": this.email,
+      "emailCode": this._validatecode
+    }); //, "userEmail": this.email
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
@@ -231,8 +235,8 @@ class _RegisterFormState extends State<RegisterForm> {
 
   void _sendCode() {
     // TODO: 对接请求邮箱验证码api
-    // print('you have send code');
-    // print(this.email);
+    print('you have send code');
+    print(this.email);
 
     postData();
     setState(() {
@@ -273,10 +277,10 @@ class _RegisterFormState extends State<RegisterForm> {
     var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/register.do');
 
     var response = await http.post(apiurl, body: {
-      "userAccount": "${this.email}",
-      "userPwd": "${this._password}",
-      "userName": "${this._username}",
-      "userEmail": "${this.email}",
+      "userAccount": this.email,
+      "userPwd": this._password,
+      "userName": this._username,
+      "userEmail": this.email,
       "userPhone": "18857561268"
     });
     print('Response status : ${response.statusCode}');
@@ -288,7 +292,7 @@ class _RegisterFormState extends State<RegisterForm> {
     if (this._status == 0) {
       // Navigator.of(context).pushReplacementNamed('/loginPage');
     } else {
-      Navigator.of(context).pushReplacementNamed('/');
+      Navigator.of(context).pushReplacementNamed('/login-page');
     }
     print(_status);
   }

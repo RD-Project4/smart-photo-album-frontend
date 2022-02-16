@@ -1,33 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/res/listData.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_album/widgets/TabsDrawer.dart';
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:smart_album/widgets/user/LoginForm.dart';
+
 class Setting extends StatefulWidget {
-  final arguments;
-  static int state = 0;
+  // final arguments;
+  static int state = 4;
+
+  static var userId = '';
+  static var userEmail = '';
+  static var userName = '';
+  static var session = '';
+  static var userAccount = '';
   Setting({
     Key? key,
-    this.arguments,
+    // this.arguments,
   }) : super(key: key);
   @override
-  _SettingState createState() => _SettingState(
-        arguments: this.arguments,
-      );
+  _SettingState createState() => _SettingState();
 }
 
 class _SettingState extends State<Setting> {
-  final arguments;
+  // final arguments;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  _SettingState({
-    this.arguments,
-  });
+  // _SettingState({
+  //   this.arguments,
+  // });
 
   bool flag = false;
   IconData changeIcon = Icons.arrow_drop_up_outlined;
@@ -47,6 +50,7 @@ class _SettingState extends State<Setting> {
     });
     if (this._status == 0) {
       print('logut jump to setting');
+      Setting.userId = '';
       Navigator.of(context).pushReplacementNamed('/');
     }
     print(_status);
@@ -54,9 +58,14 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
+    if (Tabs.loginstate == 1) {
+      Setting.userAccount = '';
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Column(
         children: [
@@ -75,11 +84,17 @@ class _SettingState extends State<Setting> {
                 child: Container(
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            'https://www.itying.com/images/flutter/1.png'),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              'https://www.itying.com/images/flutter/1.png'),
+                        ),
                       ),
-                      Text("Username=${arguments['userId']}"),
+                      Text(
+                        "Hi  ${Setting.userName}   !",
+                        style: TextStyle(fontSize: 25),
+                      ),
                     ],
                   ),
 
@@ -132,6 +147,7 @@ class _SettingState extends State<Setting> {
               ),
               onPressed: () {
                 postData();
+                Tabs.loginstate = 1;
               }),
 
           TextButton(

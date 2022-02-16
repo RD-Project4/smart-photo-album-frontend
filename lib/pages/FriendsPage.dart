@@ -1,9 +1,13 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
+import 'package:smart_album/pages/tabs/Setting.dart';
+import 'package:smart_album/widgets/TabsDrawer.dart';
 
 class FriendsPage extends StatefulWidget {
   @override
@@ -24,12 +28,16 @@ class _FriendsPageState extends State<FriendsPage> {
 
   void loadData() async {
     //加载联系人列表
-    rootBundle.loadString('assets/data/friends.json').then((value) {
-      List list = json.decode(value);
-      list.forEach((v) {
-        _friends.add(FriendInfo.fromJson(v));
-      });
-      _handleList(_friends);
+    // rootBundle.loadString('assets/data/friends.json').then((value) {
+    //   List list = json.decode(value);
+    //   list.forEach((v) {
+    //     _friends.add(FriendInfo.fromJson(v));
+    //   });
+    //   _handleList(_friends);
+    // });
+
+    TabsDrawer.list.forEach((v) {
+      _friends.add(FriendInfo.fromJson(v));
     });
   }
 
@@ -73,11 +81,11 @@ class _FriendsPageState extends State<FriendsPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "fkmog",
+              Setting.userName,
               textScaleFactor: 1.2,
             ),
           ),
-          Text("1073638314@qq.com"),
+          Text(Setting.userEmail),
         ],
       ),
     );
@@ -211,7 +219,7 @@ class FriendInfo extends ISuspensionBean {
   });
 
   FriendInfo.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
+      : name = json['UserName'],
         img = json['img'],
         id = json['id']?.toString(),
         firstLetter = json['firstletter'];

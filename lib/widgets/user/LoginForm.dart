@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:passwordfield/passwordfield.dart';
+import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 
 // Create a Form widget.
@@ -29,7 +31,7 @@ class _LoginFormState extends State<LoginForm> {
   String account = '';
   String password = '';
 
-  var userId;
+  var userId = '';
   var userAccount = '';
   var userName = '';
   var userEmail = '';
@@ -53,21 +55,35 @@ class _LoginFormState extends State<LoginForm> {
       this._status = jsonDecode(response.body)["status"];
       Setting.state = jsonDecode(response.body)["status"];
       this._msg = jsonDecode(response.body)["msg"];
-      this.userId = jsonDecode(response.body)["data"]["userId"];
-      this.userAccount = jsonDecode(response.body)["data"]["userAccount"];
-      this.userName = jsonDecode(response.body)["data"]["userName"];
-      this.userEmail = jsonDecode(response.body)["data"]["userEmail"];
-      this.userProfile = jsonDecode(response.body)["data"]["userProfile"];
-      this.userPhone = jsonDecode(response.body)["data"]["userPhone"];
+      // Setting.userId = jsonDecode(response.body)["data"]["userId"];
+      // this.userId = jsonDecode(response.body)["data"]["userId"];
+      this.userAccount = jsonDecode(response.body)["data"];
+      Setting.userAccount = jsonDecode(response.body)["data"];
+      // this.userName = jsonDecode(response.body)["data"]["userName"];
+      // this.userEmail = jsonDecode(response.body)["data"]["userEmail"];
+      // Setting.userEmail = jsonDecode(response.body)["data"]["userEmail"];
+      // this.userProfile = jsonDecode(response.body)["data"]["userProfile"];
+      // this.userPhone = jsonDecode(response.body)["data"]["userPhone"];
     });
+
     if (this._status == 5) {
-      print(' login jump to setting');
-      Navigator.pushNamed(context, '/setting',
-          arguments: {"userId": this.userId, "userEmail": this.userEmail});
+      Tabs.loginstate = 0;
+      Navigator.pushNamed(
+        context,
+        '/',
+      ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
     } else {
       print('jump to login');
     }
   }
+
+  // getsession() async {
+  //   var apiurl =
+  //       Uri.parse('http://124.223.68.12:8233/smartAlbum/getsessionid.do');
+  //   var response = await http.post(apiurl);
+  //   print('Response status : ${response.statusCode}');
+  //   print('Response status : ${response.body}');
+  // }
 
   @override
   Widget build(BuildContext context) {
