@@ -29,6 +29,8 @@ class _LoginFormState extends State<LoginForm> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  FocusNode _accountFocus = FocusNode();
+  FocusNode _passFocus = FocusNode();
 
   String account = '';
   String password = '';
@@ -44,6 +46,8 @@ class _LoginFormState extends State<LoginForm> {
   var _msg = '';
 
   postData() async {
+    _accountFocus.unfocus();
+    _passFocus.unfocus();
     // print('posting data');
     // print(this.account);
     // print(this.password);
@@ -53,16 +57,12 @@ class _LoginFormState extends State<LoginForm> {
         body: {"userAccount": this.account, "userPwd": this.password});
 
     var res = jsonDecode(response.body);
-    print(res['status']);
 
     if (res['status'] == 3) {
-      // 用户已经登录
-
-      print('The user is logged in');
-      showToast(
-        "The user is logged in",
-        textStyle: TextStyle(fontSize: 20)
-      );
+      showToast("The user is logged in", textStyle: TextStyle(fontSize: 20));
+    } else if (res['status'] == 0 || res['status'] == 1) {
+      showToast("Mail or password is incorrect",
+          textStyle: TextStyle(fontSize: 20));
     }
 
     setState(() {
@@ -109,6 +109,7 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), hintText: 'Email'),
+            focusNode: _accountFocus,
             onChanged: (value) {
               setState(() {
                 account = value;
@@ -118,9 +119,11 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
             height: 20,
           ),
-          PasswordField(
-            passwordConstraint: '.*',
-            border: PasswordBorder(border: OutlineInputBorder()),
+          TextFormField(
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(), hintText: 'Password'),
+            focusNode: _passFocus,
+            obscureText: true,
             onChanged: (v) {
               setState(() {
                 password = v;
