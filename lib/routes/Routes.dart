@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:smart_album/pages/user/PassResetPage.dart';
 import 'package:smart_album/pages/user/RegisterPage.dart';
+import 'package:smart_album/pages/AddFriends.dart';
+
 import 'package:smart_album/pages/friends/FriendsPage.dart';
 import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
 
@@ -20,11 +23,10 @@ final routes = {
   '/login-page': (context) => LoginPage(),
   '/register-page': (context) => RegisterPage(),
   '/pass-reset': (context) => PassResetPage(),
-  '/setting': (context, {arguments}) => Setting(
-        arguments: arguments,
-      ),
+  '/setting': (context) => Setting(),
   '/main': (context) => Tabs(),
   '/friends': (context) => FriendsPage(),
+  '/add-friends': (context) => AddFriends(),
   '/friends-select': (context) => FriendsSelectPage()
 };
 //固定写法

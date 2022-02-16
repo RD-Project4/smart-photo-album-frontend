@@ -1,9 +1,13 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
+import 'package:smart_album/pages/tabs/Setting.dart';
+import 'package:smart_album/widgets/TabsDrawer.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 import 'package:smart_album/util/DialogUtil.dart';
 
@@ -25,20 +29,41 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 
   void loadData() async {
-    //加载联系人列表
-    rootBundle.loadString('assets/data/friends.json').then((value) {
-      List list = json.decode(value);
-      list.forEach((v) {
-        _friends.add(FriendInfo.fromJson(v));
-      });
-      _handleList(_friends);
+    print('showing friends');
+    print(Setting.userAccount);
+    var apiurl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    var response =
+        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
+
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      TabsDrawer.list = jsonDecode(response.body)["data"];
     });
+
+    //加载联系人列表
+    // rootBundle.loadString('assets/data/friends.json').then((value) {
+    //   print(value);
+    //   List list = json.decode(value);
+    //   print(list);
+    //   list.forEach((v) {
+    //     _friends.add(FriendInfo.fromJson(v));
+    //   });
+    //   _handleList(_friends);
+    // });
+    print(TabsDrawer.list);
+
+    TabsDrawer.list.forEach((v) {
+      _friends.add(FriendInfo.fromJson(v));
+    });
+    _handleList(_friends);
   }
 
   void _handleList(List<FriendInfo> list) {
     if (list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin = PinyinHelper.getPinyinE(list[i].name);
+      String pinyin = PinyinHelper.getPinyinE(list[i].userName);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -54,7 +79,7 @@ class _FriendsPageState extends State<FriendsPage> {
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
     // add header.
-    _friends.insert(0, FriendInfo(name: 'header', tagIndex: '↑'));
+    _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑'));
 
     setState(() {});
   }
@@ -75,11 +100,11 @@ class _FriendsPageState extends State<FriendsPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "fkmog",
+              Setting.userName,
               textScaleFactor: 1.2,
             ),
           ),
-          Text("1073638314@qq.com"),
+          Text(Setting.userEmail),
         ],
       ),
     );
@@ -121,11 +146,11 @@ class _FriendsPageState extends State<FriendsPage> {
           leading: CircleAvatar(
             backgroundColor: Colors.blue[700],
             child: Text(
-              model.name[0],
+              model.userName[0],
               style: TextStyle(color: Colors.white),
             ),
           ),
-          title: Text(model.name),
+          title: Text(model.userName),
           onTap: () {
             print("OnItemClick: $model");
             // Navigator.pop(context, model);
@@ -276,7 +301,7 @@ class _AddFriendState extends State<AddFriend> {
             Container(
               padding: EdgeInsets.only(left: 15),
               child:
-                  TextButton(onPressed: () {}, child: Text('Send invitation')),
+              TextButton(onPressed: () {}, child: Text('Send invitation')),
             ),
           ],
         );
@@ -291,4 +316,5 @@ class _AddFriendState extends State<AddFriend> {
       }
     });
   }
+
 }
