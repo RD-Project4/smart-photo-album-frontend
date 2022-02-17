@@ -20,6 +20,7 @@ class PhotoFolderGridView<T extends Map> extends StatelessWidget {
           folderList[tag]!.add(photo);
         }
     });
+    folderList.removeWhere((key, value) => value.length <= 1);
 
     return GridView.count(
         crossAxisCount: 2,
