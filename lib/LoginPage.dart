@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_album/widgets/HiddenAppbar.dart';
-import 'package:smart_album/widgets/LoginForm.dart';
+import 'package:smart_album/widgets/user/LoginForm.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -22,9 +22,12 @@ class LoginPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Image.asset(
-                        'images/logo.png',
-                        width: 60,
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 15),
+                        child: Image.asset(
+                          'images/logo.png',
+                          width: 90,
+                        ),
                       ),
                       Text(
                         "Smart Album",
@@ -45,7 +48,8 @@ class LoginPage extends StatelessWidget {
                     children: [
                       TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/register-page');
+                            Navigator.pushNamed(
+                                context, '/register-page'); //register-page
                           },
                           child: Text('Registry')),
                       Text('|'),

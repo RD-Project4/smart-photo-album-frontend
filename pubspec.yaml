@@ -50,6 +50,10 @@ dependencies:
   tflite_flutter_helper: ^0.3.1
   rainbow_color: ^2.0.1
   async: ^2.8.2
+  passwordfield: ^0.1.0
+  lpinyin: ^2.0.3
+  azlistview: ^1.1.1
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +80,8 @@ flutter:
     - images/
     - images/login_page/
     - assets/
+    - assets/data/
+    - assets/images/
 
 
   # To add assets to your application, add an assets section, like this:

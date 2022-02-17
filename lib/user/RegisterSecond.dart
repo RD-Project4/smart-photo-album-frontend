@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@Deprecated('使用RegisterPage')
 class RegisterSecondPage extends StatelessWidget {
   const RegisterSecondPage({Key? key}) : super(key: key);
 

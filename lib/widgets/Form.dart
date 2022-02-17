@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // Create a Form widget.
+@Deprecated("使用LoginPage")
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -26,8 +27,8 @@ class MyCustomFormState extends State<LoginForm> {
   late String account;
   late String password;
 
-  int _status = 4;
-  String _msg = '';
+  var _status = 4;
+  var _msg = '';
 
   getData() async {
     print('getting data');
