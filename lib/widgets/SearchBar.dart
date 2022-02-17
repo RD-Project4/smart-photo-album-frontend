@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:smart_album/SearchResult.dart';
-import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
-
-import 'AccountButton.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({Key? key}) : super(key: key);
@@ -16,6 +12,7 @@ class SearchBar extends StatelessWidget {
 
     return FloatingSearchBar(
       hint: '',
+      isScrollControlled: true,
       backdropColor: Colors.white,
       scrollPadding: EdgeInsets.zero,
       transitionDuration: const Duration(milliseconds: 300),
