@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/util/ListUtil.dart';
 import 'package:smart_album/widgets/MultiChoiceChip.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -20,7 +21,7 @@ class SearchResult extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _Title("Category"),
-            MultiChoiceChip(labels),
+            MultiChoiceChip(ListUtil.deduplication(labels)),
             _Title("Date"),
             SfDateRangePicker(
               selectionMode: DateRangePickerSelectionMode.multiRange,
