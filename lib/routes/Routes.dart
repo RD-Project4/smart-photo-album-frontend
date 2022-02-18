@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_album/pages/ScannerPage.dart';
 
 import 'package:smart_album/pages/user/PassResetPage.dart';
 import 'package:smart_album/pages/user/RegisterPage.dart';
@@ -27,7 +28,8 @@ final routes = {
   '/main': (context) => Tabs(),
   '/friends': (context) => FriendsPage(),
   '/add-friends': (context) => AddFriends(),
-  '/friends-select': (context) => FriendsSelectPage()
+  '/friends-select': (context) => FriendsSelectPage(),
+  '/scanner': (context) => ScannerPage()
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

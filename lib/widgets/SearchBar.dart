@@ -29,13 +29,18 @@ class SearchBar extends StatelessWidget {
         // Call your model, bloc, controller here.
       },
       clearQueryOnClose: true,
-      // actions: [
-      //   FloatingSearchBarAction(
-      //     showIfOpened: false,
-      //     showIfClosed: true,
-      //     child: AccountButton(),
-      //   )
-      // ],
+      actions: [
+        FloatingSearchBarAction(
+          showIfOpened: false,
+          showIfClosed: true,
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/scanner');
+            },
+            icon: Icon(Icons.qr_code_scanner),
+          ),
+        )
+      ],
       // leadingActions: [
       //   FloatingSearchBarAction(
       //     showIfOpened: true,
