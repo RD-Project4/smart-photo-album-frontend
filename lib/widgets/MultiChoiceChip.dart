@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MultiChoiceChip extends StatefulWidget {
   final List<String> reportList;
-  final Function(List<String>)? onSelectionChanged;
+  final Function(Set<String>)? onSelectionChanged;
 
   MultiChoiceChip(this.reportList, {this.onSelectionChanged});
 
@@ -11,10 +11,10 @@ class MultiChoiceChip extends StatefulWidget {
 }
 
 class _MultiSelectChipState extends State<MultiChoiceChip> {
-  List<String> selectedChoices = [];
+  Set<String> selectedChoices = Set();
 
   _buildChoiceList() {
-    List<Widget> choices = [];
+    Set<Widget> choices = Set();
     widget.reportList.forEach((item) {
       choices.add(Container(
         padding: const EdgeInsets.all(2.0),

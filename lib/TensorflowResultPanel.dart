@@ -40,36 +40,9 @@ class TensorflowResultPanel {
                                   scrollDirection: Axis.vertical,
                                   children: (snapshot.data as List<Category>)
                                       .take(5)
-                                      .where((element) => element.score > 100)
-                                      .map((element) => Stack(
-                                            children: [
-                                              Positioned(
-                                                  top: 0,
-                                                  bottom: 0,
-                                                  child: Container(
-                                                      constraints:
-                                                          BoxConstraints(
-                                                              maxWidth: 400 *
-                                                                  element
-                                                                      .score /
-                                                                  100000),
-                                                      decoration: BoxDecoration(
-                                                          color: Colors
-                                                              .lightBlueAccent,
-                                                          shape: BoxShape
-                                                              .rectangle))),
-                                              ListTile(
-                                                title: Text(element.label),
-                                                onTap: () =>
-                                                    Navigator.pushNamed(
-                                                        context, '/folderPage',
-                                                        arguments:
-                                                            FolderPageArguments(
-                                                                title: element
-                                                                    .label)),
-                                              )
-                                            ],
-                                          ))
+                                      .where((element) => element.score > 0.1)
+                                      .map((element) =>
+                                          createLabel(context, element))
                                       .toList())
                               : Stack(children: [
                                   Positioned(
@@ -91,7 +64,9 @@ class TensorflowResultPanel {
                             return (snapshot.connectionState ==
                                         ConnectionState.done &&
                                     snapshot.data != null)
-                                ? Text(snapshot.data)
+                                ? Text((snapshot.data as String).isNotEmpty
+                                    ? snapshot.data
+                                    : "No text was found")
                                 : Stack(children: [
                                     Positioned(
                                         top: 0,
@@ -101,6 +76,32 @@ class TensorflowResultPanel {
                                   ]);
                           })
                     ])))));
+  }
+
+  static Widget createLabel(BuildContext context, Category element) {
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: FractionallySizedBox(
+              widthFactor: element.score,
+              heightFactor: 1.0,
+              alignment: Alignment.centerLeft,
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: Colors.lightBlueAccent,
+                      shape: BoxShape.rectangle))),
+        ),
+        ListTile(
+          title: Text(element.label),
+          onTap: () => Navigator.pushNamed(context, '/folderPage',
+              arguments: FolderPageArguments(title: element.label)),
+        )
+      ],
+    );
   }
 
   // @override

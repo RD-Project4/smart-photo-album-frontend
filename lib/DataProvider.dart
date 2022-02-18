@@ -21,8 +21,8 @@ class DataProvider {
         "entity": entity,
         "path": path,
         "labels": (await TensorflowProvider.recognizeObjectInFile(path))
-            .where((element) => element.score > 1000)
             .take(5)
+            .where((element) => element.score > 0.01)
             .map((element) => element.label)
             .toList()
       });
