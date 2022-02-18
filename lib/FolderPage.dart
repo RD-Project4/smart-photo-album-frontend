@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:smart_album/FakeData.dart';
+import 'package:smart_album/DataProvider.dart';
 
 class FolderPageArguments {
   final String title;

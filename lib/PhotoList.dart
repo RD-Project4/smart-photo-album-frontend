@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:smart_album/FakeData.dart';
+import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';

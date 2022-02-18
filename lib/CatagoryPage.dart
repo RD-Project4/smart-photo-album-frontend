@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_album/FakeData.dart';
+import 'package:smart_album/DataProvider.dart';
 
 import 'FolderPage.dart';
 import 'PhotoFolderGridView.dart';

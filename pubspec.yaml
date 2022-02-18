@@ -58,6 +58,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   sqflite: ^2.0.2
   google_ml_kit: ^0.7.3
+  syncfusion_flutter_datepicker: ^19.4.52
 
 dev_dependencies:
   flutter_test:
