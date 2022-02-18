@@ -8,6 +8,7 @@ import 'package:smart_album/pages/AddFriends.dart';
 import 'package:smart_album/pages/friends/FriendsPage.dart';
 import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
 
+import '../FolderPage.dart';
 import '../HomePage.dart';
 import '../pages/Tabs.dart';
 
@@ -30,6 +31,7 @@ final routes = {
   '/add-friends': (context) => AddFriends(),
   '/friends-select': (context) => FriendsSelectPage(),
   '/scanner': (context) => ScannerPage()
+  '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments),
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {
