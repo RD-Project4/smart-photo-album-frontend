@@ -30,7 +30,7 @@ final routes = {
   '/friends': (context) => FriendsPage(),
   '/add-friends': (context) => AddFriends(),
   '/friends-select': (context) => FriendsSelectPage(),
-  '/scanner': (context) => ScannerPage()
+  '/scanner': (context) => ScannerPage(),
   '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments),
 };
 //固定写法
