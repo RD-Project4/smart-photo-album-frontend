@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_album/FakeData.dart';
+import 'package:smart_album/DataProvider.dart';
 
-import 'PhotoFolderGridVIew.dart';
+import 'FolderPage.dart';
+import 'PhotoFolderGridView.dart';
 
 class CategoryPage extends StatelessWidget {
   @override
@@ -22,9 +23,15 @@ class CategoryPage extends StatelessWidget {
             isScrollable: true,
           ),
           body: TabBarView(children: [
-            PhotoFolderGridView([data[0], data[1], data[2], data[3]]),
-            PhotoFolderGridView([data[4], data[5]]),
-            PhotoFolderGridView([data[0]])
+            PhotoFolderGridView(
+                photoList: data,
+                onTap: (entry) {
+                  Navigator.pushNamed(context, '/folderPage',
+                      arguments: FolderPageArguments(
+                          title: entry.key, photoList: entry.value));
+                }),
+            Container(),
+            Container()
           ])),
     );
   }

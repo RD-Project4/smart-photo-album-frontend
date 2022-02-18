@@ -69,11 +69,16 @@ class _PhotoViewState extends State<PhotoView> {
             Positioned(
               bottom: 0,
               left: 0,
-              child: widget.descBuilder != null
-                  ? widget.descBuilder!(widget.galleryItems[currentIndex])
-                  : Container(),
-            ),
-            Positioned(child: PhotoToolBar(photoIndex: currentIndex))
+              right: 0,
+              child: Column(
+                children: [
+                  widget.descBuilder != null
+                      ? widget.descBuilder!(widget.galleryItems[currentIndex])
+                      : Container(),
+                  PhotoToolBar(photoIndex: currentIndex)
+                ],
+              ),
+            )
           ],
         ),
       ),

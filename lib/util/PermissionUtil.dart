@@ -12,7 +12,6 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.camera,
     ].request();
-
     return permission[Permission.camera] == PermissionStatus.granted;
   }
 
@@ -26,7 +25,6 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.photos,
     ].request();
-
     return permission[Permission.photos] == PermissionStatus.granted;
   }
 
@@ -40,8 +38,7 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.speech,
     ].request();
-
-    return await checkSpeechPermission();
+    return permission[Permission.speech] == PermissionStatus.granted;
   }
 
   /// 检查文件权限
@@ -54,7 +51,7 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.storage,
     ].request();
-    return await checkStoragePermission();
+    return permission[Permission.storage] == PermissionStatus.granted;
   }
 
   /// 检查定位权限
@@ -67,8 +64,7 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.location,
     ].request();
-
-    return await checkLocationPermission();
+    return permission[Permission.location] == PermissionStatus.granted;
   }
 
   /// 检查手机权限
@@ -81,8 +77,7 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.phone,
     ].request();
-
-    return await checkPhonePermission();
+    return permission[Permission.phone] == PermissionStatus.granted;
   }
 
   /// 检查通知权限
@@ -95,7 +90,6 @@ class PermissionUtil {
     Map<Permission, PermissionStatus> permission = await [
       Permission.notification,
     ].request();
-
-    return await checkNotificationPermission();
+    return permission[Permission.notification] == PermissionStatus.granted;
   }
 }
