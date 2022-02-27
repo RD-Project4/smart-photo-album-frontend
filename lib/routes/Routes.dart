@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_album/Demo.dart';
 import 'package:smart_album/RegisterPage.dart';
 import 'package:smart_album/pages/AddFriends.dart';
 
@@ -32,7 +33,8 @@ final routes = {
   '/main': (context) => Tabs(),
   '/friends': (context) => FriendsPage(),
   '/add-friends': (context) => AddFriends(),
-  '/friends-select': (context) => FriendsSelectPage()
+  '/friends-select': (context) => FriendsSelectPage(),
+  '/demo': (context) => MyHomePage()
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

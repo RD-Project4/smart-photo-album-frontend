@@ -39,9 +39,8 @@ class _SettingState extends State<Setting> {
 
   postData() async {
     var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
-
     var response =
-        await http.post(apiurl, body: {"userAccount": "administrator"});
+        await http.post(apiurl, body: {"userAccount": "1073638314@qq.com"});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {

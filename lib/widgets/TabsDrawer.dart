@@ -12,6 +12,7 @@ class TabsDrawer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _TabsDrawerState();
   static List list = [];
+  static String friendEmail = '';
 }
 
 class _TabsDrawerState extends State<TabsDrawer> {

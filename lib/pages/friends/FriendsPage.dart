@@ -34,7 +34,6 @@ class _FriendsPageState extends State<FriendsPage> {
         Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
     var response =
         await http.post(apiurl, body: {"userAccount": Setting.userAccount});
-
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
@@ -152,6 +151,7 @@ class _FriendsPageState extends State<FriendsPage> {
           title: Text(model.userName),
           onTap: () {
             print("OnItemClick: $model");
+
             // Navigator.pop(context, model);
           },
         )
@@ -222,6 +222,7 @@ class _FriendsPageState extends State<FriendsPage> {
 
 class FriendInfo extends ISuspensionBean {
   String userName;
+  String? userEmail;
   String? tagIndex;
   String? userNamePinyin;
 
@@ -234,6 +235,7 @@ class FriendInfo extends ISuspensionBean {
 
   FriendInfo({
     required this.userName,
+    this.userEmail,
     this.tagIndex,
     this.userNamePinyin,
     this.bgColor,
@@ -245,6 +247,7 @@ class FriendInfo extends ISuspensionBean {
 
   FriendInfo.fromJson(Map<String, dynamic> json)
       : userName = json['userName'],
+        userEmail = json['userEmail'],
         img = json['img'],
         id = json['id']?.toString(),
         firstLetter = json['firstletter'];
@@ -252,6 +255,7 @@ class FriendInfo extends ISuspensionBean {
   Map<String, dynamic> toJson() => {
 //        'id': id,
         'userName': userName,
+        'userEmail': userEmail,
         // 'img': img,
 //        'firstletter': firstletter,
 //        'tagIndex': tagIndex,

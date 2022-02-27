@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
 import 'package:smart_album/widgets/PhotoToolBar.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 
@@ -60,7 +61,7 @@ class ShareUtil {
 
   static void shareToEveryone(BuildContext context) {
     // TODO: 从api获取分享链接并赋值给shareUrl
-    var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
+    var shareUrl = FriendsSelectPage.url;
     _showLink(context, shareUrl);
   }
 
@@ -68,7 +69,7 @@ class ShareUtil {
     print(friends);
 
     // TODO: 从api获取分享链接并赋值给shareUrl
-    var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
+    var shareUrl = FriendsSelectPage.url;
     _showLink(context, shareUrl);
   }
 
