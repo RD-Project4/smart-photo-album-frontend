@@ -9,6 +9,7 @@ import 'package:lpinyin/lpinyin.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/TabsDrawer.dart';
 import 'package:smart_album/model/FriendInfo.dart';
+import 'package:smart_album/util/DialogUtil.dart';
 
 class FriendsPage extends StatefulWidget {
   @override
@@ -39,18 +40,17 @@ class _FriendsPageState extends State<FriendsPage> {
     setState(() {
       TabsDrawer.list = jsonDecode(response.body)["data"];
     });
-
     //加载联系人列表
     // rootBundle.loadString('assets/data/friends.json').then((value) {
-    //   print(value);
+    //   // print(value);
     //   List list = json.decode(value);
-    //   print(list);
+    //   // print(list);
     //   list.forEach((v) {
     //     _friends.add(FriendInfo.fromJson(v));
     //   });
     //   _handleList(_friends);
     // });
-    print(TabsDrawer.list);
+    // print(TabsDrawer.list);
 
     TabsDrawer.list.forEach((v) {
       _friends.add(FriendInfo.fromJson(v));
@@ -108,7 +108,7 @@ class _FriendsPageState extends State<FriendsPage> {
     );
   }
 
-  /// 悬停效果
+  /// 首字母分割线
   Widget _buildSusWidget(String susTag) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -138,7 +138,7 @@ class _FriendsPageState extends State<FriendsPage> {
       children: <Widget>[
         Offstage(
           offstage: model.isShowSuspension != true,
-          child: _buildSusWidget(susTag),
+          child: model.isShowSuspension ? _buildSusWidget(susTag) : Container(),
         ),
         ListTile(
           leading: CircleAvatar(
@@ -166,6 +166,18 @@ class _FriendsPageState extends State<FriendsPage> {
         border: Border.all(color: Colors.grey[300]!, width: .5));
   }
 
+  void addFriend() {
+    DialogUtil.showCustomDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AddFriend(
+          buildItemFn: _buildListItem,
+          friends: _friends,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,11 +192,7 @@ class _FriendsPageState extends State<FriendsPage> {
           ),
           elevation: 0,
           actions: [
-            IconButton(
-                onPressed: () {
-                  print('add friends');
-                },
-                icon: Icon(Icons.person_add))
+            IconButton(onPressed: addFriend, icon: Icon(Icons.person_add))
           ],
         ),
         body: AzListView(
@@ -220,52 +228,91 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 }
 
-class FriendInfo extends ISuspensionBean {
-  String userName;
-  String? userEmail;
-  String? tagIndex;
-  String? userNamePinyin;
+class AddFriend extends StatefulWidget {
+  final buildItemFn;
+  final List<FriendInfo> friends; // 临时变量，在对接接口需删除
 
-  Color? bgColor;
-  IconData? iconData;
-
-  String? img;
-  String? id;
-  String? firstLetter;
-
-  FriendInfo({
-    required this.userName,
-    this.userEmail,
-    this.tagIndex,
-    this.userNamePinyin,
-    this.bgColor,
-    this.iconData,
-    this.img,
-    this.id,
-    this.firstLetter,
-  });
-
-  FriendInfo.fromJson(Map<String, dynamic> json)
-      : userName = json['userName'],
-        userEmail = json['userEmail'],
-        img = json['img'],
-        id = json['id']?.toString(),
-        firstLetter = json['firstletter'];
-
-  Map<String, dynamic> toJson() => {
-//        'id': id,
-        'userName': userName,
-        'userEmail': userEmail,
-        // 'img': img,
-//        'firstletter': firstletter,
-//        'tagIndex': tagIndex,
-//        'userNamePinyin': userNamePinyin,
-//        'isShowSuspension': isShowSuspension
-      };
+  AddFriend({Key? key, this.buildItemFn, required this.friends})
+      : super(key: key);
 
   @override
-  String getSuspensionTag() => tagIndex!;
+  State<StatefulWidget> createState() => _AddFriendState();
+}
+
+class _AddFriendState extends State<AddFriend> {
+  String _newFriendEmail = "";
+  Widget? searchRes;
 
   @override
-  String toString() => json.encode(this);
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Add new friend"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), hintText: 'Friend\'s email'),
+            onChanged: (val) {
+              print(val);
+              setState(() {
+                _newFriendEmail = val;
+              });
+            },
+          ),
+          searchRes ?? Container(),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Colors.red),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          child: Text(
+            "Search",
+          ),
+          onPressed: _newFriendEmail != "" ? searchFriend : null,
+        ),
+      ],
+    );
+  }
+
+  void searchFriend() {
+    print(_newFriendEmail);
+
+    // TODO: 从api获取输入的email所对应的用户，并赋值给_model，这里暂时用friends列表中的一项代替
+    FriendInfo _model = FriendInfo.copy(widget.friends[1]);
+    _model.isShowSuspension = false;
+
+    setState(() {
+      if (_model != null) {
+        // 输入的email有对应的用户
+        // TODO: 处理搜索的用户已在好友列表的情况
+
+        searchRes = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            widget.buildItemFn(_model),
+            Container(
+              padding: EdgeInsets.only(left: 15),
+              child:
+                  TextButton(onPressed: () {}, child: Text('Send invitation')),
+            ),
+          ],
+        );
+      } else {
+        searchRes = Container(
+          width: double.infinity,
+          child: Text(
+            "User does not exist",
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+      }
+    });
+  }
 }

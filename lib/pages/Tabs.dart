@@ -90,20 +90,22 @@ class _TabsState extends State<Tabs> {
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      Tabs.loginstate = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-      this.userId = jsonDecode(response.body)["data"]["userId"];
-      this.userAccount = jsonDecode(response.body)["data"]["userAccount"];
-      this.userName = jsonDecode(response.body)["data"]["userName"];
-      Setting.userName = jsonDecode(response.body)["data"]["userName"];
-      this.userEmail = jsonDecode(response.body)["data"]["userEmail"];
-      this.userProfile = jsonDecode(response.body)["data"]["userProfile"];
-      this.userPhone = jsonDecode(response.body)["data"]["userPhone"];
+      var res = jsonDecode(response.body);
+      var resData = res["data"];
+      this._status = res["status"];
+      Tabs.loginstate = resData["status"];
+      this._msg = res["msg"];
+      this.userId = resData["userId"];
+      this.userAccount = resData["userAccount"];
+      this.userName = resData["userName"];
+      Setting.userName = resData["userName"];
+      this.userEmail = resData["userEmail"];
+      this.userProfile = resData["userProfile"];
+      this.userPhone = resData["userPhone"];
 
-      Setting.userId = jsonDecode(response.body)["data"]["userId"];
-      Setting.userEmail = jsonDecode(response.body)["data"]["userEmail"];
-      print(Tabs.loginstate);
+      Setting.userId = resData["userId"];
+      Setting.userEmail = resData["userEmail"];
+      // print(Tabs.loginstate);
     });
   }
 }

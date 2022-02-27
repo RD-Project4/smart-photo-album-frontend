@@ -1,19 +1,19 @@
 import 'dart:io';
 
 import 'package:azlistview/azlistview.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 
 import 'PhotoView.dart';
-import 'package:collection/collection.dart';
-
 import 'util/Global.dart';
 import 'util/PermissionUtil.dart';
 
@@ -39,7 +39,9 @@ class _PhotoListState extends State<PhotoList> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    photos = await _loadPhotos() ?? [];
+    photos = await _loadPhotos();
+
+    DataProvider.setElements(photos);
 
     setState(() {
       isReady = true;
@@ -100,7 +102,7 @@ class _PhotoListState extends State<PhotoList> {
         : Scaffold();
   }
 
-  Future<List?> _loadPhotos() async {
+  Future<List<AssetEntity>> _loadPhotos() async {
     if (!(await PermissionUtil.checkStoragePermission())) {
       var res = await PermissionUtil.requestStoragePermission();
       if (res == false) {
@@ -112,18 +114,7 @@ class _PhotoListState extends State<PhotoList> {
     List<AssetPathEntity> list =
         await PhotoManager.getAssetPathList(onlyAll: true);
 
-    var imgList;
-    await Future.forEach(list, (e) async {
-      // 遍历图片文件夹
-      e = e as AssetPathEntity;
-
-      if (e.name == "Recent") {
-        // 只处理名为Recent的文件夹（后期可能处理其他的）
-        imgList = await e.assetList;
-      }
-    });
-    print(imgList);
-    return imgList;
+    return list.length > 0 ? (await list[0].assetList) : [];
   }
 
   void _open(BuildContext context, List elements, final int index) {
@@ -143,14 +134,6 @@ class _PhotoListState extends State<PhotoList> {
                 return FileImage(
                     File(Global.ROOT_PATH + item.relativePath + item.title));
               },
-              descBuilder: (item) => Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Wrap(
-                    spacing: 10,
-                    // children: (item['tag'] as List<String>)
-                    //     .map((element) => Chip(label: Text(element)))
-                    //     .toList(),
-                  )),
               galleryItems: elements,
               backgroundDecoration: const BoxDecoration(
                 color: Colors.black,

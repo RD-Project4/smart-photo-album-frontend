@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:oktoast/oktoast.dart';
 import 'package:passwordfield/passwordfield.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
@@ -27,6 +29,8 @@ class _LoginFormState extends State<LoginForm> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  FocusNode _accountFocus = FocusNode();
+  FocusNode _passFocus = FocusNode();
 
   String account = '';
   String password = '';
@@ -42,15 +46,25 @@ class _LoginFormState extends State<LoginForm> {
   var _msg = '';
 
   postData() async {
-    print('posting data');
-    print(this.account);
-    print(this.password);
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
+    _accountFocus.unfocus();
+    _passFocus.unfocus();
+    // print('posting data');
+    // print(this.account);
+    // print(this.password);
+    var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
 
-    var response = await http.post(apiurl,
+    var response = await http.post(apiUrl,
         body: {"userAccount": this.account, "userPwd": this.password});
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
+
+    var res = jsonDecode(response.body);
+
+    if (res['status'] == 3) {
+      showToast("The user is logged in", textStyle: TextStyle(fontSize: 20));
+    } else if (res['status'] == 0 || res['status'] == 1) {
+      showToast("Mail or password is incorrect",
+          textStyle: TextStyle(fontSize: 20));
+    }
+
     setState(() {
       this._status = jsonDecode(response.body)["status"];
       Setting.state = jsonDecode(response.body)["status"];
@@ -73,7 +87,7 @@ class _LoginFormState extends State<LoginForm> {
         '/',
       ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
     } else {
-      print('jump to login');
+      // print('jump to login');
     }
   }
 
@@ -95,6 +109,7 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             decoration: const InputDecoration(
                 border: OutlineInputBorder(), hintText: 'Email'),
+            focusNode: _accountFocus,
             onChanged: (value) {
               setState(() {
                 account = value;
@@ -104,9 +119,11 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
             height: 20,
           ),
-          PasswordField(
-            passwordConstraint: '.*',
-            border: PasswordBorder(border: OutlineInputBorder()),
+          TextFormField(
+            decoration: const InputDecoration(
+                border: OutlineInputBorder(), hintText: 'Password'),
+            focusNode: _passFocus,
+            obscureText: true,
             onChanged: (v) {
               setState(() {
                 password = v;
@@ -122,69 +139,17 @@ class _LoginFormState extends State<LoginForm> {
               postData();
             },
           ),
-          Container(
-            child: Text(
-              "${this._msg}",
-              style: TextStyle(color: Colors.red),
-            ),
-          )
+          // Container(
+          //   child: Text(
+          //     "${this._msg}",
+          //     style: TextStyle(color: Colors.red),
+          //   ),
+          // )
         ],
       ),
     );
   }
 }
-
-// class LoginButton extends StatefulWidget {
-//   final bool ableToLogin;
-//   final String password;
-//   final String account;
-//
-//   LoginButton(
-//       {Key? key,
-//       required this.ableToLogin,
-//       required this.account,
-//       required this.password})
-//       : super(key: key);
-//
-//   @override
-//   _LoginButtonState createState() => _LoginButtonState();
-// }
-//
-// class _LoginButtonState extends State<LoginButton> {
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//         onTap: () {
-//           print(widget.ableToLogin);
-//           print(widget.account);
-//           print(widget.password);
-//         },
-//         child: Stack(
-//           alignment: Alignment.center,
-//           children: [
-//             widget.ableToLogin
-//                 ? Positioned(
-//                     child: CircleAvatar(
-//                       radius: 40,
-//                       backgroundImage:
-//                           AssetImage('images/login_page/login_btn_bg2.gif'),
-//                     ),
-//                   )
-//                 : Positioned(
-//                     child: CircleAvatar(
-//                     radius: 40,
-//                     backgroundColor: Colors.grey,
-//                   )),
-//             Positioned(
-//                 child: Icon(
-//               Icons.arrow_forward_ios,
-//               color: Colors.white,
-//             ))
-//           ],
-//         ));
-//   }
-// }
 
 class LoginButton extends StatelessWidget {
   final bool ableToLogin;

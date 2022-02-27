@@ -31,7 +31,9 @@ class FriendInfo extends ISuspensionBean {
       : userName = json['userName'],
         img = json['img'],
         id = json['id']?.toString(),
-        firstLetter = json['firstletter'];
+        firstLetter = json['firstLetter'],
+        tagIndex = json['tagIndex'],
+        userNamePinyin = json['userNamePinyin'];
 
   Map<String, dynamic> toJson() => {
 //        'id': id,
@@ -43,8 +45,12 @@ class FriendInfo extends ISuspensionBean {
 //        'isShowSuspension': isShowSuspension
       };
 
+  static FriendInfo copy(FriendInfo model) {
+    return FriendInfo.fromJson(model.toJson());
+  }
+
   @override
-  String getSuspensionTag() => tagIndex!;
+  String getSuspensionTag() => tagIndex ?? "";
 
   @override
   String toString() => json.encode(this);
