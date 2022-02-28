@@ -6,4 +6,9 @@ class ListUtil {
     temp.addAll(list);
     return list1.length == (list1.length + list2.length + temp.length) / 3;
   }
+
+  /// 数组去重
+  static List<T> deduplication<T>(List<T> list) {
+    return list.toSet().toList();
+  }
 }
