@@ -26,12 +26,12 @@ class _AddFriendsState extends State<AddFriends> {
   String account = '';
   String password = '';
 
-  var userId = '';
-  var userAccount = '';
-  var userName = '';
-  var userEmail = '';
-  var userProfile = '';
-  var userPhone = '';
+  // var userId = '';
+  // var userAccount = '';
+  // var userName = '';
+  // var userEmail = '';
+  // var userProfile = '';
+  // var userPhone = '';
 
   var _status = 4;
   var _msg = '';

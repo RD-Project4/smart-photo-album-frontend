@@ -243,6 +243,29 @@ class _AddFriendState extends State<AddFriend> {
   String _newFriendEmail = "";
   Widget? searchRes;
 
+  _addFriend() async {
+    var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
+    var response = await http.post(apiUrl, body: {
+      "userAccount": Setting.userAccount, //自己的邮箱
+      "userEmail": _newFriendEmail //对方的邮箱
+    });
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    Navigator.of(context).pop();
+    // setState(() {
+    //   this._status = jsonDecode(response.body)["status"];
+    //   this._msg = jsonDecode(response.body)["msg"];
+    // });
+    // if (this._status == 0) {
+    //   Navigator.pushNamed(
+    //     context,
+    //     '/',
+    //   ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
+    // } else {
+    //   print('jump to addfriends');
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -273,7 +296,7 @@ class _AddFriendState extends State<AddFriend> {
         ),
         TextButton(
           child: Text(
-            "Search",
+            "Add", // 临时处理，最后应改为Search
           ),
           onPressed: _newFriendEmail != "" ? searchFriend : null,
         ),
