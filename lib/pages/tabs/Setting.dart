@@ -17,10 +17,12 @@ class Setting extends StatefulWidget {
   static var userName = '';
   static var session = '';
   static var userAccount = '';
+
   Setting({
     Key? key,
     // this.arguments,
   }) : super(key: key);
+
   @override
   _SettingState createState() => _SettingState();
 }
@@ -55,6 +57,45 @@ class _SettingState extends State<Setting> {
     print(_status);
   }
 
+  /// 用户栏
+  Widget _userInfoBuilder(userName) {
+    if (userName == "") {
+      return GestureDetector(
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage('assets/images/default_avatar.png'),
+            ),
+            SizedBox(width: 25),
+            Text(
+              "Click to login",
+              style: TextStyle(color: Colors.grey, fontSize: 20),
+            )
+          ],
+        ),
+        onTap: () {
+          Navigator.pushNamed(context, '/login-page');
+        },
+      );
+    } else {
+      return Row(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(
+                "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf"),
+          ),
+          SizedBox(width: 25),
+          Text(
+            "${Setting.userName}",
+            style: TextStyle(fontSize: 25),
+          )
+        ],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (Tabs.loginstate == 1) {
@@ -81,54 +122,41 @@ class _SettingState extends State<Setting> {
               Expanded(
                 flex: 4,
                 child: Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(10),
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              'https://www.itying.com/images/flutter/1.png'),
-                        ),
-                      ),
-                      Text(
-                        "Hi  ${Setting.userName}   !",
-                        style: TextStyle(fontSize: 25),
-                      ),
-                    ],
-                  ),
+                    margin: EdgeInsets.only(left: 20),
+                    child: _userInfoBuilder(Setting.userName)
 
-                  // leading: CircleAvatar(
-                  //   //专门用来处理头像
-                  //   backgroundImage: NetworkImage(
-                  //       'https://www.itying.com/images/flutter/1.png'),
-                  // ),
-                  // title: Text("Username=${arguments['usetId']}"),
-                  // subtitle: Text(
-                  //   "arguments['userEmail']",
-                  //   overflow: TextOverflow.ellipsis,
-                  //   maxLines: 2,
-                  // ),
-                ),
+                    // leading: CircleAvatar(
+                    //   //专门用来处理头像
+                    //   backgroundImage: NetworkImage(
+                    //       'https://www.itying.com/images/flutter/1.png'),
+                    // ),
+                    // title: Text("Username=${arguments['usetId']}"),
+                    // subtitle: Text(
+                    //   "arguments['userEmail']",
+                    //   overflow: TextOverflow.ellipsis,
+                    //   maxLines: 2,
+                    // ),
+                    ),
               ),
-              Expanded(
-                  flex: 1,
-                  child: RaisedButton.icon(
-                    elevation: 0,
-                    color: Colors.white,
-                    shape: CircleBorder(side: BorderSide(color: Colors.white)),
-                    onPressed: () {
-                      setState(() {
-                        flag = !flag;
-                        if (flag) {
-                          this.changeIcon = Icons.arrow_drop_down_outlined;
-                        } else {
-                          this.changeIcon = Icons.arrow_drop_up_outlined;
-                        }
-                      });
-                    },
-                    icon: Icon(this.changeIcon),
-                    label: Text(''),
-                  ))
+              // Expanded(
+              //     flex: 1,
+              //     child: RaisedButton.icon(
+              //       elevation: 0,
+              //       color: Colors.white,
+              //       shape: CircleBorder(side: BorderSide(color: Colors.white)),
+              //       onPressed: () {
+              //         setState(() {
+              //           flag = !flag;
+              //           if (flag) {
+              //             this.changeIcon = Icons.arrow_drop_down_outlined;
+              //           } else {
+              //             this.changeIcon = Icons.arrow_drop_up_outlined;
+              //           }
+              //         });
+              //       },
+              //       icon: Icon(this.changeIcon),
+              //       label: Text(''),
+              //     ))
             ],
           ),
           SettingSelection(

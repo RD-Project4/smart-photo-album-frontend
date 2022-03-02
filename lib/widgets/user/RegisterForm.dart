@@ -25,7 +25,7 @@ class _RegisterFormState extends State<RegisterForm> {
   var _ableToCancel = true;
   var _username = '';
   var _password = '';
-  var email = '';
+  var _email = '';
   var _validateCode = '';
   var _status = 4;
   var _msg = '';
@@ -47,6 +47,11 @@ class _RegisterFormState extends State<RegisterForm> {
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), hintText: 'Email'),
                     validator: emailValidator,
+                    onChanged: (value) {
+                      setState(() {
+                        this._email = value;
+                      });
+                    },
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                   )),
               Step(
@@ -144,7 +149,7 @@ class _RegisterFormState extends State<RegisterForm> {
       }
     } else if (_index == 2) {
       print(this._username);
-      print(this.email);
+      print(this._email);
       print(this._password);
 
       _register();
@@ -168,9 +173,9 @@ class _RegisterFormState extends State<RegisterForm> {
         if (!_ableToContinue) {
           setState(() {
             _ableToContinue = true;
-            print(v);
-            email = v;
-            print(this.email);
+            // print(v);
+            // _email = v;
+            // print(this._email);
           });
         }
       });
@@ -213,11 +218,11 @@ class _RegisterFormState extends State<RegisterForm> {
   /// 验证邮箱验证码是否正确
   void _verifyCode() async {
     print(this._validateCode);
-    print(this.email);
+    print(this._email);
     var apiurl =
         Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
     var response = await http.post(apiurl, body: {
-      "userEmail": this.email,
+      "userEmail": this._email,
       "emailCode": this._validateCode
     }); //, "userEmail": this.email
     print('Response status : ${response.statusCode}');
@@ -236,7 +241,7 @@ class _RegisterFormState extends State<RegisterForm> {
   void _sendCode() {
     // TODO: 对接请求邮箱验证码api
     print('you have send code');
-    print(this.email);
+    print(this._email);
 
     postData();
     setState(() {
@@ -259,12 +264,12 @@ class _RegisterFormState extends State<RegisterForm> {
 
   postData() async {
     print('posting data');
-    print(this.email);
+    print(this._email);
 
     var apiurl =
         Uri.parse('http://124.223.68.12:8233/smartAlbum/sendemailcode.do');
 
-    var response = await http.post(apiurl, body: {"userEmail": this.email});
+    var response = await http.post(apiurl, body: {"userEmail": this._email});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
@@ -277,10 +282,10 @@ class _RegisterFormState extends State<RegisterForm> {
     var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/register.do');
 
     var response = await http.post(apiurl, body: {
-      "userAccount": this.email,
+      "userAccount": this._email,
       "userPwd": this._password,
       "userName": this._username,
-      "userEmail": this.email,
+      "userEmail": this._email,
       "userPhone": "18857561268"
     });
     print('Response status : ${response.statusCode}');
