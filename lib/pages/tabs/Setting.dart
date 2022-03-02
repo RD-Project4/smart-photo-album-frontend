@@ -41,8 +41,8 @@ class _SettingState extends State<Setting> {
 
   _logout() async {
     var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
-    var response =
-        await http.post(apiurl, body: {"userAccount": "chan_we@foxmail.com"});
+    var response = await http.post(apiurl,
+        body: {"userAccount": "1073638314@qq.com"}); //Setting.userEmail
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
@@ -207,8 +207,8 @@ class _SettingState extends State<Setting> {
               //     ))
             ],
           ),
-          _buildSettingsAfterLogin(),
-          // Setting.userName != "" ? _buildSettingsAfterLogin() : Container(),
+          // _buildSettingsAfterLogin(),
+          Setting.userName != "" ? _buildSettingsAfterLogin() : Container(),
           SettingSelection(
             icon: Icons.health_and_safety_outlined,
             title: Text("Your data in the album"),
