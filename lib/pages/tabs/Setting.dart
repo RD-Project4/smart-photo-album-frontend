@@ -39,10 +39,10 @@ class _SettingState extends State<Setting> {
   int _status = 4;
   String _msg = '';
 
-  postData() async {
+  _logout() async {
     var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
     var response =
-        await http.post(apiurl, body: {"userAccount": "1073638314@qq.com"});
+        await http.post(apiurl, body: {"userAccount": Setting.userName});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
@@ -58,7 +58,7 @@ class _SettingState extends State<Setting> {
   }
 
   /// 用户栏
-  Widget _userInfoBuilder(userName) {
+  Widget _buildUserInfo(userName) {
     if (userName == "") {
       return GestureDetector(
         child: Row(
@@ -96,6 +96,52 @@ class _SettingState extends State<Setting> {
     }
   }
 
+  Widget _buildSettingsAfterLogin() {
+    return Column(
+      children: [
+        SettingSelection(
+          icon: Icons.group_add,
+          title: Text("Add Other Accounts"),
+          onPressed: () {
+            Navigator.pushNamed(context, '/login-page');
+          },
+        ),
+        SettingSelection(
+            icon: Icons.app_blocking_rounded,
+            title: Text(
+              "Quit Your Account",
+              style: TextStyle(color: Colors.red[600]),
+            ),
+            onPressed: () {
+              _logout();
+              Tabs.loginstate = 1;
+            }),
+        TextButton(
+          onPressed: () {},
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Icon(Icons.cloud),
+              ),
+              Expanded(
+                  flex: 4,
+                  child: ListTile(
+                    title: Text("Storage"),
+                    subtitle: Text("Used：1GB，total 15GB"),
+                  ))
+            ],
+          ),
+        ),
+        SettingSelection(
+          icon: Icons.phone_iphone,
+          title: Text('400 items can be deleted from this device'),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (Tabs.loginstate == 1) {
@@ -123,7 +169,7 @@ class _SettingState extends State<Setting> {
                 flex: 4,
                 child: Container(
                     margin: EdgeInsets.only(left: 20),
-                    child: _userInfoBuilder(Setting.userName)
+                    child: _buildUserInfo(Setting.userName)
 
                     // leading: CircleAvatar(
                     //   //专门用来处理头像
@@ -159,46 +205,7 @@ class _SettingState extends State<Setting> {
               //     ))
             ],
           ),
-          SettingSelection(
-            icon: Icons.group_add,
-            title: Text("Add Other Accounts"),
-            onPressed: () {
-              Navigator.pushNamed(context, '/login-page');
-            },
-          ),
-          SettingSelection(
-              icon: Icons.app_blocking_rounded,
-              title: Text(
-                "Quit Your Account",
-                style: TextStyle(color: Colors.red[600]),
-              ),
-              onPressed: () {
-                postData();
-                Tabs.loginstate = 1;
-              }),
-
-          TextButton(
-            onPressed: () {},
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Icon(Icons.cloud),
-                ),
-                Expanded(
-                    flex: 4,
-                    child: ListTile(
-                      title: Text("Storage"),
-                      subtitle: Text("Used：1GB，total 15GB"),
-                    ))
-              ],
-            ),
-          ),
-          SettingSelection(
-            icon: Icons.phone_iphone,
-            title: Text('400 items can be deleted from this device'),
-            onPressed: () {},
-          ),
+          Setting.userName != "" ? _buildSettingsAfterLogin() : Container(),
           SettingSelection(
             icon: Icons.health_and_safety_outlined,
             title: Text("Your data in the album"),
