@@ -42,7 +42,7 @@ class _SettingState extends State<Setting> {
   _logout() async {
     var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
     var response =
-        await http.post(apiurl, body: {"userAccount": Setting.userName});
+        await http.post(apiurl, body: {"userAccount": Setting.userEmail});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
     setState(() {
@@ -52,6 +52,8 @@ class _SettingState extends State<Setting> {
     if (this._status == 0) {
       print('logut jump to setting');
       Setting.userId = '';
+      Setting.userEmail = '';
+      Setting.userName = '';
       Navigator.of(context).pushReplacementNamed('/');
     }
     print(_status);
@@ -205,6 +207,7 @@ class _SettingState extends State<Setting> {
               //     ))
             ],
           ),
+          // _buildSettingsAfterLogin(),
           Setting.userName != "" ? _buildSettingsAfterLogin() : Container(),
           SettingSelection(
             icon: Icons.health_and_safety_outlined,
