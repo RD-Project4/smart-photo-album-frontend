@@ -192,7 +192,11 @@ class _FriendsPageState extends State<FriendsPage> {
           ),
           elevation: 0,
           actions: [
-            IconButton(onPressed: addFriend, icon: Icon(Icons.person_add))
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/add-friends');
+                },
+                icon: Icon(Icons.person_add))
           ],
         ),
         body: AzListView(
