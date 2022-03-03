@@ -25,6 +25,7 @@ class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
   static String photopath = '';
   static var picId = '';
+
   const PhotoList({Key? key, this.isHasTopBar = false}) : super(key: key);
 
   @override
@@ -50,6 +51,7 @@ class _PhotoListState extends State<PhotoList> {
 
   var _status = 4;
   var _msg = '';
+
   @override
   Widget build(BuildContext context) {
     return isReady
@@ -80,7 +82,13 @@ class _PhotoListState extends State<PhotoList> {
                 ),
             sectionBuilder:
                 (context, currentSectionElementList, allElement, overallIndex) {
-              BlocProvider.of<PhotoListCubit>(context).setPhotoList(allElement);
+              var blocPhotos =
+                  BlocProvider.of<PhotoListCubit>(context).state.photos;
+              if (blocPhotos.length == 0 && allElement.length != 0) {
+                BlocProvider.of<PhotoListCubit>(context)
+                    .setPhotoList(allElement);
+              }
+
               return GridView.count(
                   // 照片
                   crossAxisCount: 2,
