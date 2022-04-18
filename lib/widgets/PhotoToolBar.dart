@@ -12,6 +12,7 @@ import 'package:smart_album/util/ShareUtil.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:smart_album/widgets/filter/FilterItem.dart';
 
 class PhotoToolBar extends StatelessWidget {
   final photoIndex;
@@ -44,18 +45,18 @@ class PhotoToolBar extends StatelessWidget {
                 ShareUtil.openShareBottomSheet(context, 1);
                 // _shareToEveryone(context);
               }),
-          // IconText(
-          //     icon: Icons.edit,
-          //     text: "Edit",
-          //     onTap: () {
-          //       var photos =
-          //           BlocProvider.of<PhotoListCubit>(context).state.photos;
-          //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //         return PhotoEditPage(
-          //           entity: photos[photoIndex],
-          //         );
-          //       }));
-          //     }),
+          IconText(
+              icon: Icons.edit,
+              text: "Edit",
+              onTap: () {
+                var photos =
+                    BlocProvider.of<PhotoListCubit>(context).state.photos;
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PhotoEditPage(
+                    entity: photos[photoIndex],
+                  );
+                }));
+              }),
           IconText(
             icon: Icons.cloud_upload_rounded,
             text: "Upload",
@@ -72,11 +73,11 @@ class PhotoToolBar extends StatelessWidget {
             text: "Favorite",
             onTap: () {},
           ),
-          IconText(
-            icon: Icons.delete,
-            text: "Delete",
-            onTap: () {},
-          )
+          // IconText(
+          //   icon: Icons.delete,
+          //   text: "Delete",
+          //   onTap: () {},
+          // )
         ],
       ),
     );

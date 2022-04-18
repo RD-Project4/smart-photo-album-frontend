@@ -39,7 +39,7 @@ class _PhotoEditPage extends State<PhotoEditPage> {
             children: [
               GroupButton(
                 isRadio: true,
-                buttons: ['Crop', 'Adjust', 'Markup'],
+                buttons: ['Filter', 'Adjust', 'Markup'],
                 onSelected: (index, isSelected) =>
                     debugPrint('Button $index selected'),
                 controller: GroupButtonController(
