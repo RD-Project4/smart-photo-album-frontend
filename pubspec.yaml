@@ -94,6 +94,7 @@ flutter:
   assets:
     - images/
     - images/login_page/
+    - images/filter/
     - assets/
     - assets/data/
     - assets/images/

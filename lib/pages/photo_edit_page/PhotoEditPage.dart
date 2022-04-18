@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/util/Global.dart';
 import 'package:group_button/group_button.dart';
+import 'package:smart_album/widgets/filter/FilterSelector.dart';
 
 class PhotoEditPage extends StatefulWidget {
   final AssetEntity entity;
@@ -18,6 +19,18 @@ class _PhotoEditPage extends State<PhotoEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _filters = [
+      Colors.white,
+      ...List.generate(
+        Colors.primaries.length,
+        (index) => Colors.primaries[(index * 4) % Colors.primaries.length],
+      )
+    ];
+    final _filterColor = ValueNotifier<Color>(Colors.white);
+    void _onFilterChanged(Color value) {
+      _filterColor.value = value;
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(children: [
@@ -61,6 +74,8 @@ class _PhotoEditPage extends State<PhotoEditPage> {
                   ),
                 ),
               ),
+              FilterSelector(
+                  filters: _filters, onFilterChanged: _onFilterChanged),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

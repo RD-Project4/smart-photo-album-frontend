@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/PhotoEditPage.dart';
-import 'package:smart_album/PhotoList.dart';
+import 'package:smart_album/pages/photo_edit_page/PhotoEditPage.dart';
 import 'package:smart_album/TensorflowResultPanel.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/util/ShareUtil.dart';
-
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-import 'package:smart_album/widgets/filter/FilterItem.dart';
 
 class PhotoToolBar extends StatelessWidget {
   final photoIndex;
