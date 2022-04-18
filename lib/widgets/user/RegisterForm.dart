@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:smart_album/util/RegExpUtil.dart';
 import 'package:smart_album/util/CommonUtil.dart';
 import 'package:smart_album/widgets/user/CountdownButton.dart';
@@ -74,12 +75,12 @@ class _RegisterFormState extends State<RegisterForm> {
                           onPressed: _sendCodeCooling == 0 ? _sendCode : null,
                           child: Text(
                               'SEND CODE${_sendCodeCooling == 0 ? '' : '($_sendCodeCooling)'}')),
-                      Container(
-                        child: Text(
-                          "${this._msg}",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      )
+                      // Container(
+                      //   child: Text(
+                      //     "${this._msg}",
+                      //     style: TextStyle(color: Colors.red),
+                      //   ),
+                      // )
                     ],
                   )),
               Step(
@@ -272,6 +273,7 @@ class _RegisterFormState extends State<RegisterForm> {
     var response = await http.post(apiurl, body: {"userEmail": this._email});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
+    showToast(jsonDecode(response.body)["msg"]);
     setState(() {
       this._status = jsonDecode(response.body)["status"];
       this._msg = jsonDecode(response.body)["msg"];

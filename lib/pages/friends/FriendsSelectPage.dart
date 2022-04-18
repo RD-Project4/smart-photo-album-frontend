@@ -14,6 +14,7 @@ import 'package:smart_album/widgets/TabsDrawer.dart';
 
 class FriendsSelectPage extends StatefulWidget {
   static var url = '';
+
   @override
   State<StatefulWidget> createState() => _FriendsSelectPageState();
 }
@@ -159,7 +160,8 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   /// 分享
   void _share() {
     Navigator.pop(context);
-    ShareUtil.shareToFriends(context, _selectedFriends);
+    ShareUtil.shareToFriends(context, _selectedFriends,
+        "www.smartalbum.top/share?share_id=dm2654sao231dw2sa231d");
   }
 
   @override
@@ -326,6 +328,7 @@ class _BottomBarState extends State<BottomBar> {
     print('Response status : ${response.body}');
     setState(() {
       FriendsSelectPage.url = jsonDecode(response.body)["data"];
+      print('url:' + jsonDecode(response.body)["data"]);
     });
   }
 }
