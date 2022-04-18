@@ -31,6 +31,21 @@ class _PhotoEditPage extends State<PhotoEditPage> {
       _filterColor.value = value;
     }
 
+    // 返回带滤镜的照片
+    Widget _buildPhotoWithFilter() {
+      return ValueListenableBuilder(
+        valueListenable: _filterColor,
+        builder: (context, value, child) {
+          final color = value as Color;
+          return Image.file(File('${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}'),
+            color: color.withOpacity(0.5),
+            colorBlendMode: BlendMode.color,
+            fit: BoxFit.cover,
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(children: [
@@ -39,9 +54,7 @@ class _PhotoEditPage extends State<PhotoEditPage> {
           left: 0,
           right: 0,
           height: MediaQuery.of(context).size.height * 0.75,
-          child: Center(
-              child: Image.file(File(
-                  '${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}'))),
+          child: Center(child: _buildPhotoWithFilter()),
         ),
         Positioned(
           bottom: 0,
