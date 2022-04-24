@@ -1,14 +1,27 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:smart_album/SearchResult.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
+import '../DataProvider.dart';
+
+class SearchBar extends StatefulWidget {
+  SearchBar({Key? key}) : super(key: key);
+
+  @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  String? searchLabel;
 
   @override
   Widget build(BuildContext context) {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
+
+    var searchResult = SearchResult();
 
     return FloatingSearchBar(
       hint: '',
@@ -26,28 +39,44 @@ class SearchBar extends StatelessWidget {
         // Call your model, bloc, controller here.
       },
       clearQueryOnClose: true,
-      // actions: [
-      //   FloatingSearchBarAction(
-      //     showIfOpened: false,
-      //     showIfClosed: true,
-      //     child: AccountButton(),
-      //   )
-      // ],
-      // leadingActions: [
-      //   FloatingSearchBarAction(
-      //     showIfOpened: true,
-      //     showIfClosed: false,
-      //     child: CircularButton(
-      //       icon: const Icon(Icons.arrow_back),
-      //       onPressed: () {
-      //         Navigator.maybePop(context);
-      //       },
-      //     ),
-      //   )
-      // ],
+      actions: [
+        FloatingSearchBarAction(
+          showIfOpened: true,
+          showIfClosed: false,
+          child: CircularButton(
+            icon: Icon(searchLabel == null ? Icons.search : Icons.clear),
+            onPressed: () {
+              setState(() {
+                searchLabel =
+                    searchLabel == null ? searchResult.searchLabel : null;
+              });
+            },
+          ),
+        )
+      ],
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
-        return SearchResult();
+        if (searchLabel != null) {
+          var photoList = DataProvider.getElements()
+              .where((element) =>
+                  (element["labels"] as List).contains(searchLabel))
+              .toList();
+          return GridView.count(
+              // 照片
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              children: photoList
+                  .map((element) => Container(
+                      margin: EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(File(element['path'])),
+                          fit: BoxFit.cover,
+                        ),
+                      )))
+                  .toList());
+        } else
+          return searchResult;
       },
     );
   }

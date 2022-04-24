@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/PhotoEditPage.dart';
 import 'package:smart_album/TensorflowResultPanel.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
@@ -55,8 +56,6 @@ class PhotoToolBar extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 class IconText extends StatelessWidget {
