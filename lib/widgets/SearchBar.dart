@@ -41,6 +41,16 @@ class _SearchBarState extends State<SearchBar> {
       clearQueryOnClose: true,
       actions: [
         FloatingSearchBarAction(
+          showIfOpened: false,
+          showIfClosed: true,
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/scanner');
+            },
+            icon: Icon(Icons.qr_code_scanner),
+          ),
+        ),
+        FloatingSearchBarAction(
           showIfOpened: true,
           showIfClosed: false,
           child: CircularButton(
@@ -54,6 +64,18 @@ class _SearchBarState extends State<SearchBar> {
           ),
         )
       ],
+      // leadingActions: [
+      //   FloatingSearchBarAction(
+      //     showIfOpened: true,
+      //     showIfClosed: false,
+      //     child: CircularButton(
+      //       icon: const Icon(Icons.arrow_back),
+      //       onPressed: () {
+      //         Navigator.maybePop(context);
+      //       },
+      //     ),
+      //   )
+      // ],
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
         if (searchLabel != null) {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:azlistview/azlistview.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
+import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 
@@ -15,8 +17,14 @@ import 'PhotoView.dart';
 import 'util/Global.dart';
 import 'util/PermissionUtil.dart';
 
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
+  static String photopath = '';
+  static var picId = '';
 
   const PhotoList({Key? key, this.isHasTopBar = false}) : super(key: key);
 
@@ -40,6 +48,9 @@ class _PhotoListState extends State<PhotoList> {
       isReady = true;
     });
   }
+
+  var _status = 4;
+  var _msg = '';
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +82,13 @@ class _PhotoListState extends State<PhotoList> {
                 ),
             sectionBuilder:
                 (context, currentSectionElementList, allElement, overallIndex) {
-              BlocProvider.of<PhotoListCubit>(context).setPhotoList(allElement);
+              var blocPhotos =
+                  BlocProvider.of<PhotoListCubit>(context).state.photos;
+              if (blocPhotos.length == 0 && allElement.length != 0) {
+                BlocProvider.of<PhotoListCubit>(context)
+                    .setPhotoList(allElement);
+              }
+
               return GridView.count(
                   // 照片
                   crossAxisCount: 2,
@@ -83,8 +100,10 @@ class _PhotoListState extends State<PhotoList> {
                                 element.relativePath +
                                 element.title,
                             entity: element,
-                            onTap: () => _open(
-                                context, allElement, overallIndex + index),
+                            onTap: () {
+                              _open(context, allElement, overallIndex + index);
+                              _showPic();
+                            },
                           ))
                       .toList());
             })
@@ -116,6 +135,10 @@ class _PhotoListState extends State<PhotoList> {
             child: PhotoView<dynamic>(
               context: context,
               imageBuilder: (item) {
+                PhotoList.photopath =
+                    Global.ROOT_PATH + item.relativePath + item.title;
+
+                print(PhotoList.photopath);
                 return FileImage(
                     File(Global.ROOT_PATH + item.relativePath + item.title));
               },
@@ -129,5 +152,24 @@ class _PhotoListState extends State<PhotoList> {
         },
       ),
     );
+  }
+
+  _showPic() async {
+    print('uploading clouds');
+    // print(Setting.userAccount);
+    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/showpic.do');
+    var response = await http.post(apiurl, body: {
+      "picOwner": Setting.userEmail,
+    });
+
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      // PhotoList.picId = jsonDecode(response.body)["data"][];
+      this._status = jsonDecode(response.body)["status"];
+      this._msg = jsonDecode(response.body)["msg"];
+      PhotoList.picId = jsonDecode(response.body)["data"][0]["picId"];
+      print(PhotoList.picId);
+    });
   }
 }

@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class Tabs extends StatefulWidget {
   final index;
-  static int loginstate = 1;
+  static var loginstate = 1;
   Tabs({Key? key, this.index = 0}) : super(key: key);
 
   @override
@@ -91,7 +91,7 @@ class _TabsState extends State<Tabs> {
     print('Response status : ${response.body}');
     setState(() {
       var res = jsonDecode(response.body);
-      var resData = res.data;
+      var resData = res["data"];
       this._status = res["status"];
       Tabs.loginstate = res["status"];
       this._msg = res["msg"];

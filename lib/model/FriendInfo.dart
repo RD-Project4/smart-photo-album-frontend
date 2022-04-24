@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 class FriendInfo extends ISuspensionBean {
   String userName;
   String? tagIndex;
-  String? namePinyin;
+  String? userNamePinyin;
 
   Color? bgColor;
   IconData? iconData;
@@ -19,7 +19,7 @@ class FriendInfo extends ISuspensionBean {
   FriendInfo({
     required this.userName,
     this.tagIndex,
-    this.namePinyin,
+    this.userNamePinyin,
     this.bgColor,
     this.iconData,
     this.img,
@@ -33,16 +33,16 @@ class FriendInfo extends ISuspensionBean {
         id = json['id']?.toString(),
         firstLetter = json['firstLetter'],
         tagIndex = json['tagIndex'],
-        namePinyin = json['namPinyin'];
+        userNamePinyin = json['userNamePinyin'];
 
   Map<String, dynamic> toJson() => {
-        'id': id,
+//        'id': id,
         'userName': userName,
         'img': img,
-        'firstLetter': firstLetter,
-        'tagIndex': tagIndex,
-        'namePinyin': namePinyin,
-        // 'isShowSuspension': isShowSuspension
+//        'firstletter': firstletter,
+//        'tagIndex': tagIndex,
+//        'userNamePinyin': userNamePinyin,
+//        'isShowSuspension': isShowSuspension
       };
 
   static FriendInfo copy(FriendInfo model) {

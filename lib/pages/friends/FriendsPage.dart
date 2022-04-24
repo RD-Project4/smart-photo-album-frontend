@@ -29,36 +29,33 @@ class _FriendsPageState extends State<FriendsPage> {
   }
 
   void loadData() async {
-    // print('showing friends');
-    // print(Setting.userAccount);
-    // var apiUrl =
-    //     Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
-    // var response =
-    //     await http.post(apiUrl, body: {"userAccount": Setting.userAccount});
-    //
-    // print('Response status : ${response.statusCode}');
-    // print('Response status : ${response.body}');
-    // setState(() {
-    //   TabsDrawer.list = jsonDecode(response.body)["data"];
-    //
-    // });
-
-    //加载联系人列表
-    rootBundle.loadString('assets/data/friends.json').then((value) {
-      // print(value);
-      List list = json.decode(value);
-      // print(list);
-      list.forEach((v) {
-        _friends.add(FriendInfo.fromJson(v));
-      });
-      _handleList(_friends);
+    print('showing friends');
+    print(Setting.userAccount);
+    var apiurl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    var response =
+        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      TabsDrawer.list = jsonDecode(response.body)["data"];
     });
+    //加载联系人列表
+    // rootBundle.loadString('assets/data/friends.json').then((value) {
+    //   // print(value);
+    //   List list = json.decode(value);
+    //   // print(list);
+    //   list.forEach((v) {
+    //     _friends.add(FriendInfo.fromJson(v));
+    //   });
+    //   _handleList(_friends);
+    // });
     // print(TabsDrawer.list);
 
-    // TabsDrawer.list.forEach((v) {
-    //   _friends.add(FriendInfo.fromJson(v));
-    // });
-    // _handleList(_friends);
+    TabsDrawer.list.forEach((v) {
+      _friends.add(FriendInfo.fromJson(v));
+    });
+    _handleList(_friends);
   }
 
   void _handleList(List<FriendInfo> list) {
@@ -66,7 +63,7 @@ class _FriendsPageState extends State<FriendsPage> {
     for (int i = 0, length = list.length; i < length; i++) {
       String pinyin = PinyinHelper.getPinyinE(list[i].userName);
       String tag = pinyin.substring(0, 1).toUpperCase();
-      list[i].namePinyin = pinyin;
+      list[i].userNamePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
         list[i].tagIndex = tag;
       } else {
@@ -154,6 +151,7 @@ class _FriendsPageState extends State<FriendsPage> {
           title: Text(model.userName),
           onTap: () {
             print("OnItemClick: $model");
+
             // Navigator.pop(context, model);
           },
         )
@@ -194,7 +192,11 @@ class _FriendsPageState extends State<FriendsPage> {
           ),
           elevation: 0,
           actions: [
-            IconButton(onPressed: addFriend, icon: Icon(Icons.person_add))
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/add-friends');
+                },
+                icon: Icon(Icons.person_add))
           ],
         ),
         body: AzListView(
@@ -245,6 +247,29 @@ class _AddFriendState extends State<AddFriend> {
   String _newFriendEmail = "";
   Widget? searchRes;
 
+  _addFriend() async {
+    var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
+    var response = await http.post(apiUrl, body: {
+      "userAccount": Setting.userAccount, //自己的邮箱
+      "userEmail": _newFriendEmail //对方的邮箱
+    });
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    Navigator.of(context).pop();
+    // setState(() {
+    //   this._status = jsonDecode(response.body)["status"];
+    //   this._msg = jsonDecode(response.body)["msg"];
+    // });
+    // if (this._status == 0) {
+    //   Navigator.pushNamed(
+    //     context,
+    //     '/',
+    //   ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
+    // } else {
+    //   print('jump to addfriends');
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -275,7 +300,7 @@ class _AddFriendState extends State<AddFriend> {
         ),
         TextButton(
           child: Text(
-            "Search",
+            "Add", // 临时处理，最后应改为Search
           ),
           onPressed: _newFriendEmail != "" ? searchFriend : null,
         ),
@@ -302,7 +327,7 @@ class _AddFriendState extends State<AddFriend> {
             Container(
               padding: EdgeInsets.only(left: 15),
               child:
-              TextButton(onPressed: () {}, child: Text('Send invitation')),
+                  TextButton(onPressed: () {}, child: Text('Send invitation')),
             ),
           ],
         );
@@ -317,5 +342,4 @@ class _AddFriendState extends State<AddFriend> {
       }
     });
   }
-
 }

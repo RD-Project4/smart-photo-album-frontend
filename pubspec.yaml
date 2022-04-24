@@ -54,11 +54,22 @@ dependencies:
   lpinyin: ^2.0.3
   azlistview: ^2.0.0
   qr_flutter: ^4.0.0
+  # image_picker: ^0.8.4+9
+  # dio: ^4.0.4
+  # video_player: ^2.2.18
+
+  # image_picker: ^0.6.7+17
+  # image_picker_platform_interface: ^1.1.0
+
+
+
   oktoast: ^3.1.5
+  qr_code_scanner: ^0.7.0
   sliding_up_panel: ^2.0.0+1
   sqflite: ^2.0.2
   google_ml_kit: ^0.7.3
   syncfusion_flutter_datepicker: ^19.4.52
+  multi_image_picker: ^4.8.01
 
 dev_dependencies:
   flutter_test:

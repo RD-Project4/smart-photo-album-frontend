@@ -1,13 +1,20 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
+import 'package:smart_album/PhotoList.dart';
 import 'package:smart_album/model/FriendInfo.dart';
+import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/util/ShareUtil.dart';
+import 'package:smart_album/widgets/TabsDrawer.dart';
 
 class FriendsSelectPage extends StatefulWidget {
+  static var url = '';
+
   @override
   State<StatefulWidget> createState() => _FriendsSelectPageState();
 }
@@ -24,14 +31,35 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   }
 
   void loadData() async {
-    //加载联系人列表
-    rootBundle.loadString('assets/data/friends.json').then((value) {
-      List list = json.decode(value);
-      list.forEach((v) {
-        _friends.add(FriendInfo.fromJson(v));
-      });
-      _handleList(_friends);
+    print('showing friends');
+    print(Setting.userAccount);
+    var apiurl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    var response =
+        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
+
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      TabsDrawer.list = jsonDecode(response.body)["data"];
     });
+
+    //加载联系人列表
+    // rootBundle.loadString('assets/data/friends.json').then((value) {
+    //   print(value);
+    //   List list = json.decode(value);
+    //   print(list);
+    //   list.forEach((v) {
+    //     _friends.add(FriendInfo.fromJson(v));
+    //   });
+    //   _handleList(_friends);
+    // });
+    print(TabsDrawer.list);
+
+    TabsDrawer.list.forEach((v) {
+      _friends.add(FriendInfo.fromJson(v));
+    });
+    _handleList(_friends);
   }
 
   void _handleList(List<FriendInfo> list) {
@@ -39,7 +67,7 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     for (int i = 0, length = list.length; i < length; i++) {
       String pinyin = PinyinHelper.getPinyinE(list[i].userName);
       String tag = pinyin.substring(0, 1).toUpperCase();
-      list[i].namePinyin = pinyin;
+      list[i].userNamePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
         list[i].tagIndex = tag;
       } else {
@@ -132,7 +160,8 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   /// 分享
   void _share() {
     Navigator.pop(context);
-    ShareUtil.shareToFriends(context, _selectedFriends);
+    ShareUtil.shareToFriends(context, _selectedFriends,
+        "www.smartalbum.top/share?share_id=dm2654sao231dw2sa231d");
   }
 
   @override
@@ -257,7 +286,12 @@ class _BottomBarState extends State<BottomBar> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ElevatedButton(onPressed: widget.share, child: Text('Share')),
+          ElevatedButton(
+              onPressed: () {
+                _share();
+                widget.share();
+              },
+              child: Text('Share')),
           Row(
             children: [
               Text('Select all'),
@@ -277,5 +311,24 @@ class _BottomBarState extends State<BottomBar> {
         ],
       ),
     );
+  }
+
+  _share() async {
+    print('share pics');
+    // print(Setting.userAccount);
+    print(Setting.userEmail);
+    print(PhotoList.picId);
+    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addshare.do');
+    var response = await http.post(apiurl, body: {
+      "shareOwner": Setting.userEmail,
+      "shareContentId": PhotoList.picId,
+      "shareObject": "846630947@qq.com"
+    });
+    print('Response status : ${response.statusCode}');
+    print('Response status : ${response.body}');
+    setState(() {
+      FriendsSelectPage.url = jsonDecode(response.body)["data"];
+      print('url:' + jsonDecode(response.body)["data"]);
+    });
   }
 }

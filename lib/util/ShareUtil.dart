@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
 import 'package:smart_album/widgets/PhotoToolBar.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 
@@ -31,7 +32,7 @@ class ShareUtil {
                 title: Text('Everyone', textAlign: TextAlign.center),
                 onTap: () {
                   Navigator.pop(context, '分享给所有人');
-                  shareToEveryone(context);
+                  shareToEveryone(context,"www.smartalbum.top/share?share_id=dm2654sao231dw2sa231d");
                 },
               ),
               ListTile(
@@ -58,18 +59,18 @@ class ShareUtil {
     print(option);
   }
 
-  static void shareToEveryone(BuildContext context) {
+  static void shareToEveryone(BuildContext context,String url) {
     // TODO: 从api获取分享链接并赋值给shareUrl
-    var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
-    _showLink(context, shareUrl);
+    // var shareUrl = FriendsSelectPage.url;
+    _showLink(context, url);
   }
 
-  static void shareToFriends(BuildContext context, List<FriendInfo> friends) {
+  static void shareToFriends(BuildContext context, List<FriendInfo> friends,String url) {
     print(friends);
 
     // TODO: 从api获取分享链接并赋值给shareUrl
-    var shareUrl = 'https://github.com/RD-Project4/smart-photo-album-frontend';
-    _showLink(context, shareUrl);
+    // var shareUrl = FriendsSelectPage.url;
+    _showLink(context, url);
   }
 
   static _showLink(BuildContext context, String shareUrl) {

@@ -27,3 +27,5 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext.kotlin_version = '1.5.21'
