@@ -1,9 +1,15 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/util/Global.dart';
 import 'package:group_button/group_button.dart';
 import 'package:smart_album/widgets/filter/FilterSelector.dart';
+import 'dart:ui' as ui;
 
 class PhotoEditPage extends StatefulWidget {
   final AssetEntity entity;
@@ -15,6 +21,7 @@ class PhotoEditPage extends StatefulWidget {
 }
 
 class _PhotoEditPage extends State<PhotoEditPage> {
+  final GlobalKey rootWidgetKey = GlobalKey();
   bool ableToSave = false;
 
   @override
@@ -37,13 +44,33 @@ class _PhotoEditPage extends State<PhotoEditPage> {
         valueListenable: _filterColor,
         builder: (context, value, child) {
           final color = value as Color;
-          return Image.file(File('${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}'),
-            color: color.withOpacity(0.5),
-            colorBlendMode: BlendMode.color,
-            fit: BoxFit.cover,
-          );
+          final file = File(
+              '${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}');
+          // 包裹RepaintBoundary用于截图组件
+          return RepaintBoundary(
+              key: rootWidgetKey,
+              child: Image.file(
+                file,
+                color: color.withOpacity(0.5),
+                colorBlendMode: BlendMode.color,
+                fit: BoxFit.cover,
+              ));
         },
       );
+    }
+
+    // 保存组件截图
+    Future<void> saveEditing() async {
+      RenderRepaintBoundary boundary = rootWidgetKey.currentContext
+          ?.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage();
+      ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List? pngBytes = byteData?.buffer.asUint8List();
+      final result = await ImageGallerySaver.saveImage(pngBytes!);
+      if(result != null){
+        showToast('Image saved');
+      }
     }
 
     return Scaffold(
@@ -102,7 +129,7 @@ class _PhotoEditPage extends State<PhotoEditPage> {
                         style: TextStyle(color: Colors.white),
                       )),
                   ElevatedButton(
-                      onPressed: ableToSave ? saveEditing : null,
+                      onPressed: saveEditing,
                       child: Text(
                         'Save',
                         style: TextStyle(
@@ -117,5 +144,3 @@ class _PhotoEditPage extends State<PhotoEditPage> {
     );
   }
 }
-
-void saveEditing() {}
