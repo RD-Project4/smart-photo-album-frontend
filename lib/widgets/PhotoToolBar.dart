@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/PhotoEditPage.dart';
-import 'package:smart_album/PhotoList.dart';
+import 'package:smart_album/pages/photo_edit_page/PhotoEditPage.dart';
 import 'package:smart_album/TensorflowResultPanel.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/util/ShareUtil.dart';
-
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
 class PhotoToolBar extends StatelessWidget {
@@ -44,18 +40,18 @@ class PhotoToolBar extends StatelessWidget {
                 ShareUtil.openShareBottomSheet(context, 1);
                 // _shareToEveryone(context);
               }),
-          // IconText(
-          //     icon: Icons.edit,
-          //     text: "Edit",
-          //     onTap: () {
-          //       var photos =
-          //           BlocProvider.of<PhotoListCubit>(context).state.photos;
-          //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //         return PhotoEditPage(
-          //           entity: photos[photoIndex],
-          //         );
-          //       }));
-          //     }),
+          IconText(
+              icon: Icons.edit,
+              text: "Edit",
+              onTap: () {
+                var photos =
+                    BlocProvider.of<PhotoListCubit>(context).state.photos;
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return PhotoEditPage(
+                    entity: photos[photoIndex],
+                  );
+                }));
+              }),
           IconText(
             icon: Icons.cloud_upload_rounded,
             text: "Upload",
@@ -77,11 +73,11 @@ class PhotoToolBar extends StatelessWidget {
             text: "Favorite",
             onTap: () {},
           ),
-          IconText(
-            icon: Icons.delete,
-            text: "Delete",
-            onTap: () {},
-          )
+          // IconText(
+          //   icon: Icons.delete,
+          //   text: "Delete",
+          //   onTap: () {},
+          // )
         ],
       ),
     );
