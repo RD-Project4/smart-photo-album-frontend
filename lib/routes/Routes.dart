@@ -15,6 +15,8 @@ import '../pages/Tabs.dart';
 import '../pages/tabs/Setting.dart';
 import '../pages/user/LoginPage.dart';
 
+import '../pages/TestPage.dart';
+
 //配置路由
 final routes = {
   '/': (context) => Tabs(),
@@ -32,6 +34,7 @@ final routes = {
   '/friends-select': (context) => FriendsSelectPage(),
   '/scanner': (context) => ScannerPage(),
   '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments),
+  '/testpage': (context) => TestPage(),
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

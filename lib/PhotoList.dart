@@ -26,6 +26,7 @@ import 'package:event_bus/event_bus.dart';
 class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
   static String photopath = '';
+  static String photoname = '';
   static var picId = '';
 
   const PhotoList({Key? key, this.isHasTopBar = false}) : super(key: key);
@@ -148,7 +149,7 @@ class _PhotoListState extends State<PhotoList> {
               imageBuilder: (item) {
                 PhotoList.photopath =
                     Global.ROOT_PATH + item.relativePath + item.title;
-
+                PhotoList.photoname = item.title;
                 print(PhotoList.photopath);
                 return FileImage(
                     File(Global.ROOT_PATH + item.relativePath + item.title));

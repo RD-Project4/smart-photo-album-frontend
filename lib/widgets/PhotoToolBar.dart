@@ -57,9 +57,14 @@ class PhotoToolBar extends StatelessWidget {
             text: "Upload",
             onTap: () {
               if (Tabs.loginstate == 1) {
-                Navigator.pushNamed(context, '/login-page');
-              } else {
+                // Navigator.pushNamed(context, '/login-page');
+                Navigator.pushNamed(context, '/testpage'); //测试时候用的，需要删除
                 _clouds();
+              } else {
+                Navigator.pushNamed(context, '/testpage');
+                // _clouds();
+
+                // Navigator.pushNamed(context, '/testpage');
               }
             },
           ),
