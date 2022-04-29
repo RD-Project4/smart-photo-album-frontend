@@ -8,6 +8,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/Events.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
@@ -20,6 +21,7 @@ import 'util/PermissionUtil.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:event_bus/event_bus.dart';
 
 class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
@@ -43,6 +45,14 @@ class _PhotoListState extends State<PhotoList> {
     photos = await _loadPhotos();
 
     DataProvider.setElements(photos);
+
+    Global.eventBus.on<ReloadPhotosEvent>().listen((event) async {
+      var data = await _loadPhotos();
+      setState(() {
+        photos = data;
+        DataProvider.setElements(photos);
+      });
+    });
 
     setState(() {
       isReady = true;
@@ -84,7 +94,8 @@ class _PhotoListState extends State<PhotoList> {
                 (context, currentSectionElementList, allElement, overallIndex) {
               var blocPhotos =
                   BlocProvider.of<PhotoListCubit>(context).state.photos;
-              if (blocPhotos.length == 0 && allElement.length != 0) {
+              if ((blocPhotos.length != photos.length) ||
+                  (blocPhotos.length == 0 && allElement.length != 0)) {
                 BlocProvider.of<PhotoListCubit>(context)
                     .setPhotoList(allElement);
               }

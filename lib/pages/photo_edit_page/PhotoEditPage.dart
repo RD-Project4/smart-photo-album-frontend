@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/Events.dart';
 import 'package:smart_album/util/Global.dart';
 import 'package:group_button/group_button.dart';
 import 'package:smart_album/widgets/filter/FilterSelector.dart';
@@ -71,6 +73,10 @@ class _PhotoEditPage extends State<PhotoEditPage> {
       if(result != null){
         showToast('Image saved');
       }
+
+
+      Global.eventBus.fire(ReloadPhotosEvent());
+      Navigator.pop(context);
     }
 
     return Scaffold(
@@ -132,8 +138,8 @@ class _PhotoEditPage extends State<PhotoEditPage> {
                       onPressed: saveEditing,
                       child: Text(
                         'Save',
-                        style: TextStyle(
-                            color: ableToSave ? Colors.white : Colors.grey),
+                        // style: TextStyle(
+                        //     color: ableToSave ? Colors.white : Colors.grey),
                       )),
                 ],
               )
