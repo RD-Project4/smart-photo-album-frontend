@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:smart_album/Events.dart';
+
 import 'CommonUtil.dart';
+import 'Global.dart';
 
 /// 用于图片收藏
 class FavoritesUtil {
@@ -44,6 +47,7 @@ class FavoritesUtil {
     list.add(id);
 
     jsonFile.writeAsString(jsonEncode(list));
+    Global.eventBus.fire(RefreshFavoritesEvent());
     return true;
   }
 
@@ -57,6 +61,7 @@ class FavoritesUtil {
     var list = await getFavoritesList();
     list.remove(id);
     jsonFile.writeAsString(jsonEncode(list));
+    Global.eventBus.fire(RefreshFavoritesEvent());
     return true;
   }
 }

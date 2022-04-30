@@ -30,9 +30,8 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
     var photos = BlocProvider.of<PhotoListCubit>(context).state.photos;
     var currentPhoto = photos[widget.photoIndex];
 
-
     FavoritesUtil.isFavorite(currentPhoto.id).then((value) {
-      if(isFavorite == value) {
+      if (isFavorite == value) {
         return;
       }
       setState(() {
@@ -91,7 +90,7 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
             },
           ),
           IconText(
-            icon: Icons.favorite,
+            icon: isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
             color: isFavorite ? Colors.red : Colors.white,
             text: "Favorite",
             onTap: () async {
