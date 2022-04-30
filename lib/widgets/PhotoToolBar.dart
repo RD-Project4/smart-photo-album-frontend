@@ -30,8 +30,12 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
     var photos = BlocProvider.of<PhotoListCubit>(context).state.photos;
     var currentPhoto = photos[widget.photoIndex];
 
-    setState(() {
-      FavoritesUtil.isFavorite(currentPhoto.id).then((value) {
+
+    FavoritesUtil.isFavorite(currentPhoto.id).then((value) {
+      if(isFavorite == value) {
+        return;
+      }
+      setState(() {
         isFavorite = value;
       });
     });
@@ -91,11 +95,25 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
             color: isFavorite ? Colors.red : Colors.white,
             text: "Favorite",
             onTap: () async {
-              print('*******current photo******');
-              print(currentPhoto);
-              print(await FavoritesUtil.getFavoritesList());
-              print(await FavoritesUtil.isFavorite(currentPhoto.id));
-              print('*************');
+              if (isFavorite) {
+                print('取消收藏');
+                var res = await FavoritesUtil.removeFromFavoritesList(
+                    currentPhoto.id);
+                if (res) {
+                  setState(() {
+                    isFavorite = false;
+                  });
+                }
+              } else {
+                print('添加收藏');
+                var res =
+                    await FavoritesUtil.addToFavoritesList(currentPhoto.id);
+                if (res) {
+                  setState(() {
+                    isFavorite = true;
+                  });
+                }
+              }
             },
           ),
           // IconText(
