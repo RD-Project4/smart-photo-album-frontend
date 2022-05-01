@@ -4,6 +4,7 @@ import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 import 'package:smart_album/util/Global.dart';
 
 class Photo {
+  String id;
   AssetEntity entity;
   String path;
   List<String> labels;
@@ -11,8 +12,8 @@ class Photo {
   int width;
   int height;
 
-  Photo(this.entity, this.path, this.labels, this.createDateTime, this.width,
-      this.height);
+  Photo(this.id, this.entity, this.path, this.labels, this.createDateTime,
+      this.width, this.height);
 }
 
 class DataProvider {
@@ -33,6 +34,7 @@ class DataProvider {
     for (AssetEntity entity in await entityList[0].assetList) {
       var path = (await entity.file)?.path ?? "";
       _photoList.add(Photo(
+          entity.id,
           entity,
           path,
           (await TensorflowProvider.recognizeObjectInFile(path))

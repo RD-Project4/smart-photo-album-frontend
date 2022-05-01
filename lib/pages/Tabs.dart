@@ -52,7 +52,10 @@ class _TabsState extends State<Tabs> {
       //   // ),
       //   // actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
       // )
-      body: this._pageList[this._currentIndex],
+      body: SafeArea(
+        bottom: false,
+        child: this._pageList[this._currentIndex],
+      ),
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.transparent,
           color: Colors.blueGrey.shade50,
@@ -88,6 +91,7 @@ class _TabsState extends State<Tabs> {
         await http.post(apiurl, body: {"userAccount": Setting.userAccount});
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
+
     setState(() {
       var res = jsonDecode(response.body);
       var resData = res["data"];

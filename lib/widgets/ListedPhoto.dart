@@ -4,7 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
+import 'package:smart_album/util/FavoritesUtil.dart';
+import 'package:smart_album/util/Global.dart';
 
+import '../Events.dart';
+
+/// 首页照片墙中的单个照片
 class ListedPhoto extends StatefulWidget {
   final path;
   final onTap;
@@ -19,6 +24,27 @@ class ListedPhoto extends StatefulWidget {
 }
 
 class _ListedPhotoState extends State<ListedPhoto> {
+  var isFavorite = false;
+
+  void _setIsFavorite() {
+    FavoritesUtil.isFavorite(widget.entity.id).then((value) {
+      setState(() {
+        isFavorite = value;
+      });
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _setIsFavorite();
+
+    Global.eventBus.on<RefreshFavoritesEvent>().listen((event) {
+      _setIsFavorite();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PhotoListCubit, PhotoListState>(
@@ -55,9 +81,19 @@ class _ListedPhotoState extends State<ListedPhoto> {
                 )),
             photoListMode == PhotoListMode.Selection
                 ? Checkbox(
-                    value: selectedPhotos.indexOf(widget.entity) != -1,
+                    value: selectedPhotos.contains(widget.entity),
                     side: BorderSide(color: Colors.white, width: 2),
                     onChanged: (status) {},
+                  )
+                : Container(),
+            isFavorite
+                ? Positioned(
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    ),
+                    right: 5,
+                    bottom: 5,
                   )
                 : Container()
           ],

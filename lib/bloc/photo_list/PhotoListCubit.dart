@@ -32,6 +32,7 @@ class PhotoListCubit extends Cubit<PhotoListState> {
   }
 
   void setPhotoList(list) {
-    state..photos = list;
+    print('setPhotoList');
+    emit(state.clone()..photos = list);
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:azlistview/azlistview.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +8,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/Events.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
@@ -20,10 +21,12 @@ import 'util/PermissionUtil.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:event_bus/event_bus.dart';
 
 class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
   static String photopath = '';
+  static String photoname = '';
   static var picId = '';
 
   const PhotoList({Key? key, this.isHasTopBar = false}) : super(key: key);
@@ -41,6 +44,13 @@ class _PhotoListState extends State<PhotoList> {
     super.didChangeDependencies();
 
     photos = await _loadPhotos();
+
+    Global.eventBus.on<ReloadPhotosEvent>().listen((event) async {
+      var data = await _loadPhotos();
+      setState(() {
+        photos = data;
+      });
+    });
 
     setState(() {
       isReady = true;
@@ -82,7 +92,8 @@ class _PhotoListState extends State<PhotoList> {
                 (context, currentSectionElementList, allElement, overallIndex) {
               var blocPhotos =
                   BlocProvider.of<PhotoListCubit>(context).state.photos;
-              if (blocPhotos.length == 0 && allElement.length != 0) {
+              if ((blocPhotos.length != photos.length) ||
+                  (blocPhotos.length == 0 && allElement.length != 0)) {
                 BlocProvider.of<PhotoListCubit>(context)
                     .setPhotoList(allElement);
               }
@@ -125,7 +136,6 @@ class _PhotoListState extends State<PhotoList> {
           return BlocProvider.value(
             value: BlocProvider.of<PhotoListCubit>(context),
             child: PhotoView<Photo>(
-              context: context,
               imageBuilder: (item) {
                 return FileImage(File(item.path));
               },
@@ -151,12 +161,15 @@ class _PhotoListState extends State<PhotoList> {
 
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
-    setState(() {
-      // PhotoList.picId = jsonDecode(response.body)["data"][];
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-      PhotoList.picId = jsonDecode(response.body)["data"][0]["picId"];
-      print(PhotoList.picId);
-    });
+    if (response.statusCode == 200 &&
+        jsonDecode(response.body)["data"] != null) {
+      setState(() {
+        // PhotoList.picId = jsonDecode(response.body)["data"][];
+        this._status = jsonDecode(response.body)["status"];
+        this._msg = jsonDecode(response.body)["msg"];
+        PhotoList.picId = jsonDecode(response.body)["data"][0]["picId"];
+        print(PhotoList.picId);
+      });
+    }
   }
 }

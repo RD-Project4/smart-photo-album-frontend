@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 
 class Global {
@@ -5,4 +6,7 @@ class Global {
   // 用在Tabs页面
   @Deprecated("不再使用")
   static final GlobalKey<ScaffoldState> tabsKey = GlobalKey<ScaffoldState>();
+
+  static EventBus eventBus = EventBus();
+
 }
