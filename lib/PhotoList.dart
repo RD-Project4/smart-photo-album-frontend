@@ -42,8 +42,6 @@ class _PhotoListState extends State<PhotoList> {
 
     photos = await _loadPhotos();
 
-    DataProvider.setElements(photos);
-
     setState(() {
       isReady = true;
     });
@@ -55,7 +53,7 @@ class _PhotoListState extends State<PhotoList> {
   @override
   Widget build(BuildContext context) {
     return isReady
-        ? GroupedView<dynamic, DateTime>(
+        ? GroupedView<Photo, DateTime>(
             padding: widget.isHasTopBar
                 ? const EdgeInsets.only(top: kToolbarHeight)
                 : null,
@@ -96,9 +94,7 @@ class _PhotoListState extends State<PhotoList> {
                   physics: const NeverScrollableScrollPhysics(),
                   children: currentSectionElementList
                       .mapIndexed((index, element) => ListedPhoto(
-                            path: Global.ROOT_PATH +
-                                element.relativePath +
-                                element.title,
+                            path: element.path,
                             entity: element,
                             onTap: () {
                               _open(context, allElement, overallIndex + index);
@@ -110,37 +106,28 @@ class _PhotoListState extends State<PhotoList> {
         : Scaffold();
   }
 
-  Future<List<AssetEntity>> _loadPhotos() async {
+  Future<List<Photo>> _loadPhotos() async {
     if (!(await PermissionUtil.checkStoragePermission())) {
       var res = await PermissionUtil.requestStoragePermission();
       if (res == false) {
         return [];
       }
     }
-    // var res = [];
 
-    List<AssetPathEntity> list =
-        await PhotoManager.getAssetPathList(onlyAll: true);
-
-    return list.length > 0 ? (await list[0].assetList) : [];
+    return DataProvider.retrievePhoto();
   }
 
-  void _open(BuildContext context, List elements, final int index) {
+  void _open(BuildContext context, List<Photo> elements, final int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider.value(
             value: BlocProvider.of<PhotoListCubit>(context),
-            child: PhotoView<dynamic>(
+            child: PhotoView<Photo>(
               context: context,
               imageBuilder: (item) {
-                PhotoList.photopath =
-                    Global.ROOT_PATH + item.relativePath + item.title;
-
-                print(PhotoList.photopath);
-                return FileImage(
-                    File(Global.ROOT_PATH + item.relativePath + item.title));
+                return FileImage(File(item.path));
               },
               galleryItems: elements,
               backgroundDecoration: const BoxDecoration(

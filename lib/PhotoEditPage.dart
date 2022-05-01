@@ -1,11 +1,12 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:smart_album/util/Global.dart';
 import 'package:group_button/group_button.dart';
+import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/util/Global.dart';
 
 class PhotoEditPage extends StatefulWidget {
-  final AssetEntity entity;
+  final Photo entity;
 
   const PhotoEditPage({Key? key, required this.entity}) : super(key: key);
 
@@ -26,9 +27,7 @@ class _PhotoEditPage extends State<PhotoEditPage> {
           left: 0,
           right: 0,
           height: MediaQuery.of(context).size.height * 0.75,
-          child: Center(
-              child: Image.file(File(
-                  '${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}'))),
+          child: Center(child: Image.file(File(widget.entity.path))),
         ),
         Positioned(
           bottom: 0,

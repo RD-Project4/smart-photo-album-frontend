@@ -11,10 +11,10 @@ class SearchResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var photoList = DataProvider.getElements();
+    var photoList = DataProvider.getPhotoList();
     Set<String> labels = Set();
     for (var photo in photoList) {
-      labels.addAll(photo["labels"]);
+      labels.addAll(photo.labels);
     }
 
     return SingleChildScrollView(

@@ -70,6 +70,9 @@ dependencies:
   google_ml_kit: ^0.7.3
   syncfusion_flutter_datepicker: ^19.4.52
   multi_image_picker: ^4.8.01
+  waterfall_flow: ^3.0.2
+  shifting_tabbar: ^1.0.2
+  curved_navigation_bar: ^1.0.3
 
 dev_dependencies:
   flutter_test:

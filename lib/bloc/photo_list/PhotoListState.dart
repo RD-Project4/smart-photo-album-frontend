@@ -2,8 +2,8 @@ part of 'PhotoListCubit.dart';
 
 class PhotoListState {
   late PhotoListMode mode;
-  late List<AssetEntity> selectedPhotos;
-  late List photos;
+  late List<Photo> selectedPhotos;
+  late List<Photo> photos;
 
   PhotoListState init() {
     return PhotoListState()

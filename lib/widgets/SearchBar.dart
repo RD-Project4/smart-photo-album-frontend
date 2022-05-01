@@ -79,9 +79,8 @@ class _SearchBarState extends State<SearchBar> {
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
         if (searchLabel != null) {
-          var photoList = DataProvider.getElements()
-              .where((element) =>
-                  (element["labels"] as List).contains(searchLabel))
+          var photoList = DataProvider.getPhotoList()
+              .where((element) => element.labels.contains(searchLabel))
               .toList();
           return GridView.count(
               // 照片
@@ -92,7 +91,7 @@ class _SearchBarState extends State<SearchBar> {
                       margin: EdgeInsets.all(3.0),
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: FileImage(File(element['path'])),
+                          image: FileImage(File(element.path)),
                           fit: BoxFit.cover,
                         ),
                       )))
