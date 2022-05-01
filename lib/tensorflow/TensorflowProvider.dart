@@ -15,6 +15,12 @@ class _Model {
 
   _Model(this._interpreter);
 
+  processImage(File file, [imageTensorIndex = 0]) {
+    var image = TensorImage(_interpreter.getInputTensor(imageTensorIndex).type);
+    image.loadImage(decodeImage(file.readAsBytesSync())!);
+    return image;
+  }
+
   List<TensorBuffer> run(TensorImage tensorImage) {
     List<TensorBuffer> result = [];
     Map<int, ByteBuffer> outputBuffer = _interpreter
@@ -94,7 +100,7 @@ class TensorflowProvider {
   }
 
   List<Category> _recognizeObjectInFile(String path) {
-    TensorImage tensorImage = TensorImage.fromFile(File(path));
+    TensorImage tensorImage = objectModel.processImage(File(path));
     int cropSize = min(tensorImage.height, tensorImage.width);
     ImageProcessor imageProcessor = ImageProcessorBuilder()
         .add(ResizeWithCropOrPadOp(cropSize, cropSize))
@@ -105,13 +111,13 @@ class TensorflowProvider {
     TensorBuffer probabilityBuffer = objectModel.run(tensorImage)[0];
 
     SequentialProcessor<TensorBuffer> probabilityProcessor =
-        TensorProcessorBuilder().add(DequantizeOp(0, 1 / 255.0)).build();
-    TensorBuffer dequantizedBuffer =
+        TensorProcessorBuilder().add(NormalizeOp(0, 255)).build();
+    TensorBuffer processedBuffer =
         probabilityProcessor.process(probabilityBuffer);
 
-    TensorLabel tensorLabel = TensorLabel.fromList(_labels, dequantizedBuffer);
+    TensorLabel tensorLabel = TensorLabel.fromList(_labels, processedBuffer);
     return tensorLabel.getCategoryList()
-      ..sort((a, b) => (b.score - a.score).toInt());
+      ..sort((a, b) => ((b.score - a.score) * 1000).toInt());
   }
 
   static Future<String> recognizeTextInFile(String path) async {

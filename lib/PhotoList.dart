@@ -45,13 +45,10 @@ class _PhotoListState extends State<PhotoList> {
 
     photos = await _loadPhotos();
 
-    DataProvider.setElements(photos);
-
     Global.eventBus.on<ReloadPhotosEvent>().listen((event) async {
       var data = await _loadPhotos();
       setState(() {
         photos = data;
-        DataProvider.setElements(photos);
       });
     });
 
@@ -66,7 +63,7 @@ class _PhotoListState extends State<PhotoList> {
   @override
   Widget build(BuildContext context) {
     return isReady
-        ? GroupedView<dynamic, DateTime>(
+        ? GroupedView<Photo, DateTime>(
             padding: widget.isHasTopBar
                 ? const EdgeInsets.only(top: kToolbarHeight)
                 : null,
@@ -108,9 +105,7 @@ class _PhotoListState extends State<PhotoList> {
                   physics: const NeverScrollableScrollPhysics(),
                   children: currentSectionElementList
                       .mapIndexed((index, element) => ListedPhoto(
-                            path: Global.ROOT_PATH +
-                                element.relativePath +
-                                element.title,
+                            path: element.path,
                             entity: element,
                             onTap: () {
                               _open(context, allElement, overallIndex + index);
@@ -122,37 +117,27 @@ class _PhotoListState extends State<PhotoList> {
         : Scaffold();
   }
 
-  Future<List<AssetEntity>> _loadPhotos() async {
+  Future<List<Photo>> _loadPhotos() async {
     if (!(await PermissionUtil.checkStoragePermission())) {
       var res = await PermissionUtil.requestStoragePermission();
       if (res == false) {
         return [];
       }
     }
-    // var res = [];
 
-    List<AssetPathEntity> list =
-        await PhotoManager.getAssetPathList(onlyAll: true);
-
-    return list.length > 0 ? (await list[0].assetList) : [];
+    return DataProvider.retrievePhoto();
   }
 
-  void _open(BuildContext context, List elements, final int index) {
+  void _open(BuildContext context, List<Photo> elements, final int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) {
           return BlocProvider.value(
             value: BlocProvider.of<PhotoListCubit>(context),
-            child: PhotoView<dynamic>(
-              context: context,
+            child: PhotoView<Photo>(
               imageBuilder: (item) {
-                PhotoList.photopath =
-                    Global.ROOT_PATH + item.relativePath + item.title;
-                PhotoList.photoname = item.title;
-                print(PhotoList.photopath);
-                return FileImage(
-                    File(Global.ROOT_PATH + item.relativePath + item.title));
+                return FileImage(File(item.path));
               },
               galleryItems: elements,
               backgroundDecoration: const BoxDecoration(
@@ -166,8 +151,6 @@ class _PhotoListState extends State<PhotoList> {
     );
   }
 
-
-
   _showPic() async {
     print('uploading clouds');
     // print(Setting.userAccount);
@@ -178,12 +161,15 @@ class _PhotoListState extends State<PhotoList> {
 
     print('Response status : ${response.statusCode}');
     print('Response status : ${response.body}');
-    setState(() {
-      // PhotoList.picId = jsonDecode(response.body)["data"][];
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-      PhotoList.picId = jsonDecode(response.body)["data"][0]["picId"];
-      print(PhotoList.picId);
-    });
+    if (response.statusCode == 200 &&
+        jsonDecode(response.body)["data"] != null) {
+      setState(() {
+        // PhotoList.picId = jsonDecode(response.body)["data"][];
+        this._status = jsonDecode(response.body)["status"];
+        this._msg = jsonDecode(response.body)["msg"];
+        PhotoList.picId = jsonDecode(response.body)["data"][0]["picId"];
+        print(PhotoList.picId);
+      });
+    }
   }
 }

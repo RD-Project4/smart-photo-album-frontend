@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/util/FavoritesUtil.dart';
 import 'package:smart_album/util/Global.dart';
@@ -12,7 +13,7 @@ import '../Events.dart';
 class ListedPhoto extends StatefulWidget {
   final path;
   final onTap;
-  final AssetEntity entity;
+  final Photo entity;
 
   const ListedPhoto(
       {Key? key, required this.path, required this.entity, this.onTap})

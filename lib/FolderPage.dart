@@ -5,7 +5,7 @@ import 'package:smart_album/DataProvider.dart';
 
 class FolderPageArguments {
   final String title;
-  List<Map>? photoList;
+  List<Photo>? photoList;
 
   FolderPageArguments({required this.title, this.photoList});
 }
@@ -18,9 +18,8 @@ class FolderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (arguments.photoList == null) {
-      arguments.photoList = DataProvider.getElements()
-          .where((element) =>
-              (element["labels"] as List).contains(arguments.title))
+      arguments.photoList = DataProvider.getPhotoList()
+          .where((element) => element.labels.contains(arguments.title))
           .toList();
     }
 
@@ -37,7 +36,7 @@ class FolderPage extends StatelessWidget {
                     margin: EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: FileImage(File(element['path'])),
+                        image: FileImage(File(element.path)),
                         fit: BoxFit.cover,
                       ),
                     )))

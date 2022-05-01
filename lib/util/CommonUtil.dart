@@ -11,6 +11,10 @@ class CommonUtil {
     });
   }
 
+  static String capitalizeFirstLetter(String string) {
+    return "${string[0].toUpperCase()}${string.substring(1).toLowerCase()}";
+  }
+
   static Future<String> getDirPath() async {
     final _dir = await getApplicationDocumentsDirectory();
     return _dir.path;

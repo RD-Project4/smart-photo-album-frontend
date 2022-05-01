@@ -5,14 +5,16 @@ import 'package:smart_album/widgets/MultiChoiceChip.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SearchResult extends StatelessWidget {
+  String? searchLabel;
+
   SearchResult({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var photoList = DataProvider.getElements();
-    List<String> labels = [];
+    var photoList = DataProvider.getPhotoList();
+    Set<String> labels = Set();
     for (var photo in photoList) {
-      labels.addAll(photo["labels"]);
+      labels.addAll(photo.labels);
     }
 
     return SingleChildScrollView(
@@ -21,13 +23,16 @@ class SearchResult extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _Title("Category"),
-            MultiChoiceChip(ListUtil.deduplication(labels)),
+            MultiChoiceChip(labels, onSelectionChanged: (label) {
+              searchLabel = label.length > 0 ? label.first : null;
+            }),
             _Title("Date"),
             SfDateRangePicker(
               selectionMode: DateRangePickerSelectionMode.multiRange,
             ),
             _Title("Location"),
-            MultiChoiceChip(["Hangzhou", "Beijing", "Ningbo", "Suzhou"]),
+            MultiChoiceChip(
+                Set.from(["Hangzhou", "Beijing", "Ningbo", "Suzhou"])),
           ],
         ));
   }
