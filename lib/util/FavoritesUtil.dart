@@ -8,26 +8,32 @@ import 'Global.dart';
 
 /// 用于图片收藏
 class FavoritesUtil {
-  static Future<File> getFavoritesListFile() async{
+  static var favoritesList;
+
+  static Future<File> getFavoritesListFile() async {
+    print('读取favorite_list.json');
     final _dirPath = await CommonUtil.getDirPath();
     final _filePath = '$_dirPath/favorite_list.json';
+    print(_filePath);
 
     return new File(_filePath);
   }
 
-
   static Future<List> getFavoritesList() async {
-
-    File jsonFile = await getFavoritesListFile();
-    if (!jsonFile.existsSync()) {
-      jsonFile.createSync();
-      print('favorite_list.json 文件创建成功！');
-      return [];
-    } else {
-      print('favorite_list.json 文件已存在');
-      String jsonStr = await jsonFile.readAsString();
-      return json.decode(jsonStr) as List;
+    if (favoritesList == null) {
+      File jsonFile = await getFavoritesListFile();
+      if (!jsonFile.existsSync()) {
+        jsonFile.createSync();
+        print('favorite_list.json 文件创建成功！');
+        jsonFile.writeAsString('[]');
+        favoritesList = [];
+      } else {
+        String jsonStr = await jsonFile.readAsString();
+        favoritesList = json.decode(jsonStr) as List;
+      }
     }
+
+    return favoritesList;
   }
 
   /// 判断图片是否被收藏
@@ -52,7 +58,7 @@ class FavoritesUtil {
   }
 
   static Future<bool> removeFromFavoritesList(id) async {
-    if(!(await isFavorite(id))){
+    if (!(await isFavorite(id))) {
       return false;
     }
 
