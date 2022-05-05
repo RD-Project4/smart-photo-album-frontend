@@ -162,7 +162,7 @@ class _TestPageState extends State<TestPage> {
     FormData formData = FormData.fromMap({
       // "imageList": imageList,
       'imageList': await MultipartFile.fromFile(PhotoList.photopath,
-          filename: PhotoList.photoname),
+          filename: PhotoList.photoname.toString()),
       // "imageList": [
       //   await MultipartFile.fromFile(PhotoList.photopath, filename: 'test.png'),
       //   await MultipartFile.fromFile(PhotoList.photopath, filename: 'test1.png')
