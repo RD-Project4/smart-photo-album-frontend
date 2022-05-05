@@ -1,18 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:group_button/group_button.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/Events.dart';
 import 'package:smart_album/util/Global.dart';
-import 'package:group_button/group_button.dart';
 import 'package:smart_album/widgets/filter/FilterSelector.dart';
-import 'dart:ui' as ui;
 
 class PhotoEditPage extends StatefulWidget {
-  final AssetEntity entity;
+  final Photo entity;
 
   const PhotoEditPage({Key? key, required this.entity}) : super(key: key);
 
@@ -45,7 +47,8 @@ class _PhotoEditPage extends State<PhotoEditPage> {
         builder: (context, value, child) {
           final color = value as Color;
           final file = File(
-              '${Global.ROOT_PATH}${widget.entity.relativePath}${widget.entity.title}');
+            widget.entity.path,
+          );
           // 包裹RepaintBoundary用于截图组件
           return RepaintBoundary(
               key: rootWidgetKey,
@@ -68,9 +71,12 @@ class _PhotoEditPage extends State<PhotoEditPage> {
           await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List? pngBytes = byteData?.buffer.asUint8List();
       final result = await ImageGallerySaver.saveImage(pngBytes!);
-      if(result != null){
+      if (result != null) {
         showToast('Image saved');
       }
+
+      Global.eventBus.fire(ReloadPhotosEvent());
+      Navigator.pop(context);
     }
 
     return Scaffold(
@@ -132,8 +138,8 @@ class _PhotoEditPage extends State<PhotoEditPage> {
                       onPressed: saveEditing,
                       child: Text(
                         'Save',
-                        style: TextStyle(
-                            color: ableToSave ? Colors.white : Colors.grey),
+                        // style: TextStyle(
+                        //     color: ableToSave ? Colors.white : Colors.grey),
                       )),
                 ],
               )

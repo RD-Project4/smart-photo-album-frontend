@@ -13,10 +13,8 @@ class PhotoView<T> extends StatefulWidget {
   final PageController pageController;
   final List<T> galleryItems;
   final Axis scrollDirection;
-  final BuildContext context;
 
   PhotoView({
-    required this.context,
     required this.imageBuilder,
     this.descBuilder,
     this.backgroundDecoration,
@@ -28,10 +26,10 @@ class PhotoView<T> extends StatefulWidget {
   }) : this.pageController = PageController(initialPage: initialIndex);
 
   @override
-  State<StatefulWidget> createState() => _PhotoViewState();
+  State<StatefulWidget> createState() => _PhotoViewState<T>();
 }
 
-class _PhotoViewState extends State<PhotoView> {
+class _PhotoViewState<T> extends State<PhotoView<T>> {
   late int currentIndex = widget.initialIndex;
 
   void onPageChanged(int index) {
@@ -93,7 +91,7 @@ class _PhotoViewState extends State<PhotoView> {
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,
-      heroAttributes: PhotoViewHeroAttributes(tag: item),
+      heroAttributes: PhotoViewHeroAttributes(tag: item.hashCode),
     );
   }
 }

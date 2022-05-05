@@ -5,6 +5,7 @@ import '../CatagoryPage.dart';
 import '../HomePage.dart';
 import 'tabs/Setting.dart';
 import 'package:smart_album/util/Global.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'dart:convert';
 
@@ -41,6 +42,7 @@ class _TabsState extends State<Tabs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       // appBar: AppBar(
       //   title: Text('Smart Photo'),
       //   // backgroundColor: Colors.green[100],
@@ -51,28 +53,28 @@ class _TabsState extends State<Tabs> {
       //   // actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
       // )
       body: SafeArea(
+        bottom: false,
         child: this._pageList[this._currentIndex],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Colors.indigo,
-        currentIndex: this._currentIndex, //表示当前默认选中哪一个
-        onTap: (int index) {
-          setState(() {
-            if (index == 2 && Setting.state == 5) {
-              showuser();
-              this._currentIndex = index;
-            } else {
-              this._currentIndex = index;
-            }
-          });
-        },
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.category), label: "Category"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "My"),
-        ],
-      ),
+      bottomNavigationBar: CurvedNavigationBar(
+          backgroundColor: Colors.transparent,
+          color: Colors.blueGrey.shade50,
+          index: this._currentIndex, //表示当前默认选中哪一个
+          onTap: (int index) {
+            setState(() {
+              if (index == 2 && Setting.state == 5) {
+                showuser();
+                this._currentIndex = index;
+              } else {
+                this._currentIndex = index;
+              }
+            });
+          },
+          items: [
+            Icon(Icons.home, size: 20),
+            Icon(Icons.category, size: 20),
+            Icon(Icons.person, size: 20),
+          ]),
       drawer: TabsDrawer(),
       onDrawerChanged: (isOpened) {
         showuser();

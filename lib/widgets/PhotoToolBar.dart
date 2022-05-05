@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/pages/photo_edit_page/PhotoEditPage.dart';
@@ -6,16 +8,37 @@ import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
+import 'package:smart_album/util/CommonUtil.dart';
+import 'package:smart_album/util/FavoritesUtil.dart';
 import 'package:smart_album/util/ShareUtil.dart';
 import 'package:http/http.dart' as http;
 
-class PhotoToolBar extends StatelessWidget {
+class PhotoToolBar extends StatefulWidget {
   final photoIndex;
 
   const PhotoToolBar({Key? key, required this.photoIndex}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => _PhotoToolBarState();
+}
+
+class _PhotoToolBarState extends State<PhotoToolBar> {
+  var isFavorite = false;
+
+  @override
   Widget build(BuildContext context) {
+    var photos = BlocProvider.of<PhotoListCubit>(context).state.photos;
+    var currentPhoto = photos[widget.photoIndex];
+
+    FavoritesUtil.isFavorite(currentPhoto.id).then((value) {
+      if (isFavorite == value) {
+        return;
+      }
+      setState(() {
+        isFavorite = value;
+      });
+    });
+
     return Container(
       color: Color.fromARGB(128, 128, 128, 128),
       height: 70,
@@ -29,7 +52,7 @@ class PhotoToolBar extends StatelessWidget {
             onTap: () {
               var photos =
                   BlocProvider.of<PhotoListCubit>(context).state.photos;
-              TensorflowResultPanel.open(context, photos[photoIndex]);
+              TensorflowResultPanel.open(context, photos[widget.photoIndex]);
             },
           ),
           IconText(
@@ -44,11 +67,9 @@ class PhotoToolBar extends StatelessWidget {
               icon: Icons.edit,
               text: "Edit",
               onTap: () {
-                var photos =
-                    BlocProvider.of<PhotoListCubit>(context).state.photos;
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return PhotoEditPage(
-                    entity: photos[photoIndex],
+                    entity: currentPhoto,
                   );
                 }));
               }),
@@ -69,9 +90,30 @@ class PhotoToolBar extends StatelessWidget {
             },
           ),
           IconText(
-            icon: Icons.favorite_border,
+            icon: isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+            color: isFavorite ? Colors.red : Colors.white,
             text: "Favorite",
-            onTap: () {},
+            onTap: () async {
+              if (isFavorite) {
+                print('取消收藏');
+                var res = await FavoritesUtil.removeFromFavoritesList(
+                    currentPhoto.id);
+                if (res) {
+                  setState(() {
+                    isFavorite = false;
+                  });
+                }
+              } else {
+                print('添加收藏');
+                var res =
+                    await FavoritesUtil.addToFavoritesList(currentPhoto.id);
+                if (res) {
+                  setState(() {
+                    isFavorite = true;
+                  });
+                }
+              }
+            },
           ),
           // IconText(
           //   icon: Icons.delete,
@@ -102,12 +144,13 @@ class PhotoToolBar extends StatelessWidget {
 }
 
 class IconText extends StatelessWidget {
-  final icon, text, onTap;
+  final icon, text, onTap, color;
 
   IconText(
       {Key? key,
       required this.icon,
       required this.text,
+      Color? this.color,
       void Function()? this.onTap});
 
   @override
@@ -119,7 +162,7 @@ class IconText extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: Colors.white,
+            color: color != null ? color : Colors.white,
           ),
           Text(
             text,
