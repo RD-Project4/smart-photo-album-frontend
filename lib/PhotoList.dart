@@ -1,12 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/Events.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
@@ -17,11 +17,6 @@ import 'package:smart_album/widgets/ListedPhoto.dart';
 import 'PhotoView.dart';
 import 'util/Global.dart';
 import 'util/PermissionUtil.dart';
-
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:event_bus/event_bus.dart';
 
 class PhotoList extends StatefulWidget {
   final bool isHasTopBar;
