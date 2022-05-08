@@ -14,9 +14,9 @@ import 'package:smart_album/util/ShareUtil.dart';
 import 'package:http/http.dart' as http;
 
 class PhotoToolBar extends StatefulWidget {
-  final photoIndex;
+  final photo;
 
-  const PhotoToolBar({Key? key, required this.photoIndex}) : super(key: key);
+  const PhotoToolBar({Key? key, required this.photo}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PhotoToolBarState();
@@ -27,8 +27,7 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
 
   @override
   Widget build(BuildContext context) {
-    var photos = BlocProvider.of<PhotoListCubit>(context).state.photos;
-    var currentPhoto = photos[widget.photoIndex];
+    var currentPhoto = widget.photo;
 
     FavoritesUtil.isFavorite(currentPhoto.id).then((value) {
       if (isFavorite == value) {
@@ -50,9 +49,7 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
             icon: Icons.search,
             text: "Similar",
             onTap: () {
-              var photos =
-                  BlocProvider.of<PhotoListCubit>(context).state.photos;
-              TensorflowResultPanel.open(context, photos[widget.photoIndex]);
+              TensorflowResultPanel.open(context, currentPhoto);
             },
           ),
           IconText(

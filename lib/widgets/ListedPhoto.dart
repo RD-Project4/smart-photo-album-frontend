@@ -1,7 +1,7 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/util/FavoritesUtil.dart';
@@ -67,13 +67,20 @@ class _ListedPhotoState extends State<ListedPhoto> {
         });
       }
 
+      bool isSelected = selectedPhotos.contains(widget.entity);
+
       return InkWell(
           child: GestureDetector(
         child: Stack(
           children: [
             Container(
-                margin: EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
+              color: isSelected ? Colors.blueAccent[50] : null,
+            )),
+            Container(
+                margin: EdgeInsets.all(isSelected ? 20.0 : 6.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
                   image: DecorationImage(
                     image: FileImage(File(widget.path)),
                     fit: BoxFit.cover,
@@ -81,7 +88,7 @@ class _ListedPhotoState extends State<ListedPhoto> {
                 )),
             photoListMode == PhotoListMode.Selection
                 ? Checkbox(
-                    value: selectedPhotos.contains(widget.entity),
+                    value: isSelected,
                     side: BorderSide(color: Colors.white, width: 2),
                     onChanged: (status) {},
                   )

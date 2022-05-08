@@ -10,7 +10,7 @@ import 'ListedPhoto.dart';
 class PhotoGroupedView extends StatelessWidget {
   final bool isHasTopBar;
   final List<Photo> photos;
-  final void Function(Photo)? onTap;
+  final void Function(Photo, int, List<Photo>)? onTap;
 
   const PhotoGroupedView(
       {Key? key, this.isHasTopBar = false, required this.photos, this.onTap})
@@ -53,7 +53,7 @@ class PhotoGroupedView extends StatelessWidget {
                   .mapIndexed((index, element) => ListedPhoto(
                         path: element.path,
                         entity: element,
-                        onTap: () => onTap?.call(element),
+                        onTap: () => onTap?.call(element, index, allElement),
                       ))
                   .toList());
         });

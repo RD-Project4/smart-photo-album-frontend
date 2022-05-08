@@ -6,6 +6,7 @@ import 'package:smart_album/DataProvider.dart';
 import 'package:smart_album/widgets/PhotoGroupedView.dart';
 
 import 'PhotoList.dart';
+import 'PhotoView.dart';
 import 'bloc/photo_list/PhotoListCubit.dart';
 import 'widgets/SelectionToolBar.dart';
 
@@ -45,7 +46,10 @@ class FolderPage extends StatelessWidget {
                               foregroundColor: Colors.black)),
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
-          body: PhotoGroupedView(photos: arguments.photoList!),
+          body: PhotoGroupedView(
+              photos: arguments.photoList!,
+              onTap: (photo, index, sortedPhotoList) =>
+                  open(context, sortedPhotoList, index)),
           // body: GridView.count(
           //     // 照片
           //     crossAxisCount: 2,
@@ -61,5 +65,26 @@ class FolderPage extends StatelessWidget {
           //             )))
           //         .toList())
         ));
+  }
+
+  static void open(
+      BuildContext context, List<Photo> elements, final int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) {
+          return PhotoView<Photo>(
+            imageBuilder: (item) {
+              return FileImage(File(item.path));
+            },
+            galleryItems: elements,
+            backgroundDecoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            initialIndex: index,
+          );
+        },
+      ),
+    );
   }
 }

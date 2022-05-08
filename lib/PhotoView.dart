@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:smart_album/widgets/PhotoToolBar.dart';
+
+import 'DataProvider.dart';
+import 'bloc/photo_list/PhotoListCubit.dart';
 
 class PhotoView<T> extends StatefulWidget {
   final ImageProvider Function(T item) imageBuilder;
@@ -73,7 +79,7 @@ class _PhotoViewState<T> extends State<PhotoView<T>> {
                   widget.descBuilder != null
                       ? widget.descBuilder!(widget.galleryItems[currentIndex])
                       : Container(),
-                  PhotoToolBar(photoIndex: currentIndex)
+                  PhotoToolBar(photo: widget.galleryItems[currentIndex])
                 ],
               ),
             )
