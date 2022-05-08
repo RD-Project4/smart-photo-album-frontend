@@ -74,18 +74,20 @@ class _ListedPhotoState extends State<ListedPhoto> {
         child: Stack(
           children: [
             Container(
-                decoration: BoxDecoration(
-              color: isSelected ? Colors.blueAccent[50] : null,
-            )),
-            Container(
-                margin: EdgeInsets.all(isSelected ? 20.0 : 6.0),
+                margin: EdgeInsets.all(6.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  image: DecorationImage(
-                    image: FileImage(File(widget.path)),
-                    fit: BoxFit.cover,
-                  ),
-                )),
+                  color: isSelected ? Colors.blueAccent.withOpacity(0.3) : null,
+                ),
+                child: Container(
+                    margin: EdgeInsets.all(isSelected ? 14.0 : 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                        image: FileImage(File(widget.path)),
+                        fit: BoxFit.cover,
+                      ),
+                    ))),
             photoListMode == PhotoListMode.Selection
                 ? Checkbox(
                     value: isSelected,
