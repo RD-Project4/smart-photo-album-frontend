@@ -5,7 +5,7 @@ class PhotoListState {
   late List<Photo> selectedPhotos;
   late List<Photo> photos;
 
-  PhotoListState init() {
+  static PhotoListState init() {
     return PhotoListState()
       ..mode = PhotoListMode.View
       ..selectedPhotos = []

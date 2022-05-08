@@ -21,7 +21,7 @@ class _SearchBarState extends State<SearchBar> {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    var searchResult = SearchResult();
+    var searchResult = SearchResult(isHasBottom: true);
 
     return FloatingSearchBar(
       hint: '',

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/DataProvider.dart';
 
 part 'PhotoListState.dart';
@@ -7,7 +6,7 @@ part 'PhotoListState.dart';
 enum PhotoListMode { View, Selection }
 
 class PhotoListCubit extends Cubit<PhotoListState> {
-  PhotoListCubit() : super(PhotoListState().init());
+  PhotoListCubit() : super(PhotoListState.init());
 
   void setModeView() => emit(state.clone()..mode = PhotoListMode.View);
 

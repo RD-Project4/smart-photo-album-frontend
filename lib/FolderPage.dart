@@ -8,6 +8,7 @@ import 'package:smart_album/widgets/PhotoGroupedView.dart';
 import 'PhotoList.dart';
 import 'PhotoView.dart';
 import 'bloc/photo_list/PhotoListCubit.dart';
+import 'widgets/LightAppBar.dart';
 import 'widgets/SelectionToolBar.dart';
 
 class FolderPageArguments {
@@ -38,12 +39,7 @@ class FolderPage extends StatelessWidget {
                   builder: (context, state) =>
                       state.mode == PhotoListMode.Selection
                           ? SafeArea(bottom: false, child: SelectionToolBar())
-                          : AppBar(
-                              title: Text(arguments.title),
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              elevation: 0,
-                              foregroundColor: Colors.black)),
+                          : LightAppBar(context, arguments.title)),
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
           body: PhotoGroupedView(

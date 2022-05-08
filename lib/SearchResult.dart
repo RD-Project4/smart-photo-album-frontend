@@ -7,7 +7,9 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 class SearchResult extends StatelessWidget {
   String? searchLabel;
 
-  SearchResult({Key? key}) : super(key: key);
+  final bool isHasBottom;
+
+  SearchResult({Key? key, this.isHasBottom = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,12 @@ class SearchResult extends StatelessWidget {
       labels.addAll(photo.labels);
     }
 
+    final MediaQueryData data = MediaQuery.of(context);
+    num padding = isHasBottom ? data.padding.bottom : 0;
+
     return SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.only(left: 10, right: 10, bottom: padding + 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
