@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:smart_album/SearchResult.dart';
 
-import '../DataProvider.dart';
+import '../viewModel/PhotoViewModel.dart';
 
 class SearchBar extends StatefulWidget {
   SearchBar({Key? key}) : super(key: key);
@@ -78,26 +78,28 @@ class _SearchBarState extends State<SearchBar> {
       // ],
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
-        if (searchLabel != null) {
-          var photoList = DataProvider.getPhotoList()
-              .where((element) => element.labels.contains(searchLabel))
-              .toList();
-          return GridView.count(
-              // 照片
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              children: photoList
-                  .map((element) => Container(
-                      margin: EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(File(element.path)),
-                          fit: BoxFit.cover,
-                        ),
-                      )))
-                  .toList());
-        } else
-          return searchResult;
+        // TODO searchResult @RichardLuo
+        // if (searchLabel != null) {
+        //   var photoList = PhotoViewModel.getPhotoList()
+        //       .where((element) => element.labels.contains(searchLabel))
+        //       .toList();
+        //   return  GridView.count(
+        //       // 照片
+        //       crossAxisCount: 2,
+        //       shrinkWrap: true,
+        //       children: photoList
+        //           .map((element) => Container(
+        //               margin: EdgeInsets.all(3.0),
+        //               decoration: BoxDecoration(
+        //                 image: DecorationImage(
+        //                   image: FileImage(File(element.path)),
+        //                   fit: BoxFit.cover,
+        //                 ),
+        //               )))
+        //           .toList());
+        // } else
+        //   return searchResult;
+        return Container();
       },
     );
   }

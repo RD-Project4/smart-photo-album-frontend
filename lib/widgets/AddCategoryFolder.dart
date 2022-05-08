@@ -25,7 +25,7 @@ class AddCategoryFolder extends StatelessWidget {
             child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: TextField(
                 decoration: InputDecoration(
                   border: InputBorder.none,

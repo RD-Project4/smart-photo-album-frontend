@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:smart_album/DataProvider.dart';
-import 'package:smart_album/SearchResult.dart';
+import 'package:shifting_tabbar/shifting_tabbar.dart';
 import 'package:smart_album/widgets/AddCategoryFolder.dart';
+import 'package:smart_album/ViewModel/PhotoViewModel.dart';
+import 'package:smart_album/widgets/LoadingCircle.dart';
+import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'FolderPage.dart';
 import 'PhotoFolderGridView.dart';
-import 'package:shifting_tabbar/shifting_tabbar.dart';
+import 'database/Photo.dart';
 
 class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var data = DataProvider.getPhotoList();
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -42,13 +42,15 @@ class CategoryPage extends StatelessWidget {
               ];
             },
             body: TabBarView(children: [
-              PhotoFolderGridView(
-                  photoList: data,
-                  onTap: (entry) {
-                    Navigator.pushNamed(context, '/folderPage',
-                        arguments: FolderPageArguments(
-                            title: entry.key, photoList: entry.value));
-                  }),
+              QueryStreamBuilder<Photo>(
+                  queryStream: PhotoViewModel.getPhotoList(),
+                  loadingWidget: LoadingCircle(),
+                  builder: (context, data) => PhotoFolderGridView(
+                      photoList: data,
+                      onTap: (entry) {
+                        Navigator.pushNamed(context, '/folderPage',
+                            arguments: FolderPageArguments(title: entry.key));
+                      })),
               Container(),
               Container()
             ]),

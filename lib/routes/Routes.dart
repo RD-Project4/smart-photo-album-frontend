@@ -19,7 +19,7 @@ import '../pages/TestPage.dart';
 
 //配置路由
 final routes = {
-  '/': (context) => Tabs(),
+  '/Home': (context) => Tabs(),
 
   // '/search': (context, {arguments}) => SearchPage(arguments: arguments), //需要传值
   // '/productinfo': (context, {arguments}) =>

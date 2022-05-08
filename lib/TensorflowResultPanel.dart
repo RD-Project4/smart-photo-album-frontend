@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/database/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 

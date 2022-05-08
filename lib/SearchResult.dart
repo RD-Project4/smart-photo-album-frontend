@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/viewModel/PhotoViewModel.dart';
 import 'package:smart_album/util/ListUtil.dart';
+import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/MultiChoiceChip.dart';
+import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import 'database/Photo.dart';
 
 class SearchResult extends StatelessWidget {
   String? searchLabel;
@@ -13,12 +17,6 @@ class SearchResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var photoList = DataProvider.getPhotoList();
-    Set<String> labels = Set();
-    for (var photo in photoList) {
-      labels.addAll(photo.labels);
-    }
-
     final MediaQueryData data = MediaQuery.of(context);
     num padding = isHasBottom ? data.padding.bottom : 0;
 
@@ -29,9 +27,19 @@ class SearchResult extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _Title("Category"),
-            MultiChoiceChip(labels, onSelectionChanged: (label) {
-              searchLabel = label.length > 0 ? label.first : null;
-            }),
+            QueryStreamBuilder<Photo>(
+                queryStream: PhotoViewModel.getPhotoList(),
+                loadingWidget: LoadingCircle(),
+                builder: (context, data) {
+                  var photoList = data;
+                  Set<String> labels = Set();
+                  for (var photo in photoList) {
+                    labels.addAll(photo.labels);
+                  }
+                  return MultiChoiceChip(labels, onSelectionChanged: (label) {
+                    searchLabel = label.length > 0 ? label.first : null;
+                  });
+                }),
             _Title("Date"),
             SfDateRangePicker(
               selectionMode: DateRangePickerSelectionMode.multiRange,

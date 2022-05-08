@@ -1,6 +1,20 @@
-class Photo {
-  final int id;
-  final String path;
+import 'package:objectbox/objectbox.dart';
+import 'package:photo_manager/photo_manager.dart';
 
-  Photo({required this.id, required this.path});
+@Entity()
+class Photo {
+  @Id()
+  int id = 0;
+  @Index()
+  int entity_id;
+  String path;
+  List<String> labels;
+  DateTime createDateTime;
+  int width;
+  int height;
+  bool is_cloud = false;
+  bool is_favorite = false;
+
+  Photo(this.entity_id, this.path, this.labels, this.createDateTime, this.width,
+      this.height);
 }
