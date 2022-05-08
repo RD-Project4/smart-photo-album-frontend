@@ -1,21 +1,23 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/viewModel/PhotoViewModel.dart';
+import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/PhotoGroupedView.dart';
+import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
-import 'PhotoList.dart';
 import 'PhotoView.dart';
 import 'bloc/photo_list/PhotoListCubit.dart';
+import 'database/Photo.dart';
 import 'widgets/LightAppBar.dart';
 import 'widgets/SelectionToolBar.dart';
 
 class FolderPageArguments {
   final String title;
-  List<Photo>? photoList;
 
-  FolderPageArguments({required this.title, this.photoList});
+  FolderPageArguments({required this.title});
 }
 
 class FolderPage extends StatelessWidget {
@@ -25,12 +27,6 @@ class FolderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (arguments.photoList == null) {
-      arguments.photoList = DataProvider.getPhotoList()
-          .where((element) => element.labels.contains(arguments.title))
-          .toList();
-    }
-
     return BlocProvider(
         create: (_) => PhotoListCubit(),
         child: Scaffold(
@@ -42,10 +38,17 @@ class FolderPage extends StatelessWidget {
                           : LightAppBar(context, arguments.title)),
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
-          body: PhotoGroupedView(
-              photos: arguments.photoList!,
-              onTap: (photo, index, sortedPhotoList) =>
-                  open(context, sortedPhotoList, index)),
+          body: QueryStreamBuilder<Photo>(
+            queryStream: PhotoViewModel.getPhotoList(),
+            loadingWidget: LoadingCircle(),
+            builder: (context, data) => PhotoGroupedView(
+                photos: data
+                    .where(
+                        (element) => element.labels.contains(arguments.title))
+                    .toList(),
+                onTap: (photo, index, sortedPhotoList) =>
+                    open(context, sortedPhotoList, index)),
+          ),
           // body: GridView.count(
           //     // 照片
           //     crossAxisCount: 2,

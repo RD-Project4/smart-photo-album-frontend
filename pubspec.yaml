@@ -67,7 +67,6 @@ dependencies:
   oktoast: ^3.1.5
   qr_code_scanner: ^0.7.0
   sliding_up_panel: ^2.0.0+1
-  sqflite: ^2.0.2
   google_ml_kit: ^0.7.3
   syncfusion_flutter_datepicker: ^19.4.52
   multi_image_picker: ^4.8.01
@@ -80,6 +79,12 @@ dependencies:
   image_utils_class: ^2.0.0
   event_bus: ^2.0.0
   path_provider: ^2.0.9
+  objectbox: ^1.4.1
+  objectbox_flutter_libs: any
+  splashscreen:
+    git:
+      url: https://github.com/DPLYR-dev/SplashScreenFlutterPackage.git
+      ref: master
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +96,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  build_runner: ^2.0.0
+  objectbox_generator: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:smart_album/DataProvider.dart';
+import 'package:smart_album/database/Photo.dart';
 
 part 'PhotoListState.dart';
 

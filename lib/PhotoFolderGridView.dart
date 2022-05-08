@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:smart_album/database/Photo.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../util/CommonUtil.dart';
-import 'DataProvider.dart';
 
 class PhotoFolderGridView extends StatelessWidget {
   final List<Photo> photoList;
