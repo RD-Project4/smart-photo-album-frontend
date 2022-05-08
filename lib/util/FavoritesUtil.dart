@@ -14,7 +14,6 @@ class FavoritesUtil {
     print('读取favorite_list.json');
     final _dirPath = await CommonUtil.getDirPath();
     final _filePath = '$_dirPath/favorite_list.json';
-    print(_filePath);
 
     return new File(_filePath);
   }
