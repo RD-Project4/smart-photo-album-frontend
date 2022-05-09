@@ -9,12 +9,12 @@ class Photo {
   int entity_id;
   String path;
   List<String> labels;
-  DateTime createDateTime;
+  DateTime creationDateTime;
   int width;
   int height;
   bool is_cloud = false;
   bool is_favorite = false;
 
-  Photo(this.entity_id, this.path, this.labels, this.createDateTime, this.width,
-      this.height);
+  Photo(this.entity_id, this.path, this.labels, this.creationDateTime,
+      this.width, this.height);
 }

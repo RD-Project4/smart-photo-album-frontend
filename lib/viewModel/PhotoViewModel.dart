@@ -58,4 +58,9 @@ class PhotoViewModel {
   }
 
   static savePhoto() {}
+
+  static List<Photo> getPhotoBy({List<String>? labelList, DateTime? dateTime}) {
+    return ObjectStore.get()
+        .getPhotoBy(labelList: labelList, dateTime: dateTime);
+  }
 }

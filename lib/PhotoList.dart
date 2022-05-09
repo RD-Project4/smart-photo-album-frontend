@@ -77,7 +77,7 @@ class _PhotoListState extends State<PhotoList> {
                   elements: photos,
                   groupBy: (element) {
                     // 分类
-                    DateTime time = element.createDateTime;
+                    DateTime time = element.creationDateTime;
                     return DateTime(time.year, time.month, time.day);
                   },
                   groupComparator: (value1, value2) =>

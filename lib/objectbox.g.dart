@@ -21,7 +21,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(9, 3168296054505618822),
+      lastPropertyId: const IdUid(10, 3836911989879182796),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -38,11 +38,6 @@ final _entities = <ModelEntity>[
             id: const IdUid(3, 6720509377879332907),
             name: 'labels',
             type: 30,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 5711374106246872086),
-            name: 'createDateTime',
-            type: 10,
             flags: 0),
         ModelProperty(
             id: const IdUid(5, 4721466364384475782),
@@ -69,6 +64,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(9, 3168296054505618822),
             name: 'is_favorite',
             type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(10, 3836911989879182796),
+            name: 'creationDateTime',
+            type: 10,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -101,7 +101,7 @@ ModelDefinition getObjectBoxModel() {
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [5711374106246872086],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -120,16 +120,16 @@ ModelDefinition getObjectBoxModel() {
           final pathOffset = fbb.writeString(object.path);
           final labelsOffset = fbb.writeList(
               object.labels.map(fbb.writeString).toList(growable: false));
-          fbb.startTable(10);
+          fbb.startTable(11);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
-          fbb.addInt64(3, object.createDateTime.millisecondsSinceEpoch);
           fbb.addInt64(4, object.width);
           fbb.addInt64(5, object.height);
           fbb.addInt64(6, object.entity_id);
           fbb.addBool(7, object.is_cloud);
           fbb.addBool(8, object.is_favorite);
+          fbb.addInt64(9, object.creationDateTime.millisecondsSinceEpoch);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -146,7 +146,7 @@ ModelDefinition getObjectBoxModel() {
                       lazy: false)
                   .vTableGet(buffer, rootOffset, 8, []),
               DateTime.fromMillisecondsSinceEpoch(
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0)),
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 22, 0)),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
@@ -174,25 +174,25 @@ class Photo_ {
   static final labels =
       QueryStringVectorProperty<Photo>(_entities[0].properties[2]);
 
-  /// see [Photo.createDateTime]
-  static final createDateTime =
-      QueryIntegerProperty<Photo>(_entities[0].properties[3]);
-
   /// see [Photo.width]
-  static final width = QueryIntegerProperty<Photo>(_entities[0].properties[4]);
+  static final width = QueryIntegerProperty<Photo>(_entities[0].properties[3]);
 
   /// see [Photo.height]
-  static final height = QueryIntegerProperty<Photo>(_entities[0].properties[5]);
+  static final height = QueryIntegerProperty<Photo>(_entities[0].properties[4]);
 
   /// see [Photo.entity_id]
   static final entity_id =
-      QueryIntegerProperty<Photo>(_entities[0].properties[6]);
+      QueryIntegerProperty<Photo>(_entities[0].properties[5]);
 
   /// see [Photo.is_cloud]
   static final is_cloud =
-      QueryBooleanProperty<Photo>(_entities[0].properties[7]);
+      QueryBooleanProperty<Photo>(_entities[0].properties[6]);
 
   /// see [Photo.is_favorite]
   static final is_favorite =
-      QueryBooleanProperty<Photo>(_entities[0].properties[8]);
+      QueryBooleanProperty<Photo>(_entities[0].properties[7]);
+
+  /// see [Photo.creationDateTime]
+  static final creationDateTime =
+      QueryIntegerProperty<Photo>(_entities[0].properties[8]);
 }

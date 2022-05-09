@@ -1,29 +1,33 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+import 'package:smart_album/SearchQuery.dart';
 import 'package:smart_album/SearchResult.dart';
+import 'package:smart_album/bloc/search/SearchCubit.dart';
+import 'package:smart_album/bloc/search/SearchState.dart';
 
-import '../viewModel/PhotoViewModel.dart';
-
-class SearchBar extends StatefulWidget {
+class SearchBar extends StatelessWidget {
   SearchBar({Key? key}) : super(key: key);
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (_) => SearchCubit(), child: _SearchBarContent());
+  }
 }
 
-class _SearchBarState extends State<SearchBar> {
-  String? searchLabel;
+class _SearchBarContent extends StatelessWidget {
+  final FloatingSearchBarController controller = FloatingSearchBarController();
+
+  _SearchBarContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    var searchResult = SearchResult(isHasBottom: true);
-
     return FloatingSearchBar(
+      controller: controller,
       hint: '',
       isScrollControlled: true,
       backdropColor: Colors.white,
@@ -36,7 +40,7 @@ class _SearchBarState extends State<SearchBar> {
       width: isPortrait ? 600 : 500,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
-        // Call your model, bloc, controller here.
+        context.read<SearchCubit>().setText(query);
       },
       clearQueryOnClose: true,
       actions: [
@@ -54,14 +58,16 @@ class _SearchBarState extends State<SearchBar> {
           showIfOpened: true,
           showIfClosed: false,
           child: CircularButton(
-            icon: Icon(searchLabel == null ? Icons.search : Icons.clear),
-            onPressed: () {
-              setState(() {
-                searchLabel =
-                    searchLabel == null ? searchResult.searchLabel : null;
-              });
-            },
+            icon: Icon(Icons.clear),
+            onPressed: () => controller.clear(),
           ),
+        ),
+        FloatingSearchBarAction(
+          showIfOpened: true,
+          showIfClosed: false,
+          child: CircularButton(
+              icon: Icon(Icons.search),
+              onPressed: () => context.read<SearchCubit>().search()),
         )
       ],
       // leadingActions: [
@@ -78,28 +84,10 @@ class _SearchBarState extends State<SearchBar> {
       // ],
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
-        // TODO searchResult @RichardLuo
-        // if (searchLabel != null) {
-        //   var photoList = PhotoViewModel.getPhotoList()
-        //       .where((element) => element.labels.contains(searchLabel))
-        //       .toList();
-        //   return  GridView.count(
-        //       // 照片
-        //       crossAxisCount: 2,
-        //       shrinkWrap: true,
-        //       children: photoList
-        //           .map((element) => Container(
-        //               margin: EdgeInsets.all(3.0),
-        //               decoration: BoxDecoration(
-        //                 image: DecorationImage(
-        //                   image: FileImage(File(element.path)),
-        //                   fit: BoxFit.cover,
-        //                 ),
-        //               )))
-        //           .toList());
-        // } else
-        //   return searchResult;
-        return Container();
+        return BlocBuilder<SearchCubit, SearchState>(
+            builder: ((context, state) => state.searchResult == null
+                ? SearchQuery(isHasBottom: true)
+                : SearchResult()));
       },
     );
   }

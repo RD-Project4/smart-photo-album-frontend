@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8452154140893309457",
-      "lastPropertyId": "9:3168296054505618822",
+      "lastPropertyId": "10:3836911989879182796",
       "name": "Photo",
       "properties": [
         {
@@ -23,11 +23,6 @@
           "id": "3:6720509377879332907",
           "name": "labels",
           "type": 30
-        },
-        {
-          "id": "4:5711374106246872086",
-          "name": "createDateTime",
-          "type": 10
         },
         {
           "id": "5:4721466364384475782",
@@ -55,6 +50,11 @@
           "id": "9:3168296054505618822",
           "name": "is_favorite",
           "type": 1
+        },
+        {
+          "id": "10:3836911989879182796",
+          "name": "creationDateTime",
+          "type": 10
         }
       ],
       "relations": []
@@ -68,7 +68,9 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    5711374106246872086
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

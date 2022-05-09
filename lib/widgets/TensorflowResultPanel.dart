@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/database/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
-import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
-import 'FolderPage.dart';
-import 'widgets/ColorfulProgressBar.dart';
+import '../FolderPage.dart';
+import 'ColorfulProgressBar.dart';
 
 class TensorflowResultPanel {
   static open(BuildContext context, Photo element) async {
@@ -25,32 +24,12 @@ class TensorflowResultPanel {
                       isScrollable: true,
                     ),
                     body: TabBarView(children: [
-                      FutureBuilder<List<Category>>(
-                        future: TensorflowProvider.recognizeObjectInFile(
-                            element.path),
-                        initialData: null,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          return (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                  snapshot.data != null)
-                              ? ListView(
-                                  scrollDirection: Axis.vertical,
-                                  children: (snapshot.data as List<Category>)
-                                      .take(5)
-                                      .where((element) => element.score > 0.1)
-                                      .map((element) =>
-                                          createLabel(context, element))
-                                      .toList())
-                              : Stack(children: [
-                                  Positioned(
-                                      top: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: ColorfulProgressBar()),
-                                ]);
-                        },
-                      ),
+                      ListView(
+                          scrollDirection: Axis.vertical,
+                          children: element.labels
+                              .take(5)
+                              .map((label) => createLabel(context, label))
+                              .toList()),
                       FutureBuilder<String>(
                           future: TensorflowProvider.recognizeTextInFile(
                               element.path),
@@ -74,27 +53,27 @@ class TensorflowResultPanel {
                     ])))));
   }
 
-  static Widget createLabel(BuildContext context, Category element) {
+  static Widget createLabel(BuildContext context, String label) {
     return Stack(
       children: [
-        Positioned(
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: FractionallySizedBox(
-              widthFactor: element.score,
-              heightFactor: 1.0,
-              alignment: Alignment.centerLeft,
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent,
-                      shape: BoxShape.rectangle))),
-        ),
+        // Positioned(
+        //   top: 0,
+        //   bottom: 0,
+        //   left: 0,
+        //   right: 0,
+        //   child: FractionallySizedBox(
+        //       widthFactor: element.score,
+        //       heightFactor: 1.0,
+        //       alignment: Alignment.centerLeft,
+        //       child: DecoratedBox(
+        //           decoration: BoxDecoration(
+        //               color: Colors.lightBlueAccent,
+        //               shape: BoxShape.rectangle))),
+        // ),
         ListTile(
-          title: Text(element.label),
+          title: Text(label),
           onTap: () => Navigator.pushNamed(context, '/folderPage',
-              arguments: FolderPageArguments(title: element.label)),
+              arguments: FolderPageArguments(title: label)),
         )
       ],
     );

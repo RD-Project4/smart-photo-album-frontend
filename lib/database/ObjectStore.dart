@@ -3,6 +3,38 @@ import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import '../objectbox.g.dart';
 import 'Photo.dart';
 
+class EmptyCondition<T> implements Condition<T> {
+  @override
+  Condition<T> operator &(Condition<T> rh) {
+    return rh;
+  }
+
+  @override
+  Condition<T> and(Condition<T> rh) {
+    return rh;
+  }
+
+  @override
+  Condition<T> andAll(List<Condition<T>> rh) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Condition<T> or(Condition<T> rh) {
+    return rh;
+  }
+
+  @override
+  Condition<T> orAny(List<Condition<T>> rh) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Condition<T> operator |(Condition<T> rh) {
+    return rh;
+  }
+}
+
 class ObjectStore {
   late final Store _store;
 
@@ -27,8 +59,23 @@ class ObjectStore {
     return _instance!;
   }
 
-  getPhoto() {
+  List<Photo> getPhoto() {
     return _photoBox.getAll();
+  }
+
+  List<Photo> getPhotoBy({List<String>? labelList, DateTime? dateTime}) {
+    Condition<Photo> condition = EmptyCondition();
+    if (labelList != null && labelList.isNotEmpty) {
+      for (var label in labelList) {
+        condition =
+            condition.or(Photo_.labels.contains(labelList.iterator.current));
+      }
+    }
+
+    // if (dateTime != null)
+    //   condition = condition.and(Photo_.creationDateTime.equals(dateTime));
+
+    return _photoBox.query(condition).build().find();
   }
 
   QueryStream<Photo> getPhotoStream() {

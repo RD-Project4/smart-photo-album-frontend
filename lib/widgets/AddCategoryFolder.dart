@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/widgets/LightAppBar.dart';
 
-import '../SearchResult.dart';
+import '../SearchQuery.dart';
 
 class AddCategoryFolder extends StatelessWidget {
   const AddCategoryFolder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var searchResult = SearchResult();
-
     return Scaffold(
         appBar: LightAppBar(
           context,
@@ -33,7 +31,7 @@ class AddCategoryFolder extends StatelessWidget {
                 ),
               ),
             ),
-            searchResult
+            SearchQuery()
           ],
         )));
   }
