@@ -12,6 +12,7 @@ import 'database/Photo.dart';
 class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -46,6 +47,11 @@ class CategoryPage extends StatelessWidget {
                   queryStream: PhotoViewModel.getPhotoList(),
                   loadingWidget: LoadingCircle(),
                   builder: (context, data) => PhotoFolderGridView(
+                      padding: EdgeInsets.only(
+                          top: 10,
+                          left: 10,
+                          right: 10,
+                          bottom: mediaQuery.padding.bottom),
                       photoList: data,
                       onTap: (entry) {
                         Navigator.pushNamed(context, '/folderPage',

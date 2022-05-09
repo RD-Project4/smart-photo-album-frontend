@@ -6,7 +6,9 @@ import 'package:splashscreen/splashscreen.dart';
 import 'ViewModel/PhotoViewModel.dart';
 import 'database/ObjectStore.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await ObjectStore.create();
   runApp(OKToast(child: MyApp()));
 }
 
@@ -22,7 +24,6 @@ class MyApp extends StatelessWidget {
 
 class Splash extends StatelessWidget {
   Future<String> loadFromFuture() async {
-    await ObjectStore.create();
     await PhotoViewModel.init();
     return "/Home";
   }

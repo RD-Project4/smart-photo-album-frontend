@@ -11,7 +11,10 @@ class PhotoFolderGridView extends StatelessWidget {
   final List<Photo> photoList;
   final void Function(MapEntry<String, List<Photo>> entry)? onTap;
 
-  const PhotoFolderGridView({required this.photoList, this.onTap});
+  final EdgeInsets? padding;
+
+  const PhotoFolderGridView(
+      {required this.photoList, this.onTap, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class PhotoFolderGridView extends StatelessWidget {
     Random random = Random();
 
     return WaterfallFlow.builder(
-      padding: EdgeInsets.all(10.0),
+      padding: this.padding ?? EdgeInsets.all(10.0),
       itemCount: folderNameList.length,
       itemBuilder: (context, index) {
         var folderEntry = folderNameList[index];

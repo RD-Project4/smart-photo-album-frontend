@@ -54,28 +54,27 @@ class _ListedPhotoState extends State<ListedPhoto> {
       // 当照片在选择模式下被点击
       void onPhotoTappedInSelectionMode() {
         var cubit = context.read<PhotoListCubit>();
-        setState(() {
-          if (selectedPhotos.indexOf(widget.entity) == -1) {
-            // 如果照片不在选中列表中
-            cubit.addSelectedPhoto(widget.entity);
-          } else {
-            cubit.removeSelectedPhoto(widget.entity);
-            if (state.selectedPhotos.length == 0) {
-              cubit.setModeView();
-            }
+        if (selectedPhotos.indexOf(widget.entity) == -1) {
+          // 如果照片不在选中列表中
+          cubit.addSelectedPhoto(widget.entity);
+        } else {
+          cubit.removeSelectedPhoto(widget.entity);
+          if (state.selectedPhotos.length == 0) {
+            cubit.setModeView();
           }
-        });
+        }
       }
 
       bool isSelected = selectedPhotos.contains(widget.entity);
 
       return InkWell(
           child: GestureDetector(
-        child: Stack(
-          children: [
-            Container(
-                margin: EdgeInsets.all(isSelected ? 14.0 : 6.0),
-                decoration: BoxDecoration(
+        child: Container(
+            margin: EdgeInsets.all(isSelected ? 14.0 : 6.0),
+            child: Stack(
+              children: [
+                Container(
+                    decoration: BoxDecoration(
                   border: isSelected
                       ? Border.all(color: Colors.blueAccent.shade200, width: 10)
                       : null,
@@ -85,25 +84,25 @@ class _ListedPhotoState extends State<ListedPhoto> {
                     fit: BoxFit.cover,
                   ),
                 )),
-            photoListMode == PhotoListMode.Selection
-                ? Checkbox(
-                    value: isSelected,
-                    side: BorderSide(color: Colors.white, width: 2),
-                    onChanged: (status) {},
-                  )
-                : Container(),
-            isFavorite
-                ? Positioned(
-                    child: Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    ),
-                    right: 5,
-                    bottom: 5,
-                  )
-                : Container()
-          ],
-        ),
+                photoListMode == PhotoListMode.Selection
+                    ? Checkbox(
+                        value: isSelected,
+                        side: BorderSide(color: Colors.white, width: 2),
+                        onChanged: (status) {},
+                      )
+                    : Container(),
+                isFavorite
+                    ? Positioned(
+                        child: Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        ),
+                        right: 5,
+                        bottom: 5,
+                      )
+                    : Container()
+              ],
+            )),
         onTap: () {
           if (photoListMode == PhotoListMode.View) {
             widget.onTap();

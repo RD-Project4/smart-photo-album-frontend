@@ -61,6 +61,7 @@ class _PhotoListState extends State<PhotoList> {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
     return isReady
         ? QueryStreamBuilder(
             queryStream: photos,
@@ -69,7 +70,9 @@ class _PhotoListState extends State<PhotoList> {
               var photos = data;
               return GroupedView<Photo, DateTime>(
                   padding: widget.isHasTopBar
-                      ? const EdgeInsets.only(top: kToolbarHeight)
+                      ? EdgeInsets.only(
+                          top: kToolbarHeight,
+                          bottom: mediaQuery.padding.bottom)
                       : null,
                   elements: photos,
                   groupBy: (element) {
@@ -106,6 +109,7 @@ class _PhotoListState extends State<PhotoList> {
 
                     return GridView.count(
                         // 照片
+                        padding: EdgeInsets.zero,
                         crossAxisCount: 2,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
