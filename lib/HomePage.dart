@@ -7,27 +7,19 @@ import 'package:smart_album/widgets/SelectionToolBar.dart';
 
 import 'PhotoList.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (_) => PhotoListCubit(),
-        child: BlocBuilder<PhotoListCubit, PhotoListState>(
-            builder: (context, state) {
-          final photoListMode = state.mode;
-          return Stack(
-            children: [
-              Positioned(child: PhotoList(isHasTopBar: true)),
-              photoListMode == PhotoListMode.View
-                  ? SearchBar()
-                  : Positioned(child: SelectionToolBar())
-            ],
-          );
-        }));
+        child: Stack(
+          children: [
+            Positioned(child: PhotoList(isHasTopBar: true)),
+            BlocBuilder<PhotoListCubit, PhotoListState>(
+                builder: (context, state) => state.mode == PhotoListMode.View
+                    ? SearchBar()
+                    : Positioned(child: SelectionToolBar())),
+          ],
+        ));
   }
 }
