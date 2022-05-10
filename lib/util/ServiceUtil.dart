@@ -25,11 +25,11 @@ typedef WorkLoad = Future<void> Function(
 
 class FirstRunArgument {
   late SendPort port;
-  WorkLoad onExcute;
+  WorkLoad onExecute;
   Map? initArgs;
 
   FirstRunArgument(
-      {required this.port, required this.onExcute, required this.initArgs});
+      {required this.port, required this.onExecute, required this.initArgs});
 }
 
 class Service {
@@ -41,7 +41,7 @@ class Service {
     await Isolate.spawn(
         Service._run,
         FirstRunArgument(
-            port: p.sendPort, onExcute: onExecute, initArgs: initArgs));
+            port: p.sendPort, onExecute: onExecute, initArgs: initArgs));
     _events = StreamQueue<dynamic>(p);
     _isolatePort = await _events.next;
   }
@@ -54,7 +54,7 @@ class Service {
   static void _run(FirstRunArgument arguments) async {
     var p = ReceivePort();
     arguments.port.send(p.sendPort);
-    await arguments.onExcute(arguments.port, p, arguments.initArgs);
+    await arguments.onExecute(arguments.port, p, arguments.initArgs);
     Isolate.exit();
   }
 }

@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:smart_album/SearchQuery.dart';
 import 'package:smart_album/SearchResult.dart';
 import 'package:smart_album/bloc/search/SearchCubit.dart';
 import 'package:smart_album/bloc/search/SearchState.dart';
+import 'package:smart_album/tensorflow/TensorflowProvider.dart';
+
+import 'CustomSearchBar/CustomFloatingSearchBar.dart';
+import 'ChipsInput.dart';
+
+class Label {
+  final String name;
+
+  Label(this.name);
+}
 
 class SearchBar extends StatelessWidget {
   SearchBar({Key? key}) : super(key: key);
@@ -26,9 +35,48 @@ class _SearchBarContent extends StatelessWidget {
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
-    return FloatingSearchBar(
+    SearchCubit cubit = context.read<SearchCubit>();
+
+    return CustomFloatingSearchBar(
+      textFieldBuilder: (state) => ChipsInput<Label>(
+        chipBuilder: (context, state, label) => InputChip(
+          label: Text(label.name),
+          onDeleted: () => state.deleteChip(label),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        suggestionBuilder: (context, label) => ListTile(
+          title: Text(label.name),
+        ),
+        onChanged: (data) =>
+            cubit.setLabelList(data.map((label) => label.name).toList()),
+        findSuggestions: (query) async => (await TensorflowProvider.getLabels())
+            .where((label) => label.contains(query))
+            .where((label) => !cubit.containsLabel(label))
+            .map((label) => Label(label))
+            .toList(),
+        controller: state.inputController,
+        showCursor: state.widget.showCursor,
+        focusNode: state.inputController.node,
+        maxLines: 1,
+        autofocus: false,
+        toolbarOptions: state.widget.toolbarOptions,
+        cursorColor: state.style.accentColor,
+        style: state.style.queryStyle,
+        textInputAction: state.widget.textInputAction,
+        keyboardType: state.widget.textInputType,
+        decoration: InputDecoration(
+          isDense: true,
+          hintStyle: state.style.hintStyle,
+          border: InputBorder.none,
+          errorBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          focusedErrorBorder: InputBorder.none,
+        ),
+      ),
       controller: controller,
-      hint: '',
+      hint: 'Type to search',
       isScrollControlled: true,
       backdropColor: Colors.white,
       scrollPadding: EdgeInsets.zero,

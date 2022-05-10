@@ -41,6 +41,9 @@ class _Model {
 class TensorflowProvider {
   static const String SERVICE_NAME = "TensorflowService";
 
+  static const String OBJECT_MODEL_LOCATION = "assets/model.tflite";
+  static const String LABELS_LOCATION = "assets/labels.txt";
+
   late List<String> _labels;
   late _Model objectModel;
   late _Model textModel;
@@ -72,8 +75,8 @@ class TensorflowProvider {
     else
       return _service = await ServiceUtils.getService(
           SERVICE_NAME, TensorflowProvider._recognizeInService, {
-        "objectModel": await rootBundle.load("assets/model.tflite"),
-        "labels": await rootBundle.loadString("assets/labels.txt")
+        "objectModel": await rootBundle.load(OBJECT_MODEL_LOCATION),
+        "labels": await rootBundle.loadString(LABELS_LOCATION)
       });
   }
 
@@ -125,5 +128,13 @@ class TensorflowProvider {
     final RecognisedText recognisedText =
         await textDetector.processImage(InputImage.fromFilePath(path));
     return recognisedText.text;
+  }
+
+  static List<String>? _staticLabels;
+
+  static Future<List<String>> getLabels() async {
+    return _staticLabels ??
+        (_staticLabels = FileUtil.labelListFromString(
+            await rootBundle.loadString(LABELS_LOCATION)));
   }
 }

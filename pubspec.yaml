@@ -85,6 +85,7 @@ dependencies:
     git:
       url: https://github.com/DPLYR-dev/SplashScreenFlutterPackage.git
       ref: master
+  chips_input: ^0.1.0
 
 dev_dependencies:
   flutter_test:

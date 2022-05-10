@@ -9,5 +9,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   setLabelList(labelList) => state.labelList = labelList;
 
+  containsLabel(label) => state.labelList.contains(label);
+
   search() {}
 }
