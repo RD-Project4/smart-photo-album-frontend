@@ -40,7 +40,7 @@ class PhotoFolderGridView extends StatelessWidget {
         var previewPhoto =
             folderEntry.value[random.nextInt(folderEntry.value.length)];
         return AspectRatio(
-          aspectRatio: index % 3 == 0 ? 0.9 : 0.62,
+          aspectRatio: index % 3 == 0 ? 0.76 : 0.62,
           child: Card(
             elevation: 10,
             clipBehavior: Clip.antiAlias,

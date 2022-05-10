@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 
 class Splash extends StatelessWidget {
   Future<String> loadFromFuture() async {
-    await PhotoViewModel.init();
+    await PhotoViewModel.refresh();
     return "/Home";
   }
 

@@ -117,7 +117,7 @@ class TensorflowProvider {
 
     TensorLabel tensorLabel = TensorLabel.fromList(_labels, processedBuffer);
     return tensorLabel.getCategoryList()
-      ..sort((a, b) => ((b.score - a.score) * 1000).toInt());
+      ..sort((a, b) => b.score.compareTo(a.score));
   }
 
   static Future<String> recognizeTextInFile(String path) async {
