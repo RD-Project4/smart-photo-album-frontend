@@ -1,3 +1,4 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/database/Photo.dart';
@@ -8,10 +9,11 @@ import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class PhotoViewModel {
   static refresh() async {
-    if (!(await PermissionUtil.checkStoragePermission())) {
-      var res = await PermissionUtil.requestStoragePermission();
-      if (res == false) {
-        throw new Error(); // TODO 提示用户没有权限
+    Map<Permission, PermissionStatus> permissionMap =
+        await [Permission.storage, Permission.accessMediaLocation].request();
+    for (PermissionStatus status in permissionMap.values) {
+      if (status.isDenied) {
+        throw new Exception(); // TODO 弹出提示
       }
     }
 
@@ -23,14 +25,20 @@ class PhotoViewModel {
     List<AssetEntity> dcimFolder = [];
     for (AssetPathEntity entity in entityList) {
       if (entity.name == "DCIM") {
-        dcimFolder = await entity.assetList;
+        dcimFolder =
+            await entity.getAssetListRange(start: 0, end: entity.assetCount);
         break;
       }
     }
 
-    Map<int, AssetEntity> photoMapFromLocal = new Map();
+    Map<String, AssetEntity> photoMapFromLocal = new Map();
     for (AssetEntity photo in dcimFolder) {
-      photoMapFromLocal[int.parse(photo.id)] = photo;
+      photoMapFromLocal[photo.id] = photo;
+    }
+
+    for (AssetEntity entity in photoMapFromLocal.values) {
+      var latitude = await entity.latlngAsync();
+      print(latitude.latitude);
     }
 
     List<int> photoToRemoveList = [];
@@ -55,7 +63,7 @@ class PhotoViewModel {
           .where((e) => e.score > 0.0001)
           .map((e) => e.label)
           .toList();
-      photoToStoreList.add(Photo(int.parse(entity.id), path, labelsString,
+      photoToStoreList.add(Photo(entity.id, path, labelsString,
           entity.createDateTime, entity.width, entity.height));
     }
 
@@ -67,10 +75,8 @@ class PhotoViewModel {
     return ObjectStore.get().getPhotoStream();
   }
 
-  static savePhoto() {}
-
-  static List<Photo> getPhotoBy({List<String>? labelList, DateTime? dateTime}) {
-    return ObjectStore.get()
-        .getPhotoBy(labelList: labelList, dateTime: dateTime);
-  }
+  // static List<Photo> getPhotoBy({List<String>? labelList, DateTime? dateTime}) {
+  //   return ObjectStore.get()
+  //       .getPhotoBy(labelList: labelList, dateTime: dateTime);
+  // }
 }

@@ -6,7 +6,7 @@ class Photo {
   @Id()
   int id = 0;
   @Index()
-  int entity_id;
+  String entity_id;
   String path;
   List<String> labels;
   DateTime creationDateTime;

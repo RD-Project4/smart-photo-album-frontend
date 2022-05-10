@@ -78,6 +78,8 @@ class _SearchBarContent extends StatelessWidget {
       controller: controller,
       hint: 'Type to search',
       isScrollControlled: true,
+      automaticallyImplyBackButton: false,
+      automaticallyImplyDrawerHamburger: false,
       backdropColor: Colors.white,
       scrollPadding: EdgeInsets.zero,
       transitionDuration: const Duration(milliseconds: 300),
@@ -107,7 +109,11 @@ class _SearchBarContent extends StatelessWidget {
           showIfClosed: false,
           child: CircularButton(
             icon: Icon(Icons.clear),
-            onPressed: () => controller.clear(),
+            onPressed: () {
+              controller.clear();
+              var cubit = context.read<SearchCubit>();
+              if (cubit.hasSearchResult()) cubit.clearSearchResult();
+            },
           ),
         ),
         FloatingSearchBarAction(
@@ -115,21 +121,50 @@ class _SearchBarContent extends StatelessWidget {
           showIfClosed: false,
           child: CircularButton(
               icon: Icon(Icons.search),
-              onPressed: () => context.read<SearchCubit>().search()),
+              onPressed: () {
+                context.read<SearchCubit>().search();
+                FocusScope.of(context).unfocus();
+              }),
         )
       ],
-      // leadingActions: [
-      //   FloatingSearchBarAction(
-      //     showIfOpened: true,
-      //     showIfClosed: false,
-      //     child: CircularButton(
-      //       icon: const Icon(Icons.arrow_back),
-      //       onPressed: () {
-      //         Navigator.maybePop(context);
-      //       },
-      //     ),
-      //   )
-      // ],
+      leadingActions: [
+        FloatingSearchBarAction(
+          showIfOpened: true,
+          builder: (context, animation) {
+            final isLTR = Directionality.of(context) == TextDirection.ltr;
+
+            return AnimatedBuilder(
+              child: RotatedBox(
+                quarterTurns: (isLTR ? 0 : 2),
+                child: AnimatedIcon(
+                  icon: AnimatedIcons.menu_arrow,
+                  textDirection: TextDirection.ltr,
+                  progress: animation,
+                ),
+              ),
+              animation: animation,
+              builder: (context, icon) => CircularButton(
+                tooltip: animation.isDismissed
+                    ? MaterialLocalizations.of(context).openAppDrawerTooltip
+                    : MaterialLocalizations.of(context).backButtonTooltip,
+                onPressed: () {
+                  final bar = FloatingSearchAppBar.of(context);
+                  if (bar?.isOpen == true) {
+                    var cubit = context.read<SearchCubit>();
+                    if (cubit.hasSearchResult())
+                      cubit.clearSearchResult();
+                    else
+                      bar?.close();
+                  } else {
+                    Scaffold.of(context).openDrawer();
+                  }
+                },
+                icon: icon!,
+              ),
+            );
+          },
+        )
+      ],
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
         return BlocBuilder<SearchCubit, SearchState>(

@@ -1,4 +1,5 @@
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
+import 'package:tuple/tuple.dart';
 
 import '../objectbox.g.dart';
 import 'Photo.dart';
@@ -63,17 +64,19 @@ class ObjectStore {
     return _photoBox.getAll();
   }
 
-  List<Photo> getPhotoBy({List<String>? labelList, DateTime? dateTime}) {
+  List<Photo> getPhotoBy(
+      {List<String>? labelList, Tuple2<DateTime, DateTime>? range}) {
     Condition<Photo> condition = EmptyCondition();
     if (labelList != null && labelList.isNotEmpty) {
       for (var label in labelList) {
-        condition =
-            condition.or(Photo_.labels.contains(labelList.iterator.current));
+        condition = condition.or(Photo_.labels.contains(label));
       }
     }
 
-    // if (dateTime != null)
-    //   condition = condition.and(Photo_.creationDateTime.equals(dateTime));
+    if (range != null)
+      condition = condition.and(Photo_.creationDateTime.between(
+          range.item1.millisecondsSinceEpoch,
+          range.item2.millisecondsSinceEpoch));
 
     return _photoBox.query(condition).build().find();
   }

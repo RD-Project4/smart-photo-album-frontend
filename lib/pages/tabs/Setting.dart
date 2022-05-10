@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:smart_album/pages/Tabs.dart';
-import 'package:smart_album/res/listData.dart';
-import 'package:http/http.dart' as http;
-import 'package:smart_album/widgets/TabsDrawer.dart';
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:smart_album/widgets/user/LoginForm.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:smart_album/pages/Tabs.dart';
 
 class Setting extends StatefulWidget {
   // final arguments;

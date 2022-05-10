@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_album/database/ObjectStore.dart';
 
 import 'SearchState.dart';
 
@@ -11,5 +12,15 @@ class SearchCubit extends Cubit<SearchState> {
 
   containsLabel(label) => state.labelList.contains(label);
 
-  search() {}
+  setDateRange(range) => state.dateRange = range;
+
+  hasSearchResult() => state.searchResult != null;
+
+  clearSearchResult() => emit(state.clone()..searchResult = null);
+
+  search() {
+    var photoList = ObjectStore.get()
+        .getPhotoBy(labelList: state.labelList, range: state.dateRange);
+    emit(state.clone()..searchResult = photoList);
+  }
 }

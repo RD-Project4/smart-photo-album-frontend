@@ -6,6 +6,7 @@ import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/MultiChoiceChip.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:tuple/tuple.dart';
 
 import 'database/Photo.dart';
 
@@ -21,28 +22,37 @@ class SearchQuery extends StatelessWidget {
 
     return SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: EdgeInsets.only(left: 10, right: 10, bottom: padding + 10),
+        padding:
+            EdgeInsets.only(left: 15, right: 15, bottom: padding + 10, top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Title("Category"),
-            QueryStreamBuilder<Photo>(
-                queryStream: PhotoViewModel.getPhotoList(),
-                loadingWidget: LoadingCircle(),
-                builder: (context, data) {
-                  var photoList = data;
-                  Set<String> labels = Set();
-                  for (var photo in photoList) {
-                    labels.addAll(photo.labels);
-                  }
-                  return MultiChoiceChip(labels,
-                      onSelectionChanged: (labelSet) {
-                    context.read<SearchCubit>().setLabelList(labelSet.toList());
-                  });
-                }),
+            // _Title("Category"),
+            // QueryStreamBuilder<Photo>(
+            //     queryStream: PhotoViewModel.getPhotoList(),
+            //     loadingWidget: LoadingCircle(),
+            //     builder: (context, data) {
+            //       var photoList = data;
+            //       Set<String> labels = Set();
+            //       for (var photo in photoList) {
+            //         labels.addAll(photo.labels);
+            //       }
+            //       return MultiChoiceChip(labels,
+            //           onSelectionChanged: (labelSet) {
+            //         context.read<SearchCubit>().setLabelList(labelSet.toList());
+            //       });
+            //     }),
             _Title("Date"),
             SfDateRangePicker(
-              selectionMode: DateRangePickerSelectionMode.multiRange,
+              selectionMode: DateRangePickerSelectionMode.range,
+              onSelectionChanged: (args) {
+                PickerDateRange range = args.value;
+                SearchCubit cubit = context.read<SearchCubit>();
+                if (range.endDate != null && range.endDate != null)
+                  cubit.setDateRange(Tuple2(range.startDate!, range.endDate!));
+                else
+                  cubit.setDateRange(null);
+              },
             ),
             _Title("Location"),
             MultiChoiceChip(

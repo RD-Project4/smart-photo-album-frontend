@@ -92,4 +92,11 @@ class PermissionUtil {
     ].request();
     return permission[Permission.notification] == PermissionStatus.granted;
   }
+
+  static Future<bool> requestAccessMediaLocationPermission() async {
+    Map<Permission, PermissionStatus> permission = await [
+      Permission.accessMediaLocation,
+    ].request();
+    return permission[Permission.phone] == PermissionStatus.granted;
+  }
 }

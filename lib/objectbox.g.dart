@@ -13,6 +13,7 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'database/HIstory.dart';
 import 'database/Photo.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
@@ -52,8 +53,8 @@ final _entities = <ModelEntity>[
         ModelProperty(
             id: const IdUid(7, 5826839999700844135),
             name: 'entity_id',
-            type: 6,
-            flags: 8,
+            type: 9,
+            flags: 2048,
             indexId: const IdUid(1, 7713753588704185151)),
         ModelProperty(
             id: const IdUid(8, 4775042554793791797),
@@ -70,6 +71,26 @@ final _entities = <ModelEntity>[
             name: 'creationDateTime',
             type: 10,
             flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(2, 6472757513092641637),
+      name: 'History',
+      lastPropertyId: const IdUid(2, 3043731862009199497),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 7579540795106331461),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 3043731862009199497),
+            name: 'name',
+            type: 9,
+            flags: 2048,
+            indexId: const IdUid(2, 3877532730341886472))
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
@@ -95,8 +116,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(1, 8452154140893309457),
-      lastIndexId: const IdUid(1, 7713753588704185151),
+      lastEntityId: const IdUid(2, 6472757513092641637),
+      lastIndexId: const IdUid(2, 3877532730341886472),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -120,13 +141,14 @@ ModelDefinition getObjectBoxModel() {
           final pathOffset = fbb.writeString(object.path);
           final labelsOffset = fbb.writeList(
               object.labels.map(fbb.writeString).toList(growable: false));
+          final entity_idOffset = fbb.writeString(object.entity_id);
           fbb.startTable(11);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
           fbb.addInt64(4, object.width);
           fbb.addInt64(5, object.height);
-          fbb.addInt64(6, object.entity_id);
+          fbb.addOffset(6, entity_idOffset);
           fbb.addBool(7, object.is_cloud);
           fbb.addBool(8, object.is_favorite);
           fbb.addInt64(9, object.creationDateTime.millisecondsSinceEpoch);
@@ -138,7 +160,8 @@ ModelDefinition getObjectBoxModel() {
           final rootOffset = buffer.derefObject(0);
 
           final object = Photo(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 16, ''),
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.ListReader<String>(
@@ -154,6 +177,32 @@ ModelDefinition getObjectBoxModel() {
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 18, false)
             ..is_favorite =
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 20, false);
+
+          return object;
+        }),
+    History: EntityDefinition<History>(
+        model: _entities[1],
+        toOneRelations: (History object) => [],
+        toManyRelations: (History object) => {},
+        getId: (History object) => object.id,
+        setId: (History object, int id) {
+          object.id = id;
+        },
+        objectToFB: (History object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(3);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = History(const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, ''))
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
           return object;
         })
@@ -182,7 +231,7 @@ class Photo_ {
 
   /// see [Photo.entity_id]
   static final entity_id =
-      QueryIntegerProperty<Photo>(_entities[0].properties[5]);
+      QueryStringProperty<Photo>(_entities[0].properties[5]);
 
   /// see [Photo.is_cloud]
   static final is_cloud =
@@ -195,4 +244,13 @@ class Photo_ {
   /// see [Photo.creationDateTime]
   static final creationDateTime =
       QueryIntegerProperty<Photo>(_entities[0].properties[8]);
+}
+
+/// [History] entity fields to define ObjectBox queries.
+class History_ {
+  /// see [History.id]
+  static final id = QueryIntegerProperty<History>(_entities[1].properties[0]);
+
+  /// see [History.name]
+  static final name = QueryStringProperty<History>(_entities[1].properties[1]);
 }

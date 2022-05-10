@@ -37,8 +37,8 @@
         {
           "id": "7:5826839999700844135",
           "name": "entity_id",
-          "type": 6,
-          "flags": 8,
+          "type": 9,
+          "flags": 2048,
           "indexId": "1:7713753588704185151"
         },
         {
@@ -58,10 +58,31 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:6472757513092641637",
+      "lastPropertyId": "2:3043731862009199497",
+      "name": "History",
+      "properties": [
+        {
+          "id": "1:7579540795106331461",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3043731862009199497",
+          "name": "name",
+          "type": 9,
+          "flags": 2048,
+          "indexId": "2:3877532730341886472"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:8452154140893309457",
-  "lastIndexId": "1:7713753588704185151",
+  "lastEntityId": "2:6472757513092641637",
+  "lastIndexId": "2:3877532730341886472",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

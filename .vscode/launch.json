@@ -10,6 +10,12 @@
       "type": "dart"
     },
     {
+      "name": "smart_album hotload",
+      "request": "launch",
+      "args": ["--use-application-binary"],
+      "type": "dart"
+    },
+    {
       "name": "smart_album (profile mode)",
       "request": "launch",
       "type": "dart",

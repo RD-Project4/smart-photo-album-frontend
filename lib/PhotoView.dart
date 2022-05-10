@@ -89,8 +89,8 @@ class _PhotoViewState<T> extends State<PhotoView<T>> {
     return PhotoViewGalleryPageOptions(
       imageProvider: widget.imageBuilder(item),
       initialScale: PhotoViewComputedScale.contained,
-      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-      maxScale: PhotoViewComputedScale.covered * 4.1,
+      minScale: PhotoViewComputedScale.contained * 0.8,
+      maxScale: PhotoViewComputedScale.covered * 4,
       heroAttributes: PhotoViewHeroAttributes(tag: item.hashCode),
     );
   }

@@ -1,15 +1,12 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:smart_album/widgets/TabsDrawer.dart';
-import 'package:smart_album/widgets/user/LoginForm.dart';
+
 import '../CatagoryPage.dart';
 import '../HomePage.dart';
+import '../util/ThemeUtils.dart';
 import 'tabs/Setting.dart';
-import 'package:smart_album/util/Global.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 
 class Tabs extends StatefulWidget {
   final index;
@@ -41,6 +38,8 @@ class _TabsState extends State<Tabs> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeUtils.setSystemOverlayLight(context);
+
     return Scaffold(
       extendBody: true,
       // appBar: AppBar(

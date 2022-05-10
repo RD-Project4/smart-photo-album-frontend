@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/database/Photo.dart';
 import 'package:smart_album/util/FavoritesUtil.dart';
 import 'package:smart_album/util/Global.dart';
+import 'package:smart_album/widgets/ThumbnailImageProvider.dart';
 
 import '../Events.dart';
 
@@ -15,9 +14,12 @@ class ListedPhoto extends StatefulWidget {
   final onTap;
   final Photo entity;
 
-  const ListedPhoto(
-      {Key? key, required this.path, required this.entity, this.onTap})
-      : super(key: key);
+  late ThumbnailImageProvider imageProvider;
+
+  ListedPhoto({Key? key, required this.path, required this.entity, this.onTap})
+      : super(key: key) {
+    imageProvider = ThumbnailImageProvider(entity);
+  }
 
   @override
   State<StatefulWidget> createState() => _ListedPhotoState();
@@ -82,7 +84,7 @@ class _ListedPhotoState extends State<ListedPhoto> {
                       : null,
                   borderRadius: BorderRadius.circular(5),
                   image: DecorationImage(
-                    image: FileImage(File(widget.path)),
+                    image: widget.imageProvider,
                     fit: BoxFit.cover,
                   ),
                 )),
