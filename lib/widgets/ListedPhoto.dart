@@ -28,6 +28,9 @@ class _ListedPhotoState extends State<ListedPhoto> {
 
   void _setIsFavorite() {
     FavoritesUtil.isFavorite(widget.entity.id).then((value) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         isFavorite = value;
       });
@@ -37,7 +40,6 @@ class _ListedPhotoState extends State<ListedPhoto> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     _setIsFavorite();
 
     Global.eventBus.on<RefreshFavoritesEvent>().listen((event) {
