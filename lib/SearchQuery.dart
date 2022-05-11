@@ -11,7 +11,7 @@ import 'package:tuple/tuple.dart';
 class SearchQuery extends StatelessWidget {
   final bool isHasBottom;
 
-  SearchQuery({Key? key, this.isHasBottom = false}) : super(key: key);
+  const SearchQuery({Key? key, this.isHasBottom = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

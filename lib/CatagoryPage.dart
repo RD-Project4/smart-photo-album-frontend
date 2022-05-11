@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shifting_tabbar/shifting_tabbar.dart';
 import 'package:smart_album/widgets/AddCategoryFolder.dart';
-import 'package:smart_album/ViewModel/PhotoViewModel.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'FolderPage.dart';
 import 'PhotoFolderGridView.dart';
+import 'bloc/photo/PhotoCubit.dart';
 import 'model/Photo.dart';
 
 class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MediaQueryData mediaQuery = MediaQuery.of(context);
+    var cubit = context.read<PhotoCubit>();
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -44,7 +47,7 @@ class CategoryPage extends StatelessWidget {
             },
             body: TabBarView(children: [
               QueryStreamBuilder<Photo>(
-                  queryStream: PhotoViewModel.getPhotoList(),
+                  queryStream: cubit.getPhotoList(),
                   loadingWidget: LoadingCircle(),
                   builder: (context, data) => PhotoFolderGridView(
                       padding: EdgeInsets.only(

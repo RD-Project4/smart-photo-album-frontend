@@ -8,6 +8,7 @@ import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 
 import 'CustomSearchBar/CustomFloatingSearchBar.dart';
 import 'ChipsInput.dart';
+import 'package:collection/collection.dart';
 
 class Label {
   final String name;
@@ -169,9 +170,13 @@ class _SearchBarContent extends StatelessWidget {
       transition: ExpandingFloatingSearchBarTransition(),
       builder: (context, transition) {
         return BlocBuilder<SearchCubit, SearchState>(
-            builder: ((context, state) => state.searchResult == null
-                ? SearchQuery(isHasBottom: true)
-                : SearchResult()));
+            builder: ((context, state) => IndexedStack(
+                  index: state.searchResult == null ? 0 : 1,
+                  children: [
+                    const SearchQuery(isHasBottom: true),
+                    SearchResult(),
+                  ],
+                )));
       },
     );
   }
@@ -180,17 +185,33 @@ class _SearchBarContent extends StatelessWidget {
     return FloatingSearchBarAction(
         showIfOpened: true,
         showIfClosed: true,
-        child: PopupMenuButton<int>(
-          itemBuilder: (context) => [
-            PopupMenuTitle(child: Text("Group by")),
-            CheckablePopupMenuItem(child: Text("Create Time")),
-            CheckablePopupMenuItem(child: Text("Label")),
-            CheckablePopupMenuItem(child: Text("Location")),
-            CheckablePopupMenuItem(child: Text("Image Size")),
-            PopupMenuDivider(),
-            PopupMenuTitle(child: Text("Order by")),
-            CheckablePopupMenuItem(child: Text("Create Time")),
-          ],
+        child: BlocBuilder<SearchCubit, SearchState>(
+          builder: ((context, state) => PopupMenuButton<int>(
+                itemBuilder: (context) {
+                  List<PopupMenuEntry<int>> widgetList = [];
+                  List<String> groupByItem = [
+                    "Create Time",
+                    "Label",
+                    "Location",
+                    "Image Size"
+                  ];
+                  widgetList.add(PopupMenuTitle(child: Text("Group by")));
+                  num checkedIndex = state.groupBy.index;
+                  groupByItem.forEachIndexed((index, item) {
+                    widgetList.add(CheckablePopupMenuItem(
+                        isChecked: index == checkedIndex,
+                        child: Text(item)));
+                  });
+                  widgetList.addAll([
+                    PopupMenuDivider(),
+                    PopupMenuTitle(child: Text("Order by")),
+                    CheckablePopupMenuItem(
+                        isChecked: true,
+                        child: Text("Create Time")), // Maybe more?
+                  ]);
+                  return widgetList;
+                },
+              )),
         ));
   }
 }
@@ -203,7 +224,7 @@ class PopupMenuTitle<T> extends PopupMenuItem<T> {
 }
 
 class CheckablePopupMenuItem<T> extends PopupMenuItem<T> {
-  final isChecked;
+  final bool isChecked;
 
   CheckablePopupMenuItem({required Widget child, this.isChecked = false})
       : super(

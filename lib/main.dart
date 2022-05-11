@@ -6,7 +6,6 @@ import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/routes/Routes.dart';
 import 'package:splashscreen/splashscreen.dart';
 
-import 'ViewModel/PhotoViewModel.dart';
 import 'database/ObjectStore.dart';
 
 void main() async {
@@ -31,15 +30,15 @@ class MyApp extends StatelessWidget {
 }
 
 class Splash extends StatelessWidget {
-  Future<String> loadFromFuture() async {
-    await PhotoViewModel.refresh();
+  Future<String> loadFromFuture(BuildContext context) async {
+    context.read<PhotoCubit>().refresh();
     return "/Home";
   }
 
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
-        navigateAfterFuture: loadFromFuture(),
+        navigateAfterFuture: loadFromFuture(context),
         useLoader: true,
         loadingTextPadding: EdgeInsets.all(0),
         loadingText: Text("Processing images..."),

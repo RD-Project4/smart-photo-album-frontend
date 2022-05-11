@@ -5,6 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "smart_album Attach to Device",
+      "type": "dart",
+      "request": "attach"
+    },
+    {
       "name": "smart_album",
       "request": "launch",
       "type": "dart"

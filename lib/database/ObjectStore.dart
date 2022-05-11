@@ -97,6 +97,7 @@ class ObjectStore {
       condition = condition.and(locationCondition);
     }
 
+    if (condition is EmptyCondition) return _photoBox.getAll();
     return _photoBox.query(condition).build().find();
   }
 
