@@ -80,8 +80,7 @@ class _LoginFormState extends State<LoginForm> {
       showToast("Mail or password is incorrect",
           textStyle: TextStyle(fontSize: 20));
     } else if (_status == 5) {
-      final prefs = await SharedPreferences.getInstance();
-
+      Setting.userEmail = this.account;
 
       Tabs.loginstate = 0;
       Navigator.pushNamed(
