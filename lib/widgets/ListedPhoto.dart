@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/FavoritesUtil.dart';
 import 'package:smart_album/util/Global.dart';
 import 'package:smart_album/widgets/ThumbnailImageProvider.dart';

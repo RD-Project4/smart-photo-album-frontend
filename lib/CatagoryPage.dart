@@ -7,7 +7,7 @@ import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'FolderPage.dart';
 import 'PhotoFolderGridView.dart';
-import 'database/Photo.dart';
+import 'model/Photo.dart';
 
 class CategoryPage extends StatelessWidget {
   @override

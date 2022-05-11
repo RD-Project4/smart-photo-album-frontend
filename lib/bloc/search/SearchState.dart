@@ -1,4 +1,4 @@
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 import 'package:tuple/tuple.dart';
 
 class SearchState {

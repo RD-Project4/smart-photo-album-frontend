@@ -1,7 +1,7 @@
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/database/ObjectStore.dart';
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 import 'package:smart_album/util/CommonUtil.dart';
 import 'package:smart_album/util/GeoUtil.dart';

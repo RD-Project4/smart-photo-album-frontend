@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:quiver/cache.dart';
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 
 class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
   static MapCache lruMap = MapCache.lru(maximumSize: 30);

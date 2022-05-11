@@ -10,7 +10,7 @@ import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'PhotoView.dart';
 import 'bloc/photo_list/PhotoListCubit.dart';
-import 'database/Photo.dart';
+import 'model/Photo.dart';
 import 'widgets/LightAppBar.dart';
 import 'widgets/SelectionToolBar.dart';
 

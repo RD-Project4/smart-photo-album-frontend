@@ -1,9 +1,9 @@
-import 'package:smart_album/database/HIstory.dart';
+import 'package:smart_album/model/HIstory.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:tuple/tuple.dart';
 
 import '../objectbox.g.dart';
-import 'Photo.dart';
+import '../model/Photo.dart';
 
 // `flutter pub run build_runner build` to refresh the *.g.dart once any pojo class is changed.
 

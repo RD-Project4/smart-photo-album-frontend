@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/database/HIstory.dart';
+import 'package:smart_album/model/HIstory.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 

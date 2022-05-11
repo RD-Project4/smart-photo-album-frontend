@@ -13,7 +13,7 @@ import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'PhotoView.dart';
-import 'database/Photo.dart';
+import 'model/Photo.dart';
 
 class PhotoList extends StatelessWidget {
   final bool isHasTopBar;

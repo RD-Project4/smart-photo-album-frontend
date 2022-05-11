@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/search/SearchCubit.dart';
-import 'package:smart_album/database/HIstory.dart';
+import 'package:smart_album/model/HIstory.dart';
 import 'package:smart_album/widgets/MultiChoiceChip.dart';
 import 'package:smart_album/widgets/OutlineCard.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
