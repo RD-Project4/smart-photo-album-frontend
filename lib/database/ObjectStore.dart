@@ -1,3 +1,4 @@
+import 'package:smart_album/database/HIstory.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:tuple/tuple.dart';
 
@@ -40,12 +41,16 @@ class ObjectStore {
   late final Store _store;
 
   late final Box<Photo> _photoBox;
+  late final Box<History> _historyBox;
 
   late final QueryStream<Photo> _allPhotoStream;
+  late final QueryStream<History> _allHistoryStream;
 
   ObjectStore._create(this._store) {
     this._photoBox = _store.box<Photo>();
+    this._historyBox = _store.box<History>();
     _allPhotoStream = QueryStream(this._store, _photoBox.query());
+    _allHistoryStream = QueryStream(this._store, _historyBox.query());
   }
 
   static Future<ObjectStore> create() async {
@@ -91,5 +96,19 @@ class ObjectStore {
 
   removePhoto(List<int> photoIdList) {
     _photoBox.removeMany(photoIdList);
+  }
+
+  getHistoryStream() {
+    return _allHistoryStream;
+  }
+
+  addHistory(History history) {
+    num count = _historyBox.count();
+    if (count > 8) {
+      var builder = _historyBox.query()..order(History_.id);
+      var first = builder.build().findFirst();
+      if (first != null) _historyBox.remove(first.id);
+    }
+    _historyBox.put(history);
   }
 }

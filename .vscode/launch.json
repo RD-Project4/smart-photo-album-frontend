@@ -9,10 +9,11 @@
       "request": "launch",
       "type": "dart"
     },
+    // 将跳过编译，直接运行
     {
-      "name": "smart_album hotload",
+      "name": "smart_album hot-reload",
       "request": "launch",
-      "args": ["--use-application-binary"],
+      "args": ["--use-application-binary=build/app/outputs/apk/debug/app-debug.apk"],
       "type": "dart"
     },
     {

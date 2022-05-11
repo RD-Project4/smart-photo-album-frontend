@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:smart_album/pages/ScannerPage.dart';
-
-import 'package:smart_album/pages/user/PassResetPage.dart';
-import 'package:smart_album/pages/user/RegisterPage.dart';
 import 'package:smart_album/pages/AddFriends.dart';
-
+import 'package:smart_album/pages/ScannerPage.dart';
 import 'package:smart_album/pages/friends/FriendsPage.dart';
 import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
+import 'package:smart_album/pages/user/PassResetPage.dart';
+import 'package:smart_album/pages/user/RegisterPage.dart';
 
 import '../FolderPage.dart';
-import '../HomePage.dart';
 import '../pages/Tabs.dart';
-
 import '../pages/tabs/Setting.dart';
 import '../pages/user/LoginPage.dart';
-
-import '../pages/TestPage.dart';
 
 //配置路由
 final routes = {
@@ -33,8 +27,7 @@ final routes = {
   '/add-friends': (context) => AddFriends(),
   '/friends-select': (context) => FriendsSelectPage(),
   '/scanner': (context) => ScannerPage(),
-  '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments),
-  '/testpage': (context) => TestPage(),
+  '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments)
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {

@@ -112,7 +112,7 @@ class _SettingState extends State<Setting> {
             ),
             onPressed: () {
               _logout();
-              Tabs.loginstate = 1;
+              // Tabs.loginstate = 1;
             }),
         TextButton(
           onPressed: () {},
@@ -142,9 +142,9 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    if (Tabs.loginstate == 1) {
-      Setting.userAccount = '';
-    }
+    // if (Tabs.loginstate == 1) {
+    //   Setting.userAccount = '';
+    // }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

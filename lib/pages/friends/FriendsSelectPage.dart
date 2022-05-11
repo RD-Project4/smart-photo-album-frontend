@@ -314,21 +314,21 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   _share() async {
-    print('share pics');
-    // print(Setting.userAccount);
-    print(Setting.userEmail);
-    print(PhotoList.picId);
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addshare.do');
-    var response = await http.post(apiurl, body: {
-      "shareOwner": Setting.userEmail,
-      "shareContentId": PhotoList.picId,
-      "shareObject": "846630947@qq.com"
-    });
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      FriendsSelectPage.url = jsonDecode(response.body)["data"];
-      print('url:' + jsonDecode(response.body)["data"]);
-    });
+    // print('share pics');
+    // // print(Setting.userAccount);
+    // print(Setting.userEmail);
+    // print(PhotoList.picId);
+    // var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addshare.do');
+    // var response = await http.post(apiurl, body: {
+    //   "shareOwner": Setting.userEmail,
+    //   "shareContentId": PhotoList.picId,
+    //   "shareObject": "846630947@qq.com"
+    // });
+    // print('Response status : ${response.statusCode}');
+    // print('Response status : ${response.body}');
+    // setState(() {
+    //   FriendsSelectPage.url = jsonDecode(response.body)["data"];
+    //   print('url:' + jsonDecode(response.body)["data"]);
+    // });
   }
 }

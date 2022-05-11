@@ -9,32 +9,22 @@ import '../util/ThemeUtils.dart';
 import 'tabs/Setting.dart';
 
 class Tabs extends StatefulWidget {
-  final index;
-  static var loginstate = 1;
-  Tabs({Key? key, this.index = 0}) : super(key: key);
+  const Tabs({Key? key}) : super(key: key);
 
   @override
-  _TabsState createState() => _TabsState(this.index);
+  State<StatefulWidget> createState() => _TabsState();
 }
 
 class _TabsState extends State<Tabs> {
-  int _currentIndex = 0;
+  late List<Widget> pages;
 
-  _TabsState(index) {
-    this._currentIndex = index;
+  int _selectedPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    pages = [HomePage(), CategoryPage(), Setting()];
   }
-
-  var userId;
-  var userAccount = '';
-  var userName = '';
-  var userEmail = '';
-  var userProfile = '';
-  var userPhone = '';
-
-  var _status = 4;
-  var _msg = '';
-
-  List _pageList = [HomePage(), CategoryPage(), Setting()];
 
   @override
   Widget build(BuildContext context) {
@@ -42,31 +32,20 @@ class _TabsState extends State<Tabs> {
 
     return Scaffold(
       extendBody: true,
-      // appBar: AppBar(
-      //   title: Text('Smart Photo'),
-      //   // backgroundColor: Colors.green[100],
-      //   // leading: IconButton(
-      //   //   icon: Icon(Icons.menu),
-      //   //   onPressed: () {},
-      //   // ),
-      //   // actions: [IconButton(onPressed: () {}, icon: Icon(Icons.search))],
-      // )
       body: SafeArea(
         bottom: false,
-        child: this._pageList[this._currentIndex],
+        child: IndexedStack(
+          children: pages,
+          index: _selectedPageIndex,
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.transparent,
           color: Colors.blueGrey.shade50,
-          index: this._currentIndex, //表示当前默认选中哪一个
+          index: _selectedPageIndex,
           onTap: (int index) {
             setState(() {
-              if (index == 2 && Setting.state == 5) {
-                showuser();
-                this._currentIndex = index;
-              } else {
-                this._currentIndex = index;
-              }
+              _selectedPageIndex = index;
             });
           },
           items: [
@@ -76,38 +55,8 @@ class _TabsState extends State<Tabs> {
           ]),
       drawer: TabsDrawer(),
       onDrawerChanged: (isOpened) {
-        showuser();
+        // showuser();
       },
     );
-  }
-
-  showuser() async {
-    print('Tabs posting data');
-    print(Setting.userAccount);
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/showuser.do');
-
-    var response =
-        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-
-    // setState(() {
-    //   var res = jsonDecode(response.body);
-    //   var resData = res["data"];
-    //   this._status = res["status"];
-    //   Tabs.loginstate = res["status"];
-    //   this._msg = res["msg"];
-    //   this.userId = resData["userId"];
-    //   this.userAccount = resData["userAccount"];
-    //   this.userName = resData["userName"];
-    //   Setting.userName = resData["userName"];
-    //   this.userEmail = resData["userEmail"];
-    //   this.userProfile = resData["userProfile"];
-    //   this.userPhone = resData["userPhone"];
-
-    //   Setting.userId = resData["userId"];
-    //   Setting.userEmail = resData["userEmail"];
-    //   // print(Tabs.loginstate);
-    // });
   }
 }

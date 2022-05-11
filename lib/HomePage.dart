@@ -12,6 +12,7 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
         create: (_) => PhotoListCubit(),
         child: Stack(
+          fit: StackFit.expand,
           children: [
             Positioned(child: PhotoList(isHasTopBar: true)),
             BlocBuilder<PhotoListCubit, PhotoListState>(
