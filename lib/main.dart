@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/routes/Routes.dart';
 import 'package:splashscreen/splashscreen.dart';
 
@@ -15,10 +18,15 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        onGenerateRoute: onGenerateRoute,
-        debugShowCheckedModeBanner: false,
-        home: Splash());
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => PhotoCubit()),
+          BlocProvider(create: (context) => UserCubit())
+        ],
+        child: MaterialApp(
+            onGenerateRoute: onGenerateRoute,
+            debugShowCheckedModeBanner: false,
+            home: Splash()));
   }
 }
 

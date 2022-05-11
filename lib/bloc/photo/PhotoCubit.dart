@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/database/ObjectStore.dart';
@@ -8,8 +9,12 @@ import 'package:smart_album/util/GeoUtil.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
-class PhotoViewModel {
-  static refresh() async {
+import 'PhotoState.dart';
+
+class PhotoCubit extends Cubit<PhotoState> {
+  PhotoCubit() : super(PhotoState());
+
+  refresh() async {
     Map<Permission, PermissionStatus> permissionMap =
         await [Permission.storage, Permission.accessMediaLocation].request();
     for (PermissionStatus status in permissionMap.values) {
@@ -76,12 +81,7 @@ class PhotoViewModel {
     ObjectStore.get().removePhoto(photoToRemoveList);
   }
 
-  static QueryStream<Photo> getPhotoList() {
+  QueryStream<Photo> getPhotoList() {
     return ObjectStore.get().getPhotoStream();
   }
-
-  // static List<Photo> getPhotoBy({List<String>? labelList, DateTime? dateTime}) {
-  //   return ObjectStore.get()
-  //       .getPhotoBy(labelList: labelList, dateTime: dateTime);
-  // }
 }
