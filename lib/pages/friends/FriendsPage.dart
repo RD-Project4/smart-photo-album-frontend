@@ -77,7 +77,7 @@ class _FriendsPageState extends State<FriendsPage> {
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
     // add header.
-    _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑'));
+    // _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑'));
 
     setState(() {});
   }

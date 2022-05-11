@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
-import 'package:smart_album/routes/API.dart';
 
 import 'dart:convert';
 

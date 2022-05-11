@@ -13,7 +13,9 @@
     {
       "name": "smart_album hot-reload",
       "request": "launch",
-      "args": ["--use-application-binary=build/app/outputs/apk/debug/app-debug.apk"],
+      "args": [
+        "--use-application-binary=build/app/outputs/apk/debug/app-debug.apk"
+      ],
       "type": "dart"
     },
     {
@@ -21,6 +23,12 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
-    }
+    },
+    {
+      "name": "Run all Tests",
+      "type": "dart",
+      "request": "launch",
+      "program": "./test/"
+    },
   ]
 }

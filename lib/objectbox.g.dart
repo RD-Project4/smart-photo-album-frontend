@@ -22,7 +22,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(11, 5928449047530009145),
+      lastPropertyId: const IdUid(17, 7651469783806390219),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -51,22 +51,6 @@ final _entities = <ModelEntity>[
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 5826839999700844135),
-            name: 'entity_id',
-            type: 9,
-            flags: 2048,
-            indexId: const IdUid(1, 7713753588704185151)),
-        ModelProperty(
-            id: const IdUid(8, 4775042554793791797),
-            name: 'is_cloud',
-            type: 1,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(9, 3168296054505618822),
-            name: 'is_favorite',
-            type: 1,
-            flags: 0),
-        ModelProperty(
             id: const IdUid(10, 3836911989879182796),
             name: 'creationDateTime',
             type: 10,
@@ -75,6 +59,37 @@ final _entities = <ModelEntity>[
             id: const IdUid(11, 5928449047530009145),
             name: 'location',
             type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(12, 5697620779040010095),
+            name: 'entityId',
+            type: 9,
+            flags: 2048,
+            indexId: const IdUid(3, 4633289790922245848)),
+        ModelProperty(
+            id: const IdUid(13, 7496462533197211908),
+            name: 'cloudId',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(14, 4207547672681910534),
+            name: 'thumbnailPath',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(15, 419747438367326722),
+            name: 'isCloud',
+            type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(16, 7508849960037728736),
+            name: 'isLocal',
+            type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(17, 7651469783806390219),
+            name: 'isFavorite',
+            type: 1,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -122,12 +137,17 @@ ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
       lastEntityId: const IdUid(2, 6472757513092641637),
-      lastIndexId: const IdUid(2, 3877532730341886472),
+      lastIndexId: const IdUid(3, 4633289790922245848),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
-      retiredIndexUids: const [],
-      retiredPropertyUids: const [5711374106246872086],
+      retiredIndexUids: const [7713753588704185151],
+      retiredPropertyUids: const [
+        5711374106246872086,
+        5826839999700844135,
+        4775042554793791797,
+        3168296054505618822
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -146,21 +166,31 @@ ModelDefinition getObjectBoxModel() {
           final pathOffset = fbb.writeString(object.path);
           final labelsOffset = fbb.writeList(
               object.labels.map(fbb.writeString).toList(growable: false));
-          final entity_idOffset = fbb.writeString(object.entity_id);
           final locationOffset = object.location == null
               ? null
               : fbb.writeString(object.location!);
-          fbb.startTable(12);
+          final entityIdOffset = object.entityId == null
+              ? null
+              : fbb.writeString(object.entityId!);
+          final cloudIdOffset =
+              object.cloudId == null ? null : fbb.writeString(object.cloudId!);
+          final thumbnailPathOffset = object.thumbnailPath == null
+              ? null
+              : fbb.writeString(object.thumbnailPath!);
+          fbb.startTable(18);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
           fbb.addInt64(4, object.width);
           fbb.addInt64(5, object.height);
-          fbb.addOffset(6, entity_idOffset);
-          fbb.addBool(7, object.is_cloud);
-          fbb.addBool(8, object.is_favorite);
           fbb.addInt64(9, object.creationDateTime.millisecondsSinceEpoch);
           fbb.addOffset(10, locationOffset);
+          fbb.addOffset(11, entityIdOffset);
+          fbb.addOffset(12, cloudIdOffset);
+          fbb.addOffset(13, thumbnailPathOffset);
+          fbb.addBool(14, object.isCloud);
+          fbb.addBool(15, object.isLocal);
+          fbb.addBool(16, object.isFavorite);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -170,7 +200,7 @@ ModelDefinition getObjectBoxModel() {
 
           final object = Photo(
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 16, ''),
+                  .vTableGetNullable(buffer, rootOffset, 26),
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.ListReader<String>(
@@ -184,10 +214,16 @@ ModelDefinition getObjectBoxModel() {
               const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 24))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
-            ..is_cloud =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 18, false)
-            ..is_favorite =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 20, false);
+            ..cloudId = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 28)
+            ..thumbnailPath = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 30)
+            ..isCloud =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 32, false)
+            ..isLocal =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 34, false)
+            ..isFavorite =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 36, false);
 
           return object;
         }),
@@ -240,25 +276,36 @@ class Photo_ {
   /// see [Photo.height]
   static final height = QueryIntegerProperty<Photo>(_entities[0].properties[4]);
 
-  /// see [Photo.entity_id]
-  static final entity_id =
-      QueryStringProperty<Photo>(_entities[0].properties[5]);
-
-  /// see [Photo.is_cloud]
-  static final is_cloud =
-      QueryBooleanProperty<Photo>(_entities[0].properties[6]);
-
-  /// see [Photo.is_favorite]
-  static final is_favorite =
-      QueryBooleanProperty<Photo>(_entities[0].properties[7]);
-
   /// see [Photo.creationDateTime]
   static final creationDateTime =
-      QueryIntegerProperty<Photo>(_entities[0].properties[8]);
+      QueryIntegerProperty<Photo>(_entities[0].properties[5]);
 
   /// see [Photo.location]
   static final location =
+      QueryStringProperty<Photo>(_entities[0].properties[6]);
+
+  /// see [Photo.entityId]
+  static final entityId =
+      QueryStringProperty<Photo>(_entities[0].properties[7]);
+
+  /// see [Photo.cloudId]
+  static final cloudId = QueryStringProperty<Photo>(_entities[0].properties[8]);
+
+  /// see [Photo.thumbnailPath]
+  static final thumbnailPath =
       QueryStringProperty<Photo>(_entities[0].properties[9]);
+
+  /// see [Photo.isCloud]
+  static final isCloud =
+      QueryBooleanProperty<Photo>(_entities[0].properties[10]);
+
+  /// see [Photo.isLocal]
+  static final isLocal =
+      QueryBooleanProperty<Photo>(_entities[0].properties[11]);
+
+  /// see [Photo.isFavorite]
+  static final isFavorite =
+      QueryBooleanProperty<Photo>(_entities[0].properties[12]);
 }
 
 /// [History] entity fields to define ObjectBox queries.

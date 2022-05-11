@@ -45,12 +45,12 @@ class PhotoCubit extends Cubit<PhotoState> {
     List<int> photoToRemoveList = [];
     List<Photo> photoListFromDataset = ObjectStore.get().getPhotoList();
     for (Photo photo in photoListFromDataset) {
-      // if (photoMapFromLocal.containgetPhotoListto.entity_id)) {
-      //   // no need to update
-      //   photoMapFromLocal.remove(photo.entity_id);
-      // } else if (!photo.is_cloud) {
-      photoToRemoveList.add(photo.id);
-      // }
+      if (photoMapFromLocal.containsKey(photo.entityId)) {
+        // no need to update
+        photoMapFromLocal.remove(photo.entityId);
+      } else if (!photo.isCloud) {
+        photoToRemoveList.add(photo.id);
+      }
     }
 
     List<Photo> photoToStoreList = [];
