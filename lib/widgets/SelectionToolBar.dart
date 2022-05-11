@@ -21,7 +21,6 @@ class _SelectionToolBarState extends State<SelectionToolBar> {
         builder: (context, state) {
       return Container(
         color: Color.fromARGB(220, 194, 231, 255),
-        height: 60,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

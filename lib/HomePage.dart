@@ -18,7 +18,11 @@ class HomePage extends StatelessWidget {
             BlocBuilder<PhotoListCubit, PhotoListState>(
                 builder: (context, state) => state.mode == PhotoListMode.View
                     ? SearchBar()
-                    : Positioned(child: SelectionToolBar())),
+                    : Positioned(
+                        left: 0,
+                        right: 0,
+                        height: kToolbarHeight,
+                        child: SelectionToolBar())),
           ],
         ));
   }
