@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'dart:io' show Platform;
 
+import 'package:smart_album/widgets/CustomSearchBar/CustomFloatingSearchBar.dart';
+
 class ScannerPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ScannerPageState();
@@ -28,24 +30,37 @@ class _ScannerPageState extends State<ScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
+          QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+          ),
+
+          Positioned(
+            left: 20,
+            top: 50,
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Color.fromRGBO(255, 255, 255, 0.5),
+              child: Center(
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.arrow_back))),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                  ? Text(
-                      'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  : Text('Scan a code'),
-            ),
-          )
+
+          // Expanded(
+          //   flex: 1,
+          //   child: Center(
+          //     child: (result != null)
+          //         ? Text(
+          //             'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+          //         : Text('Scan a code'),
+          //   ),
+          // )
         ],
       ),
     );

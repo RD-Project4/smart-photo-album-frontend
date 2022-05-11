@@ -9,6 +9,8 @@ import 'package:oktoast/oktoast.dart';
 import 'package:passwordfield/passwordfield.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
+import 'package:smart_album/util/Global.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
@@ -48,22 +50,14 @@ class _LoginFormState extends State<LoginForm> {
   postData() async {
     _accountFocus.unfocus();
     _passFocus.unfocus();
-    // print('posting data');
-    // print(this.account);
-    // print(this.password);
-    var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/login.do');
+    var apiUrl = Uri.parse('${Global.API_URL}/login.do');
 
     var response = await http.post(apiUrl,
         body: {"userAccount": this.account, "userPwd": this.password});
 
     var res = jsonDecode(response.body);
 
-    if (res['status'] == 3) {
-      showToast("The user is logged in", textStyle: TextStyle(fontSize: 20));
-    } else if (res['status'] == 0 || res['status'] == 1) {
-      showToast("Mail or password is incorrect",
-          textStyle: TextStyle(fontSize: 20));
-    }
+    var _status = res['status'];
 
     setState(() {
       this._status = jsonDecode(response.body)["status"];
@@ -80,14 +74,22 @@ class _LoginFormState extends State<LoginForm> {
       // this.userPhone = jsonDecode(response.body)["data"]["userPhone"];
     });
 
-    if (this._status == 5) {
+    if (_status == 3) {
+      showToast("The user has logged in", textStyle: TextStyle(fontSize: 20));
+    } else if (_status == 0 || _status == 1) {
+      showToast("Mail or password is incorrect",
+          textStyle: TextStyle(fontSize: 20));
+    } else if (_status == 5) {
+      final prefs = await SharedPreferences.getInstance();
+
+
       Tabs.loginstate = 0;
       Navigator.pushNamed(
         context,
         '/',
       ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
     } else {
-      // print('jump to login');
+      showToast("Login error", textStyle: TextStyle(fontSize: 20));
     }
   }
 
