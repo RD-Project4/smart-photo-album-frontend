@@ -3,7 +3,8 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/database/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
-import 'package:smart_album/util/PermissionUtil.dart';
+import 'package:smart_album/util/CommonUtil.dart';
+import 'package:smart_album/util/GeoUtil.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
@@ -36,26 +37,22 @@ class PhotoViewModel {
       photoMapFromLocal[photo.id] = photo;
     }
 
-    for (AssetEntity entity in photoMapFromLocal.values) {
-      var latitude = await entity.latlngAsync();
-      print(latitude.latitude);
-    }
-
     List<int> photoToRemoveList = [];
-    List<Photo> photoListFromDataset = ObjectStore.get().getPhoto();
+    List<Photo> photoListFromDataset = ObjectStore.get().getPhotoList();
     for (Photo photo in photoListFromDataset) {
-      if (photoMapFromLocal.containsKey(photo.entity_id)) {
-        // no need to update
-        photoMapFromLocal.remove(photo.entity_id);
-      } else if (!photo.is_cloud) {
-        photoToRemoveList.add(photo.id);
-      }
+      // if (photoMapFromLocal.containgetPhotoListto.entity_id)) {
+      //   // no need to update
+      //   photoMapFromLocal.remove(photo.entity_id);
+      // } else if (!photo.is_cloud) {
+      photoToRemoveList.add(photo.id);
+      // }
     }
 
     List<Photo> photoToStoreList = [];
     for (AssetEntity entity in photoMapFromLocal.values) {
       var path = (await entity.file)?.path;
       if (path == null) continue;
+
       List<Category> labels =
           (await TensorflowProvider.recognizeObjectInFile(path));
       var labelsString = labels
@@ -63,8 +60,16 @@ class PhotoViewModel {
           .where((e) => e.score > 0.0001)
           .map((e) => e.label)
           .toList();
+
+      var latLng = await entity.latlngAsync();
+      String? location;
+      if (CommonUtil.notNonOr0(latLng.latitude) &&
+          CommonUtil.notNonOr0(latLng.longitude))
+        location = await GeoUtil.locationFromCoordinates(
+            latLng.latitude!, latLng.longitude!);
+
       photoToStoreList.add(Photo(entity.id, path, labelsString,
-          entity.createDateTime, entity.width, entity.height));
+          entity.createDateTime, entity.width, entity.height, location));
     }
 
     ObjectStore.get().storePhoto(photoToStoreList);

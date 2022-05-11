@@ -5,7 +5,7 @@ import 'package:smart_album/widgets/TabsDrawer.dart';
 
 import '../CatagoryPage.dart';
 import '../HomePage.dart';
-import '../util/ThemeUtils.dart';
+import '../util/ThemeUtil.dart';
 import 'tabs/Setting.dart';
 
 class Tabs extends StatefulWidget {
@@ -28,7 +28,7 @@ class _TabsState extends State<Tabs> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeUtils.setSystemOverlayLight(context);
+    ThemeUtil.setSystemOverlayLight(context);
 
     return Scaffold(
       extendBody: true,

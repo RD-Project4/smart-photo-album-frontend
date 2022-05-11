@@ -27,21 +27,6 @@ class SearchQuery extends StatelessWidget {
             EdgeInsets.only(left: 12, right: 12, bottom: padding + 10, top: 20),
         child: Column(
           children: [
-            // _Title("Category"),
-            // QueryStreamBuilder<Photo>(
-            //     queryStream: PhotoViewModel.getPhotoList(),
-            //     loadingWidget: LoadingCircle(),
-            //     builder: (context, data) {
-            //       var photoList = data;
-            //       Set<String> labels = Set();
-            //       for (var photo in photoList) {
-            //         labels.addAll(photo.labels);
-            //       }
-            //       return MultiChoiceChip(labels,
-            //           onSelectionChanged: (labelSet) {
-            //         context.read<SearchCubit>().setLabelList(labelSet.toList());
-            //       });
-            //     }),
             OutlineCard(
                 margin: spacing,
                 title: "Search History",
@@ -68,7 +53,10 @@ class SearchQuery extends StatelessWidget {
                 margin: spacing,
                 title: "Location",
                 child: MultiChoiceChip(
-                    Set.from(["Hangzhou", "Beijing", "Ningbo", "Suzhou"]))),
+                  Set.from(cubit.getCities()),
+                  onSelectionChanged: (cities) =>
+                      cubit.setLocationList(cities.toList()),
+                )),
           ],
         ));
   }

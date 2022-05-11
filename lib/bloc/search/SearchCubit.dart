@@ -16,19 +16,28 @@ class SearchCubit extends Cubit<SearchState> {
 
   setDateRange(range) => state.dateRange = range;
 
+  setLocationList(List<String> locationList) =>
+      state.locationList = locationList;
+
   hasSearchResult() => state.searchResult != null;
 
-  clearSearchResult() => emit(state.clone()..searchResult = null);
+  clearSearchResult() => emit(SearchState());
 
   search() {
     if (state.text.isNotEmpty)
       ObjectStore.get().addHistory(History(state.text));
-    var photoList = ObjectStore.get()
-        .getPhotoBy(labelList: state.labelList, range: state.dateRange);
+    var photoList = ObjectStore.get().getPhotoBy(
+        labelList: state.labelList,
+        range: state.dateRange,
+        locationList: state.locationList);
     emit(state.clone()..searchResult = photoList);
   }
 
   QueryStream<History> getHistory() {
     return ObjectStore.get().getHistoryStream();
+  }
+
+  List<String> getCities() {
+    return ObjectStore.get().getAllCities();
   }
 }

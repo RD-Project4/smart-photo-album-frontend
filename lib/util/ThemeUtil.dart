@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ThemeUtils {
+class ThemeUtil {
   static setSystemOverlayLight(BuildContext context, {Color? backgroundColor}) {
     var background =
         backgroundColor ?? Theme.of(context).scaffoldBackgroundColor;
