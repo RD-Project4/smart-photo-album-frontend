@@ -1,5 +1,4 @@
 import 'package:objectbox/objectbox.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 @Entity()
 class Photo {
@@ -12,9 +11,10 @@ class Photo {
   DateTime creationDateTime;
   int width;
   int height;
+  String? location;
   bool is_cloud = false;
   bool is_favorite = false;
 
   Photo(this.entity_id, this.path, this.labels, this.creationDateTime,
-      this.width, this.height);
+      this.width, this.height, this.location);
 }

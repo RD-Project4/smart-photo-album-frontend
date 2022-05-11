@@ -69,16 +69,16 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
             icon: Icons.cloud_upload_rounded,
             text: "Upload",
             onTap: () {
-              if (Tabs.loginstate == 1) {
-                // Navigator.pushNamed(context, '/login-page');
-                Navigator.pushNamed(context, '/testpage'); //测试时候用的，需要删除
-                _clouds();
-              } else {
-                Navigator.pushNamed(context, '/testpage');
-                // _clouds();
+              // if (Tabs.loginstate == 1) {
+              //   // Navigator.pushNamed(context, '/login-page');
+              //   Navigator.pushNamed(context, '/testpage'); //测试时候用的，需要删除
+              //   _clouds();
+              // } else {
+              //   Navigator.pushNamed(context, '/testpage');
+              //   // _clouds();
 
-                // Navigator.pushNamed(context, '/testpage');
-              }
+              //   // Navigator.pushNamed(context, '/testpage');
+              // }
             },
           ),
           IconText(

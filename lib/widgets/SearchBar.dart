@@ -50,7 +50,7 @@ class _SearchBarContent extends StatelessWidget {
         onChanged: (data) =>
             cubit.setLabelList(data.map((label) => label.name).toList()),
         findSuggestions: (query) async => (await TensorflowProvider.getLabels())
-            .where((label) => label.contains(query))
+            .where((label) => label.startsWith(query))
             .where((label) => !cubit.containsLabel(label))
             .map((label) => Label(label))
             .toList(),
@@ -125,7 +125,8 @@ class _SearchBarContent extends StatelessWidget {
                 context.read<SearchCubit>().search();
                 FocusScope.of(context).unfocus();
               }),
-        )
+        ),
+        _buildOverflowMenuAction()
       ],
       leadingActions: [
         FloatingSearchBarAction(
@@ -174,4 +175,45 @@ class _SearchBarContent extends StatelessWidget {
       },
     );
   }
+
+  FloatingSearchBarAction _buildOverflowMenuAction() {
+    return FloatingSearchBarAction(
+        showIfOpened: true,
+        showIfClosed: true,
+        child: PopupMenuButton<int>(
+          itemBuilder: (context) => [
+            PopupMenuTitle(child: Text("Group by")),
+            CheckablePopupMenuItem(child: Text("Create Time")),
+            CheckablePopupMenuItem(child: Text("Label")),
+            CheckablePopupMenuItem(child: Text("Location")),
+            CheckablePopupMenuItem(child: Text("Image Size")),
+            PopupMenuDivider(),
+            PopupMenuTitle(child: Text("Order by")),
+            CheckablePopupMenuItem(child: Text("Create Time")),
+          ],
+        ));
+  }
+}
+
+class PopupMenuTitle<T> extends PopupMenuItem<T> {
+  PopupMenuTitle({required Widget? child})
+      : super(
+            child: child,
+            textStyle: TextStyle(color: Colors.grey, fontSize: 14));
+}
+
+class CheckablePopupMenuItem<T> extends PopupMenuItem<T> {
+  final isChecked;
+
+  CheckablePopupMenuItem({required Widget child, this.isChecked = false})
+      : super(
+          child: Row(
+            children: [
+              Expanded(child: child),
+              Icon(isChecked
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_off),
+            ],
+          ),
+        );
 }

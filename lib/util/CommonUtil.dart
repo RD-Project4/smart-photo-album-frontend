@@ -1,5 +1,3 @@
-import 'package:flutter/services.dart';
-import 'dart:convert';
 import 'dart:async';
 
 import 'package:path_provider/path_provider.dart';
@@ -18,5 +16,9 @@ class CommonUtil {
   static Future<String> getDirPath() async {
     final _dir = await getApplicationDocumentsDirectory();
     return _dir.path;
+  }
+
+  static bool notNonOr0(num? num) {
+    return num != null && num != 0;
   }
 }

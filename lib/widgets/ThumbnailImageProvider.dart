@@ -1,12 +1,14 @@
-import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:quiver/cache.dart';
 import 'package:smart_album/database/Photo.dart';
-import 'dart:ui' as ui;
 
 class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
+  static MapCache lruMap = MapCache.lru(maximumSize: 30);
+
   final Photo photo;
   final double scale;
 
@@ -27,6 +29,9 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
 
   Future<ui.Codec> _loadAsync(
       ThumbnailImageProvider key, DecoderCallback decode) async {
+    var cache = await lruMap.get(photo.entity_id);
+    if (cache != null) return decode(cache);
+
     final assetEntity = await AssetEntity.fromId(photo.entity_id);
     var data = await assetEntity?.thumbnailDataWithOption(
       ThumbnailOption(size: ThumbnailSize.square(250)),
@@ -36,7 +41,8 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
       PaintingBinding.instance!.imageCache!.evict(key);
       throw StateError(
           '${photo.path} is empty and cannot be loaded as an image.');
-    }
+    } else
+      lruMap.set(photo.entity_id, data);
     return decode(data);
   }
 

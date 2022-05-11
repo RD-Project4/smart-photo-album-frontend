@@ -22,7 +22,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(10, 3836911989879182796),
+      lastPropertyId: const IdUid(11, 5928449047530009145),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -70,6 +70,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(10, 3836911989879182796),
             name: 'creationDateTime',
             type: 10,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(11, 5928449047530009145),
+            name: 'location',
+            type: 9,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -142,7 +147,10 @@ ModelDefinition getObjectBoxModel() {
           final labelsOffset = fbb.writeList(
               object.labels.map(fbb.writeString).toList(growable: false));
           final entity_idOffset = fbb.writeString(object.entity_id);
-          fbb.startTable(11);
+          final locationOffset = object.location == null
+              ? null
+              : fbb.writeString(object.location!);
+          fbb.startTable(12);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
@@ -152,6 +160,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addBool(7, object.is_cloud);
           fbb.addBool(8, object.is_favorite);
           fbb.addInt64(9, object.creationDateTime.millisecondsSinceEpoch);
+          fbb.addOffset(10, locationOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -171,7 +180,9 @@ ModelDefinition getObjectBoxModel() {
               DateTime.fromMillisecondsSinceEpoch(
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 22, 0)),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0))
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGetNullable(buffer, rootOffset, 24))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
             ..is_cloud =
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 18, false)
@@ -244,6 +255,10 @@ class Photo_ {
   /// see [Photo.creationDateTime]
   static final creationDateTime =
       QueryIntegerProperty<Photo>(_entities[0].properties[8]);
+
+  /// see [Photo.location]
+  static final location =
+      QueryStringProperty<Photo>(_entities[0].properties[9]);
 }
 
 /// [History] entity fields to define ObjectBox queries.
