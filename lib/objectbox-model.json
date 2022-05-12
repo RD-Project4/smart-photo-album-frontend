@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8452154140893309457",
-      "lastPropertyId": "11:5928449047530009145",
+      "lastPropertyId": "17:7651469783806390219",
       "name": "Photo",
       "properties": [
         {
@@ -35,23 +35,6 @@
           "type": 6
         },
         {
-          "id": "7:5826839999700844135",
-          "name": "entity_id",
-          "type": 9,
-          "flags": 2048,
-          "indexId": "1:7713753588704185151"
-        },
-        {
-          "id": "8:4775042554793791797",
-          "name": "is_cloud",
-          "type": 1
-        },
-        {
-          "id": "9:3168296054505618822",
-          "name": "is_favorite",
-          "type": 1
-        },
-        {
           "id": "10:3836911989879182796",
           "name": "creationDateTime",
           "type": 10
@@ -60,6 +43,38 @@
           "id": "11:5928449047530009145",
           "name": "location",
           "type": 9
+        },
+        {
+          "id": "12:5697620779040010095",
+          "name": "entityId",
+          "type": 9,
+          "flags": 2048,
+          "indexId": "3:4633289790922245848"
+        },
+        {
+          "id": "13:7496462533197211908",
+          "name": "cloudId",
+          "type": 9
+        },
+        {
+          "id": "14:4207547672681910534",
+          "name": "thumbnailPath",
+          "type": 9
+        },
+        {
+          "id": "15:419747438367326722",
+          "name": "isCloud",
+          "type": 1
+        },
+        {
+          "id": "16:7508849960037728736",
+          "name": "isLocal",
+          "type": 1
+        },
+        {
+          "id": "17:7651469783806390219",
+          "name": "isFavorite",
+          "type": 1
         }
       ],
       "relations": []
@@ -87,15 +102,20 @@
     }
   ],
   "lastEntityId": "2:6472757513092641637",
-  "lastIndexId": "2:3877532730341886472",
+  "lastIndexId": "3:4633289790922245848",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
-  "retiredIndexUids": [],
+  "retiredIndexUids": [
+    7713753588704185151
+  ],
   "retiredPropertyUids": [
-    5711374106246872086
+    5711374106246872086,
+    5826839999700844135,
+    4775042554793791797,
+    3168296054505618822
   ],
   "retiredRelationUids": [],
   "version": 1

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/routes/Routes.dart';
 import 'package:splashscreen/splashscreen.dart';
 
-import 'ViewModel/PhotoViewModel.dart';
 import 'database/ObjectStore.dart';
 
 void main() async {
@@ -15,23 +17,28 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        onGenerateRoute: onGenerateRoute,
-        debugShowCheckedModeBanner: false,
-        home: Splash());
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => PhotoCubit()),
+          BlocProvider(create: (context) => UserCubit())
+        ],
+        child: MaterialApp(
+            onGenerateRoute: onGenerateRoute,
+            debugShowCheckedModeBanner: false,
+            home: Splash()));
   }
 }
 
 class Splash extends StatelessWidget {
-  Future<String> loadFromFuture() async {
-    await PhotoViewModel.refresh();
+  Future<String> loadFromFuture(BuildContext context) async {
+    context.read<PhotoCubit>().refresh();
     return "/Home";
   }
 
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
-        navigateAfterFuture: loadFromFuture(),
+        navigateAfterFuture: loadFromFuture(context),
         useLoader: true,
         loadingTextPadding: EdgeInsets.all(0),
         loadingText: Text("Processing images..."),

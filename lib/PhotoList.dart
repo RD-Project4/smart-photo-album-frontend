@@ -6,14 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
-import 'package:smart_album/viewModel/PhotoViewModel.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'pages/photo/PhotoView.dart';
-import 'database/Photo.dart';
+import 'model/Photo.dart';
 
 class PhotoList extends StatelessWidget {
   final bool isHasTopBar;
@@ -23,14 +23,15 @@ class PhotoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final cubit = BlocProvider.of<PhotoCubit>(context);
 
     return QueryStreamBuilder(
-        queryStream: PhotoViewModel.getPhotoList(),
+        queryStream: cubit.getPhotoList(),
         loadingWidget: LoadingCircle(),
         builder: (context, data) {
           var photos = data;
           return RefreshIndicator(
-              onRefresh: () => PhotoViewModel.refresh(),
+              onRefresh: () => cubit.refresh(),
               child: GroupedView<Photo, DateTime>(
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: isHasTopBar

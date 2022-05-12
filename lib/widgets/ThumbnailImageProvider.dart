@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:quiver/cache.dart';
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 
 class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
   static MapCache lruMap = MapCache.lru(maximumSize: 30);
@@ -29,10 +29,10 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
 
   Future<ui.Codec> _loadAsync(
       ThumbnailImageProvider key, DecoderCallback decode) async {
-    var cache = await lruMap.get(photo.entity_id);
-    if (cache != null) return decode(cache);
+    var cache = await lruMap.get(photo.entityId);
+    if (cache != null) return cache;
 
-    final assetEntity = await AssetEntity.fromId(photo.entity_id);
+    final assetEntity = await AssetEntity.fromId(photo.entityId!);
     var data = await assetEntity?.thumbnailDataWithOption(
       ThumbnailOption(size: ThumbnailSize.square(250)),
     );
@@ -41,13 +41,26 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
       PaintingBinding.instance!.imageCache!.evict(key);
       throw StateError(
           '${photo.path} is empty and cannot be loaded as an image.');
-    } else
-      lruMap.set(photo.entity_id, data);
-    return decode(data);
+    } else {
+      var codec = await decode(data);
+      lruMap.set(photo.entityId, codec);
+      return codec;
+    }
   }
 
   @override
   Future<ThumbnailImageProvider> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<ThumbnailImageProvider>(this);
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is ThumbnailImageProvider &&
+        other.photo.id == photo.id &&
+        other.scale == scale;
+  }
+
+  @override
+  int get hashCode => hashValues(photo.entityId, scale);
 }

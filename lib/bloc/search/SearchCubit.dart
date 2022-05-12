@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/database/HIstory.dart';
+import 'package:smart_album/model/HIstory.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
@@ -19,9 +19,13 @@ class SearchCubit extends Cubit<SearchState> {
   setLocationList(List<String> locationList) =>
       state.locationList = locationList;
 
+  setGroupBy(GroupByOption groupBy) => emit(state..groupBy = groupBy);
+
   hasSearchResult() => state.searchResult != null;
 
-  clearSearchResult() => emit(SearchState());
+  clearSearchResult() => emit(state.clone()..searchResult = null);
+
+  clearSearchQuery() => emit(SearchState());
 
   search() {
     if (state.text.isNotEmpty)

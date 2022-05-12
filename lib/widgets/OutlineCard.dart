@@ -12,8 +12,6 @@ class OutlineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
     return SizedBox(
         width: double.infinity,
         child: Semantics(

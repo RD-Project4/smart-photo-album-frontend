@@ -9,7 +9,7 @@ import 'package:group_button/group_button.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:smart_album/Events.dart';
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/Global.dart';
 import 'package:smart_album/widgets/filter/FilterSelector.dart';
 

@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Positioned(child: PhotoList(isHasTopBar: true)),
+            const Positioned(child: PhotoList(isHasTopBar: true)),
             BlocBuilder<PhotoListCubit, PhotoListState>(
                 builder: (context, state) => state.mode == PhotoListMode.View
                     ? SearchBar()

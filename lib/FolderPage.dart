@@ -3,14 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_album/viewModel/PhotoViewModel.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/PhotoGroupedView.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
 import 'pages/photo/PhotoView.dart';
 import 'bloc/photo_list/PhotoListCubit.dart';
-import 'database/Photo.dart';
+import 'model/Photo.dart';
 import 'widgets/LightAppBar.dart';
 import 'widgets/SelectionToolBar.dart';
 
@@ -39,7 +39,7 @@ class FolderPage extends StatelessWidget {
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
           body: QueryStreamBuilder<Photo>(
-            queryStream: PhotoViewModel.getPhotoList(),
+            queryStream: BlocProvider.of<PhotoCubit>(context).getPhotoList(),
             loadingWidget: LoadingCircle(),
             builder: (context, data) => PhotoGroupedView(
                 photos: data
