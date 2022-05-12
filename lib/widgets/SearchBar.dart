@@ -155,8 +155,10 @@ class _SearchBarContent extends StatelessWidget {
                     var cubit = context.read<SearchCubit>();
                     if (cubit.hasSearchResult())
                       cubit.clearSearchResult();
-                    else
+                    else {
+                      cubit.clearSearchQuery();
                       bar?.close();
+                    }
                   } else {
                     Scaffold.of(context).openDrawer();
                   }
@@ -199,8 +201,7 @@ class _SearchBarContent extends StatelessWidget {
                   num checkedIndex = state.groupBy.index;
                   groupByItem.forEachIndexed((index, item) {
                     widgetList.add(CheckablePopupMenuItem(
-                        isChecked: index == checkedIndex,
-                        child: Text(item)));
+                        isChecked: index == checkedIndex, child: Text(item)));
                   });
                   widgetList.addAll([
                     PopupMenuDivider(),

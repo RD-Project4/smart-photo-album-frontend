@@ -23,7 +23,9 @@ class SearchCubit extends Cubit<SearchState> {
 
   hasSearchResult() => state.searchResult != null;
 
-  clearSearchResult() => emit(SearchState());
+  clearSearchResult() => emit(state.clone()..searchResult = null);
+
+  clearSearchQuery() => emit(SearchState());
 
   search() {
     if (state.text.isNotEmpty)

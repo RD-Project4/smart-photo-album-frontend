@@ -30,7 +30,7 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
   Future<ui.Codec> _loadAsync(
       ThumbnailImageProvider key, DecoderCallback decode) async {
     var cache = await lruMap.get(photo.entityId);
-    if (cache != null) return decode(cache);
+    if (cache != null) return cache;
 
     final assetEntity = await AssetEntity.fromId(photo.entityId!);
     var data = await assetEntity?.thumbnailDataWithOption(
@@ -41,13 +41,26 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
       PaintingBinding.instance!.imageCache!.evict(key);
       throw StateError(
           '${photo.path} is empty and cannot be loaded as an image.');
-    } else
-      lruMap.set(photo.entityId, data);
-    return decode(data);
+    } else {
+      var codec = await decode(data);
+      lruMap.set(photo.entityId, codec);
+      return codec;
+    }
   }
 
   @override
   Future<ThumbnailImageProvider> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<ThumbnailImageProvider>(this);
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is ThumbnailImageProvider &&
+        other.photo.id == photo.id &&
+        other.scale == scale;
+  }
+
+  @override
+  int get hashCode => hashValues(photo.entityId, scale);
 }
