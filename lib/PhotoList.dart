@@ -12,7 +12,7 @@ import 'package:smart_album/widgets/ListedPhoto.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
-import 'PhotoView.dart';
+import 'pages/photo/PhotoView.dart';
 import 'database/Photo.dart';
 
 class PhotoList extends StatelessWidget {

@@ -82,7 +82,7 @@ class _LoginFormState extends State<LoginForm> {
     } else if (_status == 5) {
       Setting.userEmail = this.account;
 
-      Tabs.loginstate = 0;
+      // Tabs.loginstate = 0;
       Navigator.pushNamed(
         context,
         '/',

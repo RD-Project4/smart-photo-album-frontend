@@ -53,7 +53,8 @@ class _ScannerPageState extends State<ScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+        body: SafeArea(
+      child: Stack(
         children: <Widget>[
           QRView(
             key: qrKey,
@@ -100,7 +101,7 @@ class _ScannerPageState extends State<ScannerPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   void _onQRViewCreated(QRViewController controller) {
