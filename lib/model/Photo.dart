@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:smart_album/api/api.dart';
 
 @Entity()
 class Photo {
@@ -24,16 +26,28 @@ class Photo {
 
   Photo.fromJson(dynamic json)
       : cloudId = json["picId"],
-        thumbnailPath = "",
-        path = json["picCloudUrl"],
-        labels = [],
-        creationDateTime = DateTime.now(),
-        width = 0,
-        height = 0,
-        location = "",
+        thumbnailPath = Api.get().getPicThumbUrlByCloudId(json["picId"]),
+        path = Api.get().getPicUrlByCloudId(json["picId"]),
+        labels = json["custom"]["labels"].split(','),
+        creationDateTime = DateTime.fromMillisecondsSinceEpoch(
+            json["custom"]["creationDateTime"]),
+        width = json["custom"]["width"],
+        height = json["custom"]["height"],
+        location = json["custom"]["location"],
         isCloud = true,
         isLocal = false,
-        isFavorite = false;
+        isFavorite = json["custom"]["isFavorite"];
+
+  toJson() {
+    return {
+      "labels": labels.join(','),
+      "creationDateTime": creationDateTime.millisecondsSinceEpoch,
+      "width": width,
+      "height": height,
+      "location": location,
+      "isFavorite": isFavorite,
+    };
+  }
 
   Photo.placeholder()
       : id = -1,

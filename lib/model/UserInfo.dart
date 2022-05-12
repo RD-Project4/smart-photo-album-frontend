@@ -13,7 +13,7 @@ class UserInfo {
     required this.userPwd,
   });
 
-  ToJson() {
+  toJson() {
     return {
       'userAccount': userAccount,
       'userEmail': userEmail,
