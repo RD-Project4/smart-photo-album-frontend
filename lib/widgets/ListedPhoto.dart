@@ -42,6 +42,7 @@ class _ListedPhotoState extends State<ListedPhoto> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     _setIsFavorite();
 
     Global.eventBus.on<RefreshFavoritesEvent>().listen((event) {

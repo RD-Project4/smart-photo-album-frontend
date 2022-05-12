@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:smart_album/widgets/PhotoToolBar.dart';
+import 'package:recognition_qrcode/recognition_qrcode.dart';
+import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
+import 'package:smart_album/widgets/photo/UrlTip.dart';
 
 class PhotoView<T> extends StatefulWidget {
   final ImageProvider Function(T item) imageBuilder;
@@ -31,11 +35,33 @@ class PhotoView<T> extends StatefulWidget {
 
 class _PhotoViewState<T> extends State<PhotoView<T>> {
   late int currentIndex = widget.initialIndex;
+  var currentUrl;
+
+  void _parseQRCode() {
+    Photo photo = widget.galleryItems[currentIndex] as Photo;
+
+    RecognitionQrcode.recognition(photo.path).then((result) {
+      var _url = result['value'];
+      print("识别成功。url: $_url");
+      setState(() {
+        currentUrl = _url;
+      });
+    });
+  }
 
   void onPageChanged(int index) {
     setState(() {
       currentIndex = index;
+      currentUrl = null;
     });
+    _parseQRCode();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _parseQRCode();
   }
 
   @override
@@ -70,6 +96,10 @@ class _PhotoViewState<T> extends State<PhotoView<T>> {
               right: 0,
               child: Column(
                 children: [
+                  currentUrl != null ? UrlTip(url: currentUrl) : Container(),
+                  SizedBox(
+                    height: 10,
+                  ),
                   widget.descBuilder != null
                       ? widget.descBuilder!(widget.galleryItems[currentIndex])
                       : Container(),

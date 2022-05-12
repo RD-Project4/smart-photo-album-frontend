@@ -8,7 +8,7 @@ import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/PhotoGroupedView.dart';
 import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 
-import 'PhotoView.dart';
+import 'pages/photo/PhotoView.dart';
 import 'bloc/photo_list/PhotoListCubit.dart';
 import 'model/Photo.dart';
 import 'widgets/LightAppBar.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
-import 'package:smart_album/widgets/PhotoToolBar.dart';
+import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 
 class ShareUtil {
