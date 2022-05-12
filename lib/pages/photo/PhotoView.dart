@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:recognition_qrcode/recognition_qrcode.dart';
-import 'package:smart_album/database/Photo.dart';
+import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
 import 'package:smart_album/widgets/photo/UrlTip.dart';
 
