@@ -15,17 +15,31 @@ class Photo {
   int width;
   int height;
   String? location;
-  bool isCloud = false; // 是否是云端照片，不在本地又不在云端就会从数据库里删除
-  bool isLocal = false; // 是否在本地存在
+  bool isCloud; // 是否是云端照片，不在本地又不在云端就会从数据库里删除
+  bool isLocal; // 是否在本地存在
   bool isFavorite = false;
 
   Photo(this.entityId, this.path, this.labels, this.creationDateTime,
-      this.width, this.height, this.location);
+      this.width, this.height, this.location, this.isCloud, this.isLocal);
 
   Photo.fromJson(dynamic json)
       : cloudId = json["picId"],
         thumbnailPath = "",
-        path = "picCloudUrl",
+        path = json["picCloudUrl"],
+        labels = [],
+        creationDateTime = DateTime.now(),
+        width = 0,
+        height = 0,
+        location = "",
+        isCloud = true,
+        isLocal = false,
+        isFavorite = false;
+
+  Photo.placeholder()
+      : id = -1,
+        cloudId = "https://via.placeholder.com/150",
+        thumbnailPath = "",
+        path = "",
         labels = [],
         creationDateTime = DateTime.now(),
         width = 0,

@@ -36,17 +36,20 @@ class SearchResult extends StatelessWidget {
               .toList();
           break;
         case GroupByOption.LABEL:
-          Map<String, List<Photo>> typedGroupedPhotos =
-              state.searchResult!.groupListsBy((photo) => photo.labels[0]);
-          groupedPhotos = typedGroupedPhotos;
-          keys = typedGroupedPhotos.keys.toList();
+          groupedPhotos = state.searchResult!.groupListsBy((photo) =>
+              photo.labels.length > 0 ? photo.labels[0] : "Unlabeled");
+          keys = groupedPhotos.keys.toList();
           break;
         case GroupByOption.LOCATION:
-          Map<String, List<Photo>> typedGroupedPhotos = state.searchResult!
+          groupedPhotos = state.searchResult!
               .where((photo) => photo.location != null)
               .groupListsBy((photo) => photo.location!);
-          groupedPhotos = typedGroupedPhotos;
-          keys = typedGroupedPhotos.keys.toList();
+          keys = groupedPhotos.keys.toList();
+          break;
+        case GroupByOption.IMAGE_SIZE:
+          groupedPhotos = state.searchResult!.groupListsBy((photo) =>
+              (photo.width > 800 && photo.height > 800) ? "Large" : "Small");
+          keys = groupedPhotos.keys.toList();
           break;
         default:
           groupedPhotos = Map();

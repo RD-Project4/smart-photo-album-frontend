@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_album/widgets/TabsDrawer.dart';
 
-import '../CatagoryPage.dart';
+import '../CategoryPage.dart';
 import '../HomePage.dart';
 import '../util/ThemeUtil.dart';
 import 'tabs/Setting.dart';
@@ -31,6 +31,7 @@ class _TabsState extends State<Tabs> {
     ThemeUtil.setSystemOverlayLight(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBody: true,
       body: SafeArea(
         bottom: false,

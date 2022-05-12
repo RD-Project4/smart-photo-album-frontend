@@ -198,10 +198,17 @@ class _SearchBarContent extends StatelessWidget {
                     "Image Size"
                   ];
                   widgetList.add(PopupMenuTitle(child: Text("Group by")));
-                  num checkedIndex = state.groupBy.index;
+                  int checkedIndex = state.groupBy.index;
                   groupByItem.forEachIndexed((index, item) {
                     widgetList.add(CheckablePopupMenuItem(
-                        isChecked: index == checkedIndex, child: Text(item)));
+                      isChecked: index == checkedIndex,
+                      child: Text(item),
+                      onTap: () {
+                        context
+                            .read<SearchCubit>()
+                            .setGroupBy(GroupByOption.values[index]);
+                      },
+                    ));
                   });
                   widgetList.addAll([
                     PopupMenuDivider(),
@@ -226,16 +233,18 @@ class PopupMenuTitle<T> extends PopupMenuItem<T> {
 
 class CheckablePopupMenuItem<T> extends PopupMenuItem<T> {
   final bool isChecked;
+  final void Function()? onTap;
 
-  CheckablePopupMenuItem({required Widget child, this.isChecked = false})
+  CheckablePopupMenuItem(
+      {required Widget child, this.isChecked = false, this.onTap})
       : super(
-          child: Row(
-            children: [
-              Expanded(child: child),
-              Icon(isChecked
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off),
-            ],
-          ),
-        );
+            child: Row(
+              children: [
+                Expanded(child: child),
+                Icon(isChecked
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off),
+              ],
+            ),
+            onTap: onTap);
 }

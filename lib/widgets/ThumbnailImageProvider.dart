@@ -7,12 +7,14 @@ import 'package:quiver/cache.dart';
 import 'package:smart_album/model/Photo.dart';
 
 class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
+  NetworkImage? networkProvider;
+
   static MapCache lruMap = MapCache.lru(maximumSize: 30);
 
   final Photo photo;
   final double scale;
 
-  const ThumbnailImageProvider(this.photo, {this.scale = 1.0});
+  ThumbnailImageProvider(this.photo, {this.scale = 1.0});
 
   @override
   ImageStreamCompleter load(
@@ -32,10 +34,18 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
     var cache = await lruMap.get(photo.entityId);
     if (cache != null) return cache;
 
-    final assetEntity = await AssetEntity.fromId(photo.entityId!);
-    var data = await assetEntity?.thumbnailDataWithOption(
-      ThumbnailOption(size: ThumbnailSize.square(250)),
-    );
+    var data;
+    if (photo.isLocal) {
+      final assetEntity = await AssetEntity.fromId(photo.entityId!);
+      data = await assetEntity?.thumbnailDataWithOption(
+        ThumbnailOption(size: ThumbnailSize.square(250)),
+      );
+    } else if (photo.isCloud) {
+      if (networkProvider == null)
+        networkProvider = NetworkImage(photo.thumbnailPath!);
+      data = networkProvider!.load(networkProvider!, decode);
+    }
+
     if (data == null) {
       // The file may become available later.
       PaintingBinding.instance!.imageCache!.evict(key);

@@ -13,6 +13,7 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'model/Category.dart';
 import 'model/HIstory.dart';
 import 'model/Photo.dart';
 
@@ -113,6 +114,36 @@ final _entities = <ModelEntity>[
             indexId: const IdUid(2, 3877532730341886472))
       ],
       relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(3, 4139173113446546881),
+      name: 'Category',
+      lastPropertyId: const IdUid(6, 2943526286783902201),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 2364032299298431250),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 7040229653329637807),
+            name: 'name',
+            type: 9,
+            flags: 2048,
+            indexId: const IdUid(4, 4839437694175533174)),
+        ModelProperty(
+            id: const IdUid(3, 3869856611413703840),
+            name: 'labelList',
+            type: 30,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 4441611100883772125),
+            name: 'locationList',
+            type: 30,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -136,8 +167,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 6472757513092641637),
-      lastIndexId: const IdUid(3, 4633289790922245848),
+      lastEntityId: const IdUid(3, 4139173113446546881),
+      lastIndexId: const IdUid(4, 4839437694175533174),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -146,7 +177,9 @@ ModelDefinition getObjectBoxModel() {
         5711374106246872086,
         5826839999700844135,
         4775042554793791797,
-        3168296054505618822
+        3168296054505618822,
+        427707142129404978,
+        2943526286783902201
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -212,16 +245,14 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
               const fb.StringReader(asciiOptimization: true)
-                  .vTableGetNullable(buffer, rootOffset, 24))
+                  .vTableGetNullable(buffer, rootOffset, 24),
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 32, false),
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 34, false))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
             ..cloudId = const fb.StringReader(asciiOptimization: true)
                 .vTableGetNullable(buffer, rootOffset, 28)
             ..thumbnailPath = const fb.StringReader(asciiOptimization: true)
                 .vTableGetNullable(buffer, rootOffset, 30)
-            ..isCloud =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 32, false)
-            ..isLocal =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 34, false)
             ..isFavorite =
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 36, false);
 
@@ -249,6 +280,53 @@ ModelDefinition getObjectBoxModel() {
 
           final object = History(const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, ''))
+            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+          return object;
+        }),
+    Category: EntityDefinition<Category>(
+        model: _entities[2],
+        toOneRelations: (Category object) => [],
+        toManyRelations: (Category object) => {},
+        getId: (Category object) => object.id,
+        setId: (Category object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Category object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          final labelListOffset = object.labelList == null
+              ? null
+              : fbb.writeList(object.labelList!
+                  .map(fbb.writeString)
+                  .toList(growable: false));
+          final locationListOffset = object.locationList == null
+              ? null
+              : fbb.writeList(object.locationList!
+                  .map(fbb.writeString)
+                  .toList(growable: false));
+          fbb.startTable(7);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.addOffset(2, labelListOffset);
+          fbb.addOffset(3, locationListOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = Category(
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''),
+              const fb.ListReader<String>(
+                      fb.StringReader(asciiOptimization: true),
+                      lazy: false)
+                  .vTableGetNullable(buffer, rootOffset, 8),
+              const fb.ListReader<String>(
+                      fb.StringReader(asciiOptimization: true),
+                      lazy: false)
+                  .vTableGetNullable(buffer, rootOffset, 10))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
           return object;
@@ -315,4 +393,21 @@ class History_ {
 
   /// see [History.name]
   static final name = QueryStringProperty<History>(_entities[1].properties[1]);
+}
+
+/// [Category] entity fields to define ObjectBox queries.
+class Category_ {
+  /// see [Category.id]
+  static final id = QueryIntegerProperty<Category>(_entities[2].properties[0]);
+
+  /// see [Category.name]
+  static final name = QueryStringProperty<Category>(_entities[2].properties[1]);
+
+  /// see [Category.labelList]
+  static final labelList =
+      QueryStringVectorProperty<Category>(_entities[2].properties[2]);
+
+  /// see [Category.locationList]
+  static final locationList =
+      QueryStringVectorProperty<Category>(_entities[2].properties[3]);
 }
