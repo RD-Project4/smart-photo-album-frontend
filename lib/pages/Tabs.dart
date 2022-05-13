@@ -54,10 +54,10 @@ class _TabsState extends State<Tabs> {
             Icon(Icons.category, size: 20),
             Icon(Icons.person, size: 20),
           ]),
-      drawer: TabsDrawer(),
-      onDrawerChanged: (isOpened) {
+      // drawer: TabsDrawer(),
+      // onDrawerChanged: (isOpened) {
         // showuser();
-      },
+      // },
     );
   }
 }

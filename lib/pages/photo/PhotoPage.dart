@@ -118,11 +118,32 @@ class _PhotoPageState extends State<PhotoPage> {
   PopupMenuButton _buildPopupMenu() {
     return PopupMenuButton(
         itemBuilder: (context) => [
-              PopupMenuItem(child: Text("Share")),
-              PopupMenuItem(child: Text("Edit")),
-              PopupMenuItem(child: Text("Upload")),
-              PopupMenuItem(child: Text("Favorite")),
-              PopupMenuItem(child: Text("Delete"))
+              _buildPopupMenuItem(() {}, Icons.share, "Share",
+                  iconColor: Colors.green),
+              _buildPopupMenuItem(() {}, Icons.cloud_upload, "Upload",
+                  iconColor: Colors.lightBlue),
+              _buildPopupMenuItem(() {}, Icons.favorite, "Favorite",
+                  iconColor: Colors.red),
+              _buildPopupMenuItem(() {}, Icons.palette, "Palette",
+                  iconColor: Colors.amber),
+              _buildPopupMenuItem(() {}, Icons.delete, "Delete",
+                  iconColor: Colors.grey),
             ]);
+  }
+
+  PopupMenuItem _buildPopupMenuItem(onTap, IconData icon, String text,
+      {Color? iconColor}) {
+    return PopupMenuItem(
+        onTap: onTap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon,color: iconColor ?? Colors.black,),
+            SizedBox(
+              width: 10,
+            ),
+            Text(text)
+          ],
+        ));
   }
 }

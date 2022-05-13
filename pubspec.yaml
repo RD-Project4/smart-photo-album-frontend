@@ -43,7 +43,7 @@ dependencies:
       url: https://github.com/bluefireteam/photo_view
       ref: master
   permission_handler: ^9.1.0
-  photo_manager: ^2.0.8
+  photo_manager: 2.0.8
   intl: ^0.17.0
   flutter_bloc: ^8.0.1
   fluttertoast: ^8.0.8

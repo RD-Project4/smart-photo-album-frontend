@@ -99,16 +99,7 @@ class _SearchBarContent extends StatelessWidget {
           },
           clearQueryOnClose: true,
           actions: [
-            FloatingSearchBarAction(
-              showIfOpened: false,
-              showIfClosed: true,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/scanner');
-                },
-                icon: Icon(Icons.qr_code_scanner),
-              ),
-            ),
+
             FloatingSearchBarAction(
               showIfOpened: true,
               showIfClosed: false,
@@ -135,43 +126,15 @@ class _SearchBarContent extends StatelessWidget {
           ],
           leadingActions: [
             FloatingSearchBarAction(
-              showIfOpened: true,
-              builder: (context, animation) {
-                final isLTR = Directionality.of(context) == TextDirection.ltr;
-
-                return AnimatedBuilder(
-                  child: RotatedBox(
-                    quarterTurns: (isLTR ? 0 : 2),
-                    child: AnimatedIcon(
-                      icon: AnimatedIcons.menu_arrow,
-                      textDirection: TextDirection.ltr,
-                      progress: animation,
-                    ),
-                  ),
-                  animation: animation,
-                  builder: (context, icon) => CircularButton(
-                    tooltip: animation.isDismissed
-                        ? MaterialLocalizations.of(context).openAppDrawerTooltip
-                        : MaterialLocalizations.of(context).backButtonTooltip,
-                    onPressed: () {
-                      final bar = FloatingSearchAppBar.of(context);
-                      if (bar?.isOpen == true) {
-                        var cubit = context.read<SearchCubit>();
-                        if (cubit.hasSearchResult())
-                          cubit.clearSearchResult();
-                        else {
-                          cubit.clearSearchQuery();
-                          bar?.close();
-                        }
-                      } else {
-                        Scaffold.of(context).openDrawer();
-                      }
-                    },
-                    icon: icon!,
-                  ),
-                );
-              },
-            )
+              showIfOpened: false,
+              showIfClosed: true,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/scanner');
+                },
+                icon: Icon(Icons.qr_code_scanner),
+              ),
+            ),
           ],
           transition: ExpandingFloatingSearchBarTransition(),
           builder: (context, transition) {

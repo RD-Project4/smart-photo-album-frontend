@@ -62,12 +62,13 @@ class _ScannerPageState extends State<ScannerPage> {
           ),
           Positioned(
             left: 20,
-            top: 50,
+            top: 20,
             child: CircleAvatar(
-              radius: 30,
+              radius: 20,
               backgroundColor: Color.fromRGBO(255, 255, 255, 0.5),
               child: Center(
                   child: IconButton(
+                    color: Colors.white,
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -76,9 +77,9 @@ class _ScannerPageState extends State<ScannerPage> {
           ),
           Positioned(
             right: 20,
-            top: 50,
+            top: 20,
             child: CircleAvatar(
-              radius: 30,
+              radius: 20,
               backgroundColor: Color.fromRGBO(255, 255, 255, 0.5),
               child: Center(
                   child: IconButton(
@@ -96,6 +97,7 @@ class _ScannerPageState extends State<ScannerPage> {
                           print('***********');
                         });
                       },
+                      color: Colors.white,
                       icon: Icon(Icons.photo_library))),
             ),
           ),
