@@ -29,7 +29,7 @@ class PhotoList extends StatelessWidget {
       var photos = state.photoList;
       if (photos == null) return LoadingCircle();
       return RefreshIndicator(
-          onRefresh: () => cubit.refresh(),
+          onRefresh: () => cubit.refresh(context),
           child: GroupedView<Photo, DateTime>(
               physics: AlwaysScrollableScrollPhysics(),
               padding: isHasTopBar

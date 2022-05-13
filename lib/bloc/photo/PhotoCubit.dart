@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
@@ -17,7 +21,8 @@ class PhotoCubit extends Cubit<PhotoState> {
     });
   }
 
-  refresh() async {
+  // Need context because we need to access the UserCubit
+  refresh(BuildContext context) async {
     Map<Permission, PermissionStatus> permissionMap =
         await [Permission.storage, Permission.accessMediaLocation].request();
     for (PermissionStatus status in permissionMap.values) {
@@ -26,7 +31,6 @@ class PhotoCubit extends Cubit<PhotoState> {
       }
     }
 
-    // 检查数据库中的照片，是否在本地或云端存在
     List<AssetPathEntity> entityList = await PhotoManager.getAssetPathList(
         type: RequestType.image, hasAll: false);
 
@@ -45,16 +49,28 @@ class PhotoCubit extends Cubit<PhotoState> {
       photoMapFromLocal[photo.id] = photo;
     }
 
+    Map<String, Photo> photoMapFromCloud = new Map();
+    try {
+      UserCubit userCubit = context.read<UserCubit>();
+      List<Photo> photoListFromCloud = await userCubit.getCloudPhotoList();
+      photoListFromCloud
+          .forEach((photo) => photoMapFromCloud[photo.cloudId!] = photo);
+    } catch (e) {
+      log("Get cloud photo error, loading local photos");
+    }
+
+    // 检查数据库中的照片，是否在本地或云端存在
     List<int> photoToRemoveList = [];
-    List<Photo> photoListFromDataset =
+    List<Photo> photoListFromDatabase =
         state.photoList ?? ObjectStore.get().getPhotoList();
-    for (Photo photo in photoListFromDataset) {
+    for (Photo photo in photoListFromDatabase) {
       if (photoMapFromLocal.containsKey(photo.entityId)) {
         // no need to update
         photoMapFromLocal.remove(photo.entityId);
-      } else if (!photo.isCloud) {
+      } else if (photoMapFromCloud.containsKey(photo.cloudId)) {
+        photoMapFromCloud.remove(photo.entityId);
+      } else
         photoToRemoveList.add(photo.id);
-      }
     }
 
     List<Photo> photoToStoreList = [];
@@ -88,6 +104,7 @@ class PhotoCubit extends Cubit<PhotoState> {
           false,
           true));
     }
+    photoToStoreList.addAll(photoMapFromCloud.values);
 
     ObjectStore.get().storePhoto(photoToStoreList);
     ObjectStore.get().removePhoto(photoToRemoveList);

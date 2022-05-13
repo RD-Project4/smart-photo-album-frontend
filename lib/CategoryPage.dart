@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/categoryFolder/CategoryFolderCubit.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/widgets/AddCategoryFolder.dart';
 
 import 'FolderPage.dart';
@@ -58,7 +59,9 @@ class CategoryPage extends StatelessWidget {
                     },
                     body: Padding(
                         padding: EdgeInsets.only(top: 46),
-                        child: TabBarView(children: [
+                        child: RefreshIndicator(
+                          onRefresh: () => context.read<PhotoCubit>().refresh(context),
+                            child: TabBarView(children: [
                           PhotoCategoryGridView(
                               padding: EdgeInsets.only(
                                   top: 10,
@@ -73,7 +76,7 @@ class CategoryPage extends StatelessWidget {
                               }),
                           Container(),
                           Container()
-                        ])),
+                        ]))),
                   ),
                   Positioned(
                     bottom: 100,

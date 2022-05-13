@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
 
 class Splash extends StatelessWidget {
   Future<String> loadFromFuture(BuildContext context) async {
-    context.read<PhotoCubit>().refresh();
+    context.read<PhotoCubit>().refresh(context);
     return "/Home";
   }
 
