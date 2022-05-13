@@ -1,9 +1,12 @@
 import 'dart:io';
 
+// import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:recognition_qrcode/recognition_qrcode.dart';
+import 'package:scan/scan.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/CommonUtil.dart';
@@ -22,18 +25,37 @@ class PhotoPage extends StatefulWidget {
 }
 
 class _PhotoPageState extends State<PhotoPage> {
-  late int currentIndex = widget.initialIndex;
+  // late int currentIndex = widget.initialIndex;
+  late ValueNotifier<int> indexNotifier = ValueNotifier(widget.initialIndex);
   late PageController pageController;
+  String? currentUrl;
+
+  void _parseQrCode() {
+    var _photo = widget.photoList[indexNotifier.value];
+    Scan.parse(_photo.path).then((result) {
+      if (result == null) {
+        print("图中无二维码");
+        return;
+      }
+      print("识别成功。url: $result");
+      setState(() {
+        currentUrl = result;
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: currentIndex);
+    pageController = PageController(initialPage: indexNotifier.value);
+    _parseQrCode();
+
+    indexNotifier.addListener(_parseQrCode);
   }
 
   @override
   Widget build(BuildContext context) {
-    Photo photo = widget.photoList[currentIndex];
+    Photo photo = widget.photoList[indexNotifier.value];
     PhotoCubit cubit = context.read<PhotoCubit>();
     Map<String, List<Photo>> labelMap =
         cubit.getPhotoGroupedByLabel(photo.labels);
@@ -56,7 +78,8 @@ class _PhotoPageState extends State<PhotoPage> {
                 color: ThemeUtil.getBackgroundColor(context),
               ),
               pageController: pageController,
-              onPageChanged: (index) => setState(() => currentIndex = index),
+              onPageChanged: (index) =>
+                  setState(() => indexNotifier.value = index),
             )),
             SizedBox(
               height: 160,
@@ -115,20 +138,46 @@ class _PhotoPageState extends State<PhotoPage> {
     );
   }
 
+  AlertDialog showDeleteConfirmDialog1(BuildContext context) {
+    return AlertDialog(
+      title: Text("提示"),
+      content: Text("您确定要删除当前文件吗?"),
+      actions: <Widget>[
+        TextButton(
+          child: Text("取消"),
+          onPressed: () => Navigator.of(context).pop(), // 关闭对话框
+        ),
+        TextButton(
+          child: Text("删除"),
+          onPressed: () {
+            //关闭对话框并返回true
+            Navigator.of(context).pop(true);
+          },
+        ),
+      ],
+    );
+  }
+
   PopupMenuButton _buildPopupMenu() {
-    return PopupMenuButton(
-        itemBuilder: (context) => [
-              _buildPopupMenuItem(() {}, Icons.share, "Share",
-                  iconColor: Colors.green),
-              _buildPopupMenuItem(() {}, Icons.cloud_upload, "Upload",
-                  iconColor: Colors.lightBlue),
-              _buildPopupMenuItem(() {}, Icons.favorite, "Favorite",
-                  iconColor: Colors.red),
-              _buildPopupMenuItem(() {}, Icons.palette, "Palette",
-                  iconColor: Colors.amber),
-              _buildPopupMenuItem(() {}, Icons.delete, "Delete",
-                  iconColor: Colors.grey),
-            ]);
+    var _list = [
+      _buildPopupMenuItem(() {}, Icons.share, "Share", iconColor: Colors.green),
+      _buildPopupMenuItem(() {}, Icons.cloud_upload, "Upload",
+          iconColor: Colors.lightBlue),
+      _buildPopupMenuItem(() {}, Icons.favorite, "Favorite",
+          iconColor: Colors.red),
+      _buildPopupMenuItem(() {}, Icons.palette, "Palette",
+          iconColor: Colors.amber),
+      _buildPopupMenuItem(() {}, Icons.delete, "Delete",
+          iconColor: Colors.grey),
+    ];
+
+    if (currentUrl != null) {
+      _list.add(_buildPopupMenuItem(() async {
+        Navigator.of(context).pop();
+      }, Icons.qr_code_2, "QR Code"));
+    }
+
+    return PopupMenuButton(itemBuilder: (context) => _list);
   }
 
   PopupMenuItem _buildPopupMenuItem(onTap, IconData icon, String text,
@@ -138,7 +187,10 @@ class _PhotoPageState extends State<PhotoPage> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon,color: iconColor ?? Colors.black,),
+            Icon(
+              icon,
+              color: iconColor ?? Colors.black,
+            ),
             SizedBox(
               width: 10,
             ),
