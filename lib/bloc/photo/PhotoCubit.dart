@@ -6,13 +6,16 @@ import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 import 'package:smart_album/util/CommonUtil.dart';
 import 'package:smart_album/util/GeoUtil.dart';
-import 'package:smart_album/widgets/QueryStreamBuilder.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 import 'PhotoState.dart';
 
 class PhotoCubit extends Cubit<PhotoState> {
-  PhotoCubit() : super(PhotoState());
+  PhotoCubit() : super(PhotoState()) {
+    ObjectStore.get().getPhotoStream().listen((photoList) {
+      emit(state.clone()..photoList = photoList);
+    });
+  }
 
   refresh() async {
     Map<Permission, PermissionStatus> permissionMap =
@@ -43,7 +46,8 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
 
     List<int> photoToRemoveList = [];
-    List<Photo> photoListFromDataset = ObjectStore.get().getPhotoList();
+    List<Photo> photoListFromDataset =
+        state.photoList ?? ObjectStore.get().getPhotoList();
     for (Photo photo in photoListFromDataset) {
       if (photoMapFromLocal.containsKey(photo.entityId)) {
         // no need to update
@@ -73,15 +77,19 @@ class PhotoCubit extends Cubit<PhotoState> {
         location = await GeoUtil.locationFromCoordinates(
             latLng.latitude!, latLng.longitude!);
 
-      photoToStoreList.add(Photo(entity.id, path, labelsString,
-          entity.createDateTime, entity.width, entity.height, location));
+      photoToStoreList.add(Photo(
+          entity.id,
+          path,
+          labelsString,
+          entity.createDateTime,
+          entity.width,
+          entity.height,
+          location,
+          false,
+          true));
     }
 
     ObjectStore.get().storePhoto(photoToStoreList);
     ObjectStore.get().removePhoto(photoToRemoveList);
-  }
-
-  QueryStream<Photo> getPhotoList() {
-    return ObjectStore.get().getPhotoStream();
   }
 }

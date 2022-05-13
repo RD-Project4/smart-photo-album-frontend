@@ -72,8 +72,8 @@ class TensorflowResultPanel {
         // ),
         ListTile(
           title: Text(label),
-          onTap: () => Navigator.pushNamed(context, '/folderPage',
-              arguments: FolderPageArguments(title: label)),
+          // onTap: () => Navigator.pushNamed(context, '/folderPage',
+          //     arguments: FolderPageArguments(title: label)),
         )
       ],
     );

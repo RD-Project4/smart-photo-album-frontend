@@ -33,4 +33,6 @@ class PhotoListCubit extends Cubit<PhotoListState> {
   void setPhotoList(list) {
     state.photos = list;
   }
+
+  setGroupBy(GroupByOption groupBy) => emit(state.clone()..groupBy = groupBy);
 }

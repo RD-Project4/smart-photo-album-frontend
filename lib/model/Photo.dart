@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:smart_album/api/api.dart';
 
 @Entity()
 class Photo {
@@ -15,17 +17,43 @@ class Photo {
   int width;
   int height;
   String? location;
-  bool isCloud = false; // 是否是云端照片，不在本地又不在云端就会从数据库里删除
-  bool isLocal = false; // 是否在本地存在
+  bool isCloud; // 是否是云端照片，不在本地又不在云端就会从数据库里删除
+  bool isLocal; // 是否在本地存在
   bool isFavorite = false;
 
   Photo(this.entityId, this.path, this.labels, this.creationDateTime,
-      this.width, this.height, this.location);
+      this.width, this.height, this.location, this.isCloud, this.isLocal);
 
   Photo.fromJson(dynamic json)
       : cloudId = json["picId"],
+        thumbnailPath = Api.get().getPicThumbUrlByCloudId(json["picId"]),
+        path = Api.get().getPicUrlByCloudId(json["picId"]),
+        labels = json["custom"]["labels"].split(','),
+        creationDateTime = DateTime.fromMillisecondsSinceEpoch(
+            json["custom"]["creationDateTime"]),
+        width = json["custom"]["width"],
+        height = json["custom"]["height"],
+        location = json["custom"]["location"],
+        isCloud = true,
+        isLocal = false,
+        isFavorite = json["custom"]["isFavorite"];
+
+  toJson() {
+    return {
+      "labels": labels.join(','),
+      "creationDateTime": creationDateTime.millisecondsSinceEpoch,
+      "width": width,
+      "height": height,
+      "location": location,
+      "isFavorite": isFavorite,
+    };
+  }
+
+  Photo.placeholder()
+      : id = -1,
+        cloudId = "https://via.placeholder.com/150",
         thumbnailPath = "",
-        path = "picCloudUrl",
+        path = "",
         labels = [],
         creationDateTime = DateTime.now(),
         width = 0,
