@@ -22,8 +22,6 @@ class SearchCubit extends Cubit<SearchState> {
   setLocationList(List<String> locationList) =>
       state.locationList = locationList;
 
-  setGroupBy(GroupByOption groupBy) => emit(state.clone()..groupBy = groupBy);
-
   hasSearchResult() => state.searchResult != null;
 
   clearSearchResult() => emit(state.clone()..searchResult = null);
