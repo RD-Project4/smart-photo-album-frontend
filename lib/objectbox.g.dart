@@ -23,7 +23,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(17, 7651469783806390219),
+      lastPropertyId: const IdUid(18, 810372771465484196),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -91,6 +91,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(17, 7651469783806390219),
             name: 'isFavorite',
             type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(18, 810372771465484196),
+            name: 'name',
+            type: 9,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -210,7 +215,8 @@ ModelDefinition getObjectBoxModel() {
           final thumbnailPathOffset = object.thumbnailPath == null
               ? null
               : fbb.writeString(object.thumbnailPath!);
-          fbb.startTable(18);
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(19);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
@@ -224,6 +230,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addBool(14, object.isCloud);
           fbb.addBool(15, object.isLocal);
           fbb.addBool(16, object.isFavorite);
+          fbb.addOffset(17, nameOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -234,6 +241,8 @@ ModelDefinition getObjectBoxModel() {
           final object = Photo(
               const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 26),
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 38, ''),
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.ListReader<String>(
@@ -384,6 +393,9 @@ class Photo_ {
   /// see [Photo.isFavorite]
   static final isFavorite =
       QueryBooleanProperty<Photo>(_entities[0].properties[12]);
+
+  /// see [Photo.name]
+  static final name = QueryStringProperty<Photo>(_entities[0].properties[13]);
 }
 
 /// [History] entity fields to define ObjectBox queries.

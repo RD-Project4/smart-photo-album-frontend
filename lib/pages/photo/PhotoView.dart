@@ -4,6 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:recognition_qrcode/recognition_qrcode.dart';
 import 'package:smart_album/model/Photo.dart';
+import 'package:smart_album/util/ThemeUtil.dart';
 import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
 import 'package:smart_album/widgets/photo/UrlTip.dart';
 
@@ -66,6 +67,8 @@ class _PhotoViewState<T> extends State<PhotoView<T>> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeUtil.setSystemOverlayLight(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('${currentIndex + 1} of ${widget.galleryItems.length}'),

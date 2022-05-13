@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class LightAppBar extends AppBar {
   final String titleString;
 
-  LightAppBar(BuildContext context, this.titleString, {Key? key, actions})
+  LightAppBar(BuildContext context, this.titleString,
+      {Key? key, List<Widget>? actions})
       : super(
             key: key,
             title: Text(titleString),

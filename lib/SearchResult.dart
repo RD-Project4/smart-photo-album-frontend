@@ -24,46 +24,15 @@ class SearchResult extends StatelessWidget {
                 builder: (context, photoListState) {
               if (searchState.searchResult == null) return Container();
 
-              Map<dynamic, List<Photo>> groupedPhotos;
+              var photoListCubit = context.read<PhotoListCubit>();
+              Map<dynamic, List<Photo>> groupedPhotos =
+                  photoListCubit.groupByPhotos(searchState.searchResult!);
               List<dynamic> keys;
-              switch (photoListState.groupBy) {
-                case GroupByOption.CREATE_TIME:
-                  Map<DateTime, List<Photo>> typedGroupedPhotos =
-                      searchState.searchResult!.groupListsBy((photo) {
-                    DateTime dateTime = photo.creationDateTime;
-                    return DateTime(
-                        dateTime.year, dateTime.month, dateTime.day);
-                  });
-                  groupedPhotos = typedGroupedPhotos;
-                  var unsortedKeys = typedGroupedPhotos.keys;
-                  keys = unsortedKeys
-                      .sorted((DateTime a, DateTime b) => b.compareTo(a))
-                      .toList();
-                  break;
-                case GroupByOption.LABEL:
-                  groupedPhotos = searchState.searchResult!.groupListsBy(
-                      (photo) => photo.labels.length > 0
-                          ? photo.labels[0]
-                          : "Unlabeled");
-                  keys = groupedPhotos.keys.toList();
-                  break;
-                case GroupByOption.LOCATION:
-                  groupedPhotos = searchState.searchResult!
-                      .where((photo) => photo.location != null)
-                      .groupListsBy((photo) => photo.location!);
-                  keys = groupedPhotos.keys.toList();
-                  break;
-                case GroupByOption.IMAGE_SIZE:
-                  groupedPhotos = searchState.searchResult!.groupListsBy(
-                      (photo) => (photo.width > 800 && photo.height > 800)
-                          ? "Large"
-                          : "Small");
-                  keys = groupedPhotos.keys.toList();
-                  break;
-                default:
-                  groupedPhotos = Map();
-                  keys = [];
-              }
+              if (groupedPhotos is Map<DateTime, List<Photo>>)
+                keys = groupedPhotos.keys
+                    .sorted((DateTime a, DateTime b) => b.compareTo(a))
+                    .toList();
+              keys = groupedPhotos.keys.toList();
 
               DateFormat dateFormatter = DateFormat.yMMMEd('en_US');
               var spacing = const EdgeInsets.all(10);
