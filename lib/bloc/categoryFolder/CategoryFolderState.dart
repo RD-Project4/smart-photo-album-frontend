@@ -1,23 +1,21 @@
+import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/model/Category.dart';
 import 'package:smart_album/model/Photo.dart';
 
-class CategoryFolderState {
+class CategoryFolderState extends SelectableListState<Category> {
   List<Category>? categoryList;
 
-  CategoryFolderState clone() {
-    return CategoryFolderState()..categoryList = categoryList;
+  List<Photo>? getPhotoByCategory(Category category, List<Photo> allPhoto) {
+    if (categoryList == null) return null;
+    return ObjectStore.get().getPhotoBy(
+        labelList: category.labelList,
+        locationList: category.locationList,
+        dateRange: category.dateRange);
   }
 
-  Map<String, List<Photo>>? groupPhotoByCategory(List<Photo> allPhoto) {
-    if (categoryList == null) return null;
-    Map<String, List<Photo>> map = Map();
-    categoryList!.forEach((category) {
-      map[category.name] = ObjectStore.get().getPhotoBy(
-          labelList: category.labelList,
-          locationList: category.locationList,
-          dateRange: category.dateRange);
-    });
-    return map;
+  @override
+  SelectableListState<Category> subClassClone() {
+    return CategoryFolderState()..categoryList = categoryList;
   }
 }

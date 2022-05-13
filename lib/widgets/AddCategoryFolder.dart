@@ -24,6 +24,7 @@ class AddCategoryFolder extends StatelessWidget {
                   icon: Icon(Icons.add),
                   onPressed: () {
                     cubit.addCategory();
+                    Navigator.pop(context);
                   },
                 ),
               ],

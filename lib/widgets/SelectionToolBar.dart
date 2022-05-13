@@ -38,7 +38,7 @@ class _SelectionToolBarState extends State<SelectionToolBar> {
                 ),
                 SizedBox(width: 10),
                 Text(
-                  '${state.selectedPhotos.length}',
+                  '${state.selectedItems.length}',
                   style: TextStyle(fontSize: 25),
                 ),
               ],

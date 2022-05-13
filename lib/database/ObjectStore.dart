@@ -147,4 +147,8 @@ class ObjectStore {
   addCategory(Category category) {
     _categoryBox.put(category);
   }
+
+  removeCategoryList(List<Category> category) {
+    _categoryBox.removeMany(category.map((e) => e.id).toList());
+  }
 }

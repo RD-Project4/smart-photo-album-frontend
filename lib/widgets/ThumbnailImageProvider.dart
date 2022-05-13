@@ -19,8 +19,13 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
   @override
   ImageStreamCompleter load(
       ThumbnailImageProvider key, DecoderCallback decode) {
+    if (!photo.isLocal && photo.isCloud) {
+      if (networkProvider == null)
+        networkProvider = NetworkImage(photo.thumbnailPath!);
+      return networkProvider!.load(networkProvider!, decode);
+    }
     return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key, decode),
+      codec: _loadFromFile(key, decode),
       scale: scale,
       debugLabel: photo.path,
       informationCollector: () => <DiagnosticsNode>[
@@ -29,7 +34,7 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
     );
   }
 
-  Future<ui.Codec> _loadAsync(
+  Future<ui.Codec> _loadFromFile(
       ThumbnailImageProvider key, DecoderCallback decode) async {
     var cache = await lruMap.get(photo.entityId);
     if (cache != null) return cache;
@@ -40,10 +45,6 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
       data = await assetEntity?.thumbnailDataWithOption(
         ThumbnailOption(size: ThumbnailSize.square(250)),
       );
-    } else if (photo.isCloud) {
-      if (networkProvider == null)
-        networkProvider = NetworkImage(photo.thumbnailPath!);
-      data = networkProvider!.load(networkProvider!, decode);
     }
 
     if (data == null) {

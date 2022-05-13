@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,13 +5,12 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/photo/PhotoState.dart';
-import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
+import 'package:smart_album/pages/photo/PhotoPage.dart';
 import 'package:smart_album/widgets/GroupedView.dart';
 import 'package:smart_album/widgets/ListedPhoto.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
 
 import 'model/Photo.dart';
-import 'pages/photo/PhotoView.dart';
 
 class PhotoList extends StatelessWidget {
   final bool isHasTopBar;
@@ -29,7 +26,7 @@ class PhotoList extends StatelessWidget {
       var photos = state.photoList;
       if (photos == null) return LoadingCircle();
       return RefreshIndicator(
-          onRefresh: () => cubit.refresh(),
+          onRefresh: () => cubit.refresh(context),
           child: GroupedView<Photo, DateTime>(
               physics: AlwaysScrollableScrollPhysics(),
               padding: isHasTopBar
@@ -60,14 +57,6 @@ class PhotoList extends StatelessWidget {
                   ),
               sectionBuilder: (context, currentSectionElementList, allElement,
                   overallIndex) {
-                var blocPhotos =
-                    BlocProvider.of<PhotoListCubit>(context).state.photos;
-                if ((blocPhotos.length != photos.length) ||
-                    (blocPhotos.length == 0 && allElement.length != 0)) {
-                  BlocProvider.of<PhotoListCubit>(context)
-                      .setPhotoList(allElement);
-                }
-
                 return GridView.count(
                     // 照片
                     padding: EdgeInsets.zero,
@@ -94,18 +83,9 @@ class PhotoList extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) {
-          return BlocProvider.value(
-            value: BlocProvider.of<PhotoListCubit>(context),
-            child: PhotoView<Photo>(
-              imageBuilder: (item) {
-                return FileImage(File(item.path));
-              },
-              galleryItems: elements,
-              backgroundDecoration: const BoxDecoration(
-                color: Colors.black,
-              ),
-              initialIndex: index,
-            ),
+          return PhotoPage(
+            photoList: elements,
+            initialIndex: index,
           );
         },
       ),
