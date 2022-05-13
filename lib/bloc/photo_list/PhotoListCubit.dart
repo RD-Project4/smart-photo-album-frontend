@@ -1,38 +1,23 @@
-import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
 import 'package:smart_album/model/Photo.dart';
 
 part 'PhotoListState.dart';
 
-enum PhotoListMode { View, Selection }
-
-class PhotoListCubit extends Cubit<PhotoListState> {
-  PhotoListCubit() : super(PhotoListState.init());
-
-  void setModeView() => emit(state.clone()..mode = PhotoListMode.View);
-
-  void setModeSelection() =>
-      emit(state.clone()..mode = PhotoListMode.Selection);
+class PhotoListCubit extends SelectableListCubit<PhotoListState, Photo> {
+  PhotoListCubit() : super(PhotoListState());
 
   void addSelectedPhoto(Photo photo) {
-    var newList = state.clone().selectedPhotos;
-    newList.add(photo);
-    emit(state.clone()..selectedPhotos = newList);
+    addSelectedItem(photo);
   }
 
   void removeSelectedPhoto(Photo photo) {
-    var newList = state.clone().selectedPhotos;
-    newList.remove(photo);
-    emit(state.clone()..selectedPhotos = newList);
+    removeSelectedItem(photo);
   }
 
   // 清空选中列表
   void clearSelectedPhotos() {
-    emit(state.clone()..selectedPhotos = <Photo>[]);
-  }
-
-  void setPhotoList(list) {
-    state.photos = list;
+    clearSelectedItems();
   }
 
   setGroupBy(GroupByOption groupBy) => emit(state.clone()..groupBy = groupBy);

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:quiver/collection.dart';
 import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/model/Photo.dart';
@@ -32,7 +33,10 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
 
     List<AssetPathEntity> entityList = await PhotoManager.getAssetPathList(
-        type: RequestType.image, hasAll: false);
+        type: RequestType.image,
+        hasAll: false,
+        filterOption:
+            FilterOptionGroup(imageOption: FilterOption(needTitle: true)));
 
     // Filter only DCIM folder
     List<AssetEntity> dcimFolder = [];
@@ -95,6 +99,7 @@ class PhotoCubit extends Cubit<PhotoState> {
 
       photoToStoreList.add(Photo(
           entity.id,
+          entity.title!,
           path,
           labelsString,
           entity.createDateTime,
@@ -108,5 +113,22 @@ class PhotoCubit extends Cubit<PhotoState> {
 
     ObjectStore.get().storePhoto(photoToStoreList);
     ObjectStore.get().removePhoto(photoToRemoveList);
+  }
+
+  LruMap<String, List<Photo>> cachePhoto = LruMap(maximumSize: 10);
+
+  Map<String, List<Photo>> getPhotoGroupedByLabel(List<String> labelList) {
+    Map<String, List<Photo>> map = Map();
+    labelList.forEach((label) {
+      if (cachePhoto.containsKey(label))
+        map[label] = cachePhoto[label]!;
+      else {
+        var photoList = ObjectStore.get().getPhotoBy(labelList: [label]);
+        if (photoList.length < 1) return;
+        map[label] = photoList;
+      }
+    });
+    cachePhoto.addAll(map);
+    return map;
   }
 }

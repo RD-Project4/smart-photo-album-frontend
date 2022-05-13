@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/FavoritesUtil.dart';
@@ -55,63 +56,58 @@ class _ListedPhotoState extends State<ListedPhoto> {
     return BlocBuilder<PhotoListCubit, PhotoListState>(
         builder: (context, state) {
       final photoListMode = state.mode;
-      final selectedPhotos = state.selectedPhotos;
       // 当照片在选择模式下被点击
       void onPhotoTappedInSelectionMode() {
         var cubit = context.read<PhotoListCubit>();
-        if (selectedPhotos.indexOf(widget.entity) == -1) {
-          // 如果照片不在选中列表中
-          cubit.addSelectedPhoto(widget.entity);
-        } else {
-          cubit.removeSelectedPhoto(widget.entity);
-          if (state.selectedPhotos.length == 0) {
-            cubit.setModeView();
-          }
-        }
+        cubit.addOrRemoveSelectedItem(widget.entity);
+        if (state.selectedItems.length < 1) cubit.setModeView();
       }
 
-      bool isSelected = selectedPhotos.contains(widget.entity);
+      bool isSelectedMode = photoListMode == ListMode.Selection;
+      bool isSelected = state.selectedItems.contains(widget.entity);
 
       return InkWell(
-          child: GestureDetector(
-        child: Container(
-            margin: EdgeInsets.all(isSelected ? 14.0 : 6.0),
-            child: Stack(
-              children: [
-                Container(
-                    decoration: BoxDecoration(
-                  border: isSelected
-                      ? Border.all(color: Colors.blueAccent.shade200, width: 10)
-                      : null,
-                  borderRadius: BorderRadius.circular(5),
-                  image: DecorationImage(
-                    image: widget.imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                )),
-                photoListMode == PhotoListMode.Selection
-                    ? Checkbox(
-                        value: isSelected,
-                        side: BorderSide(color: Colors.white, width: 2),
-                        onChanged: (status) {},
-                      )
-                    : Container(),
-                isFavorite
-                    ? Positioned(
-                        child: Icon(
-                          Icons.favorite,
-                          color: Colors.red,
-                        ),
-                        right: 5,
-                        bottom: 5,
-                      )
-                    : Container()
-              ],
-            )),
+        child: Opacity(
+            opacity: isSelectedMode & !isSelected ? 0.6 : 1,
+            child: Container(
+                margin: EdgeInsets.all(isSelectedMode ? 14.0 : 6.0),
+                child: Stack(
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                      border: isSelected
+                          ? Border.all(
+                              color: Colors.blueAccent.shade200, width: 8)
+                          : null,
+                      borderRadius: BorderRadius.circular(5),
+                      image: DecorationImage(
+                        image: widget.imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+                    photoListMode == ListMode.Selection
+                        ? Checkbox(
+                            value: isSelected,
+                            side: BorderSide(color: Colors.white, width: 2),
+                            onChanged: (status) {},
+                          )
+                        : Container(),
+                    isFavorite
+                        ? Positioned(
+                            child: Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            ),
+                            right: 5,
+                            bottom: 5,
+                          )
+                        : Container()
+                  ],
+                ))),
         onTap: () {
-          if (photoListMode == PhotoListMode.View) {
+          if (photoListMode == ListMode.View) {
             widget.onTap();
-          } else if (photoListMode == PhotoListMode.Selection) {
+          } else if (photoListMode == ListMode.Selection) {
             onPhotoTappedInSelectionMode();
           }
         },
@@ -119,7 +115,7 @@ class _ListedPhotoState extends State<ListedPhoto> {
           context.read<PhotoListCubit>().setModeSelection();
           onPhotoTappedInSelectionMode();
         },
-      ));
+      );
     });
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
 import 'package:smart_album/widgets/PhotoGroupedView.dart';
 
 import 'bloc/photo_list/PhotoListCubit.dart';
@@ -30,7 +31,7 @@ class FolderPage extends StatelessWidget {
           appBar: PreferredSize(
               child: BlocBuilder<PhotoListCubit, PhotoListState>(
                   builder: (context, state) =>
-                      state.mode == PhotoListMode.Selection
+                      state.mode == ListMode.Selection
                           ? SafeArea(bottom: false, child: SelectionToolBar())
                           : LightAppBar(context, arguments.title)),
               preferredSize: Size.fromHeight(
