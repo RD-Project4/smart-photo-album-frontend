@@ -92,7 +92,7 @@ class _PhotoPageState extends State<PhotoPage> {
                   color: ThemeUtil.getBackgroundColor(context),
                 ),
                 pageController: pageController,
-                onPageChanged: (index) => setState(() => currentIndex = index)),
+                onPageChanged: (index) => setState(() => indexNotifier.value = index)),
             Positioned(
               bottom: 0,
               left: 0,
@@ -144,9 +144,9 @@ class _PhotoPageState extends State<PhotoPage> {
             refresh() {
               // However it is anti-pattern
               setState(() {
-                currentIndex = currentIndex >= widget.photoList.length
-                    ? currentIndex - 1
-                    : currentIndex;
+                indexNotifier.value = indexNotifier.value >= widget.photoList.length
+                    ? indexNotifier.value - 1
+                    : indexNotifier.value;
               });
             }
 

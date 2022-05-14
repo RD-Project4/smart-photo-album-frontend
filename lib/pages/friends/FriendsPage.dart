@@ -29,6 +29,26 @@ class _FriendsPageState extends State<FriendsPage> {
     _loadFriendsData();
   }
 
+  void _loadFriendsData() async {
+    if (mounted) {
+      setState(() {
+        _friends = [];
+      });
+    }
+    print('Load friends data');
+    var apiUrl =
+        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    var response =
+        await http.post(apiUrl, body: {"userAccount": Setting.userAccount});
+
+    var data = jsonDecode(response.body)["data"];
+    data.forEach((v) {
+      _friends.add(FriendInfo.fromJson(v));
+    });
+
+    _handleList(_friends);
+  }
+
   void loadData() async {
     //加载联系人列表
     // rootBundle.loadString('assets/data/friends.json').then((value) {
@@ -67,8 +87,9 @@ class _FriendsPageState extends State<FriendsPage> {
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
     // add header.
-    _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑', userEmail: ''));
-    if(mounted){
+    _friends.insert(
+        0, FriendInfo(userName: 'header', tagIndex: '↑', userEmail: ''));
+    if (mounted) {
       setState(() {});
     }
   }
@@ -227,10 +248,10 @@ class _FriendsPageState extends State<FriendsPage> {
 class AddFriend extends StatefulWidget {
   final buildItemFn;
   final reloadFriendsFn;
+
   // final List<FriendInfo> friends; // 临时变量，在对接接口需删除
 
-  AddFriend(
-      {Key? key, this.buildItemFn, this.reloadFriendsFn})
+  AddFriend({Key? key, this.buildItemFn, this.reloadFriendsFn})
       : super(key: key);
 
   @override
@@ -239,6 +260,7 @@ class AddFriend extends StatefulWidget {
 
 class _AddFriendState extends State<AddFriend> {
   String _newFriendEmail = "";
+
   // Widget? searchRes;
 
   _addFriend() async {
