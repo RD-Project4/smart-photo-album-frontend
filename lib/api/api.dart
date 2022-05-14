@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 import 'package:smart_album/model/Photo.dart';
+import 'package:smart_album/model/Share.dart';
 import 'package:smart_album/model/UserInfo.dart';
-import 'package:collection/collection.dart';
 
 class NotLoginException extends DioError {
   NotLoginException(Response response)
@@ -19,6 +18,11 @@ class NotFoundException extends DioError {
 
 class ServerInternalException extends DioError {
   ServerInternalException(Response response)
+      : super(requestOptions: response.requestOptions, response: response);
+}
+
+class NotYourShareException extends DioError {
+  NotYourShareException(Response response)
       : super(requestOptions: response.requestOptions, response: response);
 }
 
@@ -210,29 +214,64 @@ class Api {
     return Photo.fromJson(response.data["data"]);
   }
 
-  Future<String> shareTo(Photo photo, List<FriendInfo> shareTo) async {
-    if (!photo.isCloud) throw Exception("Not a cloud photo!");
-    var response = await dio.post('addshare.do', queryParameters: {
-      "shareContentId": photo.id,
-      "shareObject": shareTo.map((e) => e.userEmail).join(','),
+  Future<String> shareTo(
+      List<Photo> photoList, List<FriendInfo> shareTo) async {
+    for (var photo in photoList) {
+      if (!photo.isCloud) throw Exception("Include non cloud photo!");
+    }
+    var response = await dio.post('addshare.do', data: {
+      "picIdList": photoList.map((photo) => photo.cloudId).toList(),
+      "shareObjectList": shareTo.map((e) => e.userEmail).toList(),
+      "isAll": false,
       "shareOwner": authentication?.userAccount
     });
+    if (response.data["status"] == 1) throw NotLoginException(response);
+    return response.data["data"]; // Share id
+  }
+
+  shareToEveryone(List<Photo> photoList) async {
+    for (var photo in photoList) {
+      if (!photo.isCloud) throw Exception("Include non cloud photo!");
+    }
+    var response = await dio.post('addshare.do', data: {
+      "picIdList": photoList.map((photo) => photo.cloudId),
+      "shareObjectList": [],
+      "isAll": true,
+      "shareOwner": authentication?.userAccount
+    });
+    if (response.data["status"] == 1) throw NotLoginException(response);
     return response.data["data"];
   }
 
-  Future<String> shareToEveryone(Photo photo) async {
-    if (!photo.isCloud) throw Exception("Not a cloud photo!");
-    var response = await dio.post('addshare.do', queryParameters: {
-      "shareContentId": photo.id,
-      "shareObject": "all",
-      "shareOwner": authentication?.userAccount
-    });
-    return response.data["data"];
-  }
-
-  getShare(String shareId) async {
+  Future<List<Photo>> getSharePhotoList(String shareId) async {
     var response =
-        await dio.get('share.do', queryParameters: {"shareId": shareId});
-    return response.data["data"];
+        await dio.post('share.do', queryParameters: {"shareId": shareId});
+    List<Photo> photos = [];
+    for (var item in response.data["data"]) {
+      item["custom"] = jsonDecode(item["custom"]);
+      photos.add(Photo.fromJson(item));
+    }
+    if (response.data["status"] == 1)
+      throw NotLoginException(response);
+    else if (response.data["status"] == 2)
+      throw NotYourShareException(response);
+    return photos;
+  }
+
+  Future<List<Share>> getShareList() async {
+    var response = await dio.post('getShareList.do');
+    return (response.data["data"] as List<dynamic>)
+        .map((share) => Share.fromJson(share))
+        .toList();
+  }
+
+  deleteShare(Share share) async {
+    var response = await dio
+        .post('deleteShare.do', queryParameters: {"shareId": share.shareId});
+    if (response.data["status"] == 1)
+      throw NotLoginException(response);
+    else if (response.data["status"] == 2)
+      throw NotYourShareException(response);
+    return;
   }
 }
