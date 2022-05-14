@@ -6,7 +6,7 @@ class UserState {
 
   UserState();
 
-  clone() {
+  UserState clone() {
     return UserState()
       ..user = user
       ..token = token;

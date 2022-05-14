@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:smart_album/api/api.dart';
+import 'package:smart_album/model/UserInfo.dart';
 import 'package:smart_album/util/RegExpUtil.dart';
 import 'package:smart_album/util/CommonUtil.dart';
 import 'package:smart_album/widgets/user/CountdownButton.dart';
@@ -220,23 +223,12 @@ class _RegisterFormState extends State<RegisterForm> {
   void _verifyCode() async {
     print(this._validateCode);
     print(this._email);
-    var apiurl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/checkemailcode.do');
-    var response = await http.post(apiurl, body: {
-      "userEmail": this._email,
-      "emailCode": this._validateCode
-    }); //, "userEmail": this.email
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-    });
-    if (this._status == 0) {
+    bool isCorrect =
+        await Api.get().checkEmailCode(this._validateCode, this._email);
+    if (isCorrect)
       setState(() {
         _index += 1;
       });
-    }
   }
 
   void _sendCode() {
@@ -267,40 +259,19 @@ class _RegisterFormState extends State<RegisterForm> {
     print('posting data');
     print(this._email);
 
-    var apiurl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/sendemailcode.do');
-
-    var response = await http.post(apiurl, body: {"userEmail": this._email});
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    showToast(jsonDecode(response.body)["msg"]);
-    setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-    });
+    await Api.get().sendEmailCode(this._email);
   }
 
   _register() async {
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/register.do');
-
-    var response = await http.post(apiurl, body: {
-      "userAccount": this._email,
-      "userPwd": this._password,
-      "userName": this._username,
-      "userEmail": this._email,
-      "userPhone": "18857561268"
-    });
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-    });
-    if (this._status == 0) {
-      // Navigator.of(context).pushReplacementNamed('/loginPage');
-    } else {
+    var state = await Api.get().register(UserInfo(
+        userAccount: this._email,
+        userEmail: this._email,
+        userName: this._username,
+        userPhone: "111111111111",
+        userPwd: this._password));
+    if (state == RegisterState.REGISTER_SUCCESS)
       Navigator.of(context).pushReplacementNamed('/login-page');
-    }
-    print(_status);
+    else
+      showToast("Username has been taken");
   }
 }

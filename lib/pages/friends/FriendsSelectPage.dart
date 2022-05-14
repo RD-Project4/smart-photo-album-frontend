@@ -31,18 +31,18 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   }
 
   void loadData() async {
-    print('showing friends');
-    print(Setting.userAccount);
-    var apiurl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
-    var response =
-        await http.post(apiurl, body: {"userAccount": Setting.userAccount});
+    // print('showing friends');
+    // print(Setting.userAccount);
+    // var apiurl =
+    //     Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
+    // var response =
+    //     await http.post(apiurl, body: {"userAccount": Setting.userAccount});
 
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      TabsDrawer.list = jsonDecode(response.body)["data"];
-    });
+    // print('Response status : ${response.statusCode}');
+    // print('Response status : ${response.body}');
+    // setState(() {
+    //   TabsDrawer.list = jsonDecode(response.body)["data"];
+    // });
 
     //加载联系人列表
     // rootBundle.loadString('assets/data/friends.json').then((value) {
@@ -54,33 +54,33 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
     //   });
     //   _handleList(_friends);
     // });
-    print(TabsDrawer.list);
+    //   print(TabsDrawer.list);
 
-    TabsDrawer.list.forEach((v) {
-      _friends.add(FriendInfo.fromJson(v));
-    });
-    _handleList(_friends);
-  }
+    //   TabsDrawer.list.forEach((v) {
+    //     _friends.add(FriendInfo.fromJson(v));
+    //   });
+    //   _handleList(_friends);
+    // }
 
-  void _handleList(List<FriendInfo> list) {
-    if (list.isEmpty) return;
-    for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin = PinyinHelper.getPinyinE(list[i].userName);
-      String tag = pinyin.substring(0, 1).toUpperCase();
-      list[i].userNamePinyin = pinyin;
-      if (RegExp("[A-Z]").hasMatch(tag)) {
-        list[i].tagIndex = tag;
-      } else {
-        list[i].tagIndex = "#";
-      }
-    }
-    // A-Z sort.
-    SuspensionUtil.sortListBySuspensionTag(_friends);
+    // void _handleList(List<FriendInfo> list) {
+    //   if (list.isEmpty) return;
+    //   for (int i = 0, length = list.length; i < length; i++) {
+    //     String pinyin = PinyinHelper.getPinyinE(list[i].userName);
+    //     String tag = pinyin.substring(0, 1).toUpperCase();
+    //     list[i].userNamePinyin = pinyin;
+    //     if (RegExp("[A-Z]").hasMatch(tag)) {
+    //       list[i].tagIndex = tag;
+    //     } else {
+    //       list[i].tagIndex = "#";
+    //     }
+    //   }
+    //   // A-Z sort.
+    //   SuspensionUtil.sortListBySuspensionTag(_friends);
 
-    // show sus tag.
-    SuspensionUtil.setShowSuspensionStatus(_friends);
+    //   // show sus tag.
+    //   SuspensionUtil.setShowSuspensionStatus(_friends);
 
-    setState(() {});
+    //   setState(() {});
   }
 
   /// 悬停效果

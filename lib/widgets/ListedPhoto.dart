@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/model/Photo.dart';
-import 'package:smart_album/util/FavoritesUtil.dart';
 import 'package:smart_album/util/Global.dart';
 import 'package:smart_album/widgets/ThumbnailImageProvider.dart';
 
@@ -27,30 +26,6 @@ class ListedPhoto extends StatefulWidget {
 }
 
 class _ListedPhotoState extends State<ListedPhoto> {
-  var isFavorite = false;
-
-  void _setIsFavorite() {
-    FavoritesUtil.isFavorite(widget.entity.id).then((value) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        isFavorite = value;
-      });
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _setIsFavorite();
-
-    Global.eventBus.on<RefreshFavoritesEvent>().listen((event) {
-      _setIsFavorite();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PhotoListCubit, PhotoListState>(
@@ -92,16 +67,26 @@ class _ListedPhotoState extends State<ListedPhoto> {
                             onChanged: (status) {},
                           )
                         : Container(),
-                    isFavorite
-                        ? Positioned(
-                            child: Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            ),
-                            right: 5,
-                            bottom: 5,
-                          )
-                        : Container()
+                    Positioned(
+                      child: Row(
+                        children: [
+                          widget.entity.isCloud
+                              ? Icon(
+                                  Icons.cloud_done_outlined,
+                                  color: Colors.white,
+                                )
+                              : Container(),
+                          widget.entity.isFavorite
+                              ? Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                )
+                              : Container()
+                        ],
+                      ),
+                      right: 5,
+                      bottom: 5,
+                    )
                   ],
                 ))),
         onTap: () {

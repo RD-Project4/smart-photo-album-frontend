@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -31,12 +30,11 @@ class PhotoCategoryGridView extends StatelessWidget {
         builder: (context, categoryState) =>
             BlocBuilder<PhotoCubit, PhotoState>(
                 builder: ((context, photoState) {
-              if (photoState.photoList == null ||
-                  categoryState.categoryList == null) return LoadingCircle();
+              if (categoryState.categoryList == null) return LoadingCircle();
               var categoryList = categoryState.categoryList!;
               var photoListList = categoryList
                   .map((category) => categoryState.getPhotoByCategory(
-                      category, photoState.photoList!)!)
+                      category, photoState.photoListWithoutDeleted)!)
                   .toList();
 
               return WaterfallFlow.builder(
@@ -54,7 +52,7 @@ class PhotoCategoryGridView extends StatelessWidget {
                       categoryState.selectedItems.contains(category);
 
                   return AspectRatio(
-                      aspectRatio: index % 3 == 0 ? 0.76 : 0.64,
+                      aspectRatio: index % 2 == 0 ? 0.76 : 0.64,
                       child: Opacity(
                         opacity: isSelectedMode & !isSelected ? 0.6 : 1,
                         child: Card(

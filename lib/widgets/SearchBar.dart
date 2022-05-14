@@ -6,6 +6,7 @@ import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/bloc/search/SearchCubit.dart';
 import 'package:smart_album/bloc/search/SearchState.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
+import 'package:smart_album/util/CommonUtil.dart';
 
 import 'CustomSearchBar/CustomFloatingSearchBar.dart';
 import 'ChipsInput.dart';
@@ -49,7 +50,7 @@ class _SearchBarContent extends StatelessWidget {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             suggestionBuilder: (context, label) => ListTile(
-              title: Text(label.name),
+              title: Text(CommonUtil.capitalizeFirstLetter(label.name)),
             ),
             onChanged: (data) =>
                 cubit.setLabelList(data.map((label) => label.name).toList()),
@@ -175,14 +176,16 @@ class _SearchBarContent extends StatelessWidget {
           ],
           transition: ExpandingFloatingSearchBarTransition(),
           builder: (context, transition) {
-            return BlocBuilder<SearchCubit, SearchState>(
-                builder: ((context, state) => IndexedStack(
-                      index: state.searchResult == null ? 0 : 1,
-                      children: [
-                        const SearchQuery(isHasBottom: true),
-                        SearchResult(),
-                      ],
-                    )));
+            return GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: BlocBuilder<SearchCubit, SearchState>(
+                    builder: ((context, state) => IndexedStack(
+                          index: state.searchResult == null ? 0 : 1,
+                          children: [
+                            const SearchQuery(isHasBottom: true),
+                            SearchResult(),
+                          ],
+                        ))));
           },
         ));
   }

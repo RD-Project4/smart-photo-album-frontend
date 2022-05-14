@@ -3,6 +3,9 @@ import 'package:smart_album/pages/AddFriends.dart';
 import 'package:smart_album/pages/ScannerPage.dart';
 import 'package:smart_album/pages/friends/FriendsPage.dart';
 import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
+import 'package:smart_album/pages/photo/FavoritePage.dart';
+import 'package:smart_album/pages/photo/TrashBIn.dart';
+import 'package:smart_album/pages/photo/UploadList.dart';
 import 'package:smart_album/pages/user/PassResetPage.dart';
 import 'package:smart_album/pages/user/RegisterPage.dart';
 
@@ -14,7 +17,9 @@ import '../pages/user/LoginPage.dart';
 //配置路由
 final routes = {
   '/Home': (context) => Tabs(),
-
+  '/trashbin': (context) => TrashBin(),
+  '/favorite': (context) => FavoritePage(),
+  "/uploadList": (context) => UploadList(),
   // '/search': (context, {arguments}) => SearchPage(arguments: arguments), //需要传值
   // '/productinfo': (context, {arguments}) =>
   //     ProductInfoPage(arguments: arguments),

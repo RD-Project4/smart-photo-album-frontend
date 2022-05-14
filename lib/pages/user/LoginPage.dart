@@ -1,11 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_album/util/ThemeUtil.dart';
 import 'package:smart_album/widgets/HiddenAppbar.dart';
 import 'package:smart_album/widgets/user/LoginForm.dart';
 
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ThemeUtil.setSystemOverlayLight(context);
+
     return Scaffold(
         resizeToAvoidBottomInset: false, // 防止调起软键盘顶起页面
         extendBodyBehindAppBar: true, // 不计算AppBar的体积
@@ -55,8 +57,9 @@ class LoginPage extends StatelessWidget {
                       Text('|'),
                       TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context,'/pass-reset');
-                          }, child: Text('Forgot password?'))
+                            Navigator.pushNamed(context, '/pass-reset');
+                          },
+                          child: Text('Forgot password?'))
                     ],
                   )
                 ]),

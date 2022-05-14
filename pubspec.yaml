@@ -86,6 +86,7 @@ dependencies:
   quiver: ^3.1.0
   geocoding: ^2.0.4
   card_swiper: ^2.0.3
+  material_dialogs: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -115,8 +116,8 @@ flutter:
     - images/login_page/
     - images/filter/
     - assets/
-    - assets/data/
     - assets/images/
+    - assets/animation/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
