@@ -26,10 +26,10 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   void initState() {
     super.initState();
-    _loadFriendsData();
+    loadData();
   }
 
-  void loadData() async {
+   loadData() async {
     //加载联系人列表
     // rootBundle.loadString('assets/data/friends.json').then((value) {
     //   // print(value);
@@ -163,7 +163,7 @@ class _FriendsPageState extends State<FriendsPage> {
       builder: (context) {
         return AddFriend(
           buildItemFn: _buildListItem,
-          reloadFriendsFn: _loadFriendsData,
+          reloadFriendsFn: loadData(),
         );
       },
     );
