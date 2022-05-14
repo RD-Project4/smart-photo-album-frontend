@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HiddenAppbar extends StatelessWidget with PreferredSizeWidget {
   final String title;
@@ -14,6 +15,10 @@ class HiddenAppbar extends StatelessWidget with PreferredSizeWidget {
       title: Text(title),
       backgroundColor: Colors.transparent,
       elevation: 0,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
     );
   }
 

@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:oktoast/oktoast.dart';
+import 'package:smart_album/api/api.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/util/Global.dart';
 
@@ -44,43 +47,20 @@ class _LoginFormState extends State<LoginForm> {
   postData() async {
     _accountFocus.unfocus();
     _passFocus.unfocus();
-    var apiUrl = Uri.parse('${Global.API_URL}/login.do');
 
-    var response = await http.post(apiUrl,
-        body: {"userAccount": this.account, "userPwd": this.password});
+    UserCubit cubit = context.read<UserCubit>();
+    LoginState state = await cubit.login(account, password);
 
-    var res = jsonDecode(response.body);
-
-    var _status = res['status'];
-
-    setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      Setting.state = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-      // Setting.userId = jsonDecode(response.body)["data"]["userId"];
-      // this.userId = jsonDecode(response.body)["data"]["userId"];
-      this.userAccount = jsonDecode(response.body)["data"];
-      Setting.userAccount = jsonDecode(response.body)["data"];
-      // this.userName = jsonDecode(response.body)["data"]["userName"];
-      // this.userEmail = jsonDecode(response.body)["data"]["userEmail"];
-      // Setting.userEmail = jsonDecode(response.body)["data"]["userEmail"];
-      // this.userProfile = jsonDecode(response.body)["data"]["userProfile"];
-      // this.userPhone = jsonDecode(response.body)["data"]["userPhone"];
-    });
-
-    if (_status == 3) {
+    if (state == LoginState.HAS_LOGGED) {
       showToast("The user has logged in", textStyle: TextStyle(fontSize: 20));
-    } else if (_status == 0 || _status == 1) {
+    } else if (state == LoginState.WRONG_PASSWORD) {
       showToast("Mail or password is incorrect",
           textStyle: TextStyle(fontSize: 20));
-    } else if (_status == 5) {
+    } else if (state == LoginState.LOGIN_SUCCESS) {
       Setting.userEmail = this.account;
-
       // Tabs.loginstate = 0;
-      Navigator.pushNamed(
-        context,
-        '/',
-      ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
+      Navigator.of(context)
+          .pop(); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
     } else {
       showToast("Login error", textStyle: TextStyle(fontSize: 20));
     }

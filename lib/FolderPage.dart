@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
+import 'package:smart_album/pages/photo/PhotoPage.dart';
 import 'package:smart_album/widgets/PhotoGroupedView.dart';
 
 import 'bloc/photo_list/PhotoListCubit.dart';
 import 'model/Photo.dart';
-import 'pages/photo/PhotoView.dart';
 import 'widgets/LightAppBar.dart';
 import 'widgets/SelectionToolBar.dart';
 
@@ -30,10 +28,9 @@ class FolderPage extends StatelessWidget {
         child: Scaffold(
           appBar: PreferredSize(
               child: BlocBuilder<PhotoListCubit, PhotoListState>(
-                  builder: (context, state) =>
-                      state.mode == ListMode.Selection
-                          ? SafeArea(bottom: false, child: SelectionToolBar())
-                          : LightAppBar(context, arguments.title)),
+                  builder: (context, state) => state.mode == ListMode.Selection
+                      ? SafeArea(bottom: false, child: SelectionToolBar())
+                      : LightAppBar(context, arguments.title)),
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
           body: PhotoGroupedView(
@@ -63,14 +60,8 @@ class FolderPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) {
-          return PhotoView<Photo>(
-            imageBuilder: (item) {
-              return FileImage(File(item.path));
-            },
-            galleryItems: elements,
-            backgroundDecoration: const BoxDecoration(
-              color: Colors.black,
-            ),
+          return PhotoPage(
+            photoList: elements,
             initialIndex: index,
           );
         },

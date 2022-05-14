@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/database/ObjectStore.dart';
 import 'package:smart_album/model/HIstory.dart';
@@ -5,10 +7,18 @@ import 'package:smart_album/model/HIstory.dart';
 import 'SearchState.dart';
 
 class SearchCubit extends Cubit<SearchState> {
+  late StreamSubscription subscription;
+
   SearchCubit() : super(SearchState()) {
-    ObjectStore.get().getHistoryStream().listen((list) {
+    subscription = ObjectStore.get().getHistoryStream().listen((list) {
       emit(state.clone()..historyList = list);
     });
+  }
+
+  @override
+  Future<void> close() async {
+    super.close();
+    subscription.cancel();
   }
 
   setText(text) => state.text = text;

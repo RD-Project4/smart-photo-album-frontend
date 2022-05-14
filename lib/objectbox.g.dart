@@ -23,7 +23,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(18, 810372771465484196),
+      lastPropertyId: const IdUid(19, 8794456690119365015),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -96,6 +96,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(18, 810372771465484196),
             name: 'name',
             type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(19, 8794456690119365015),
+            name: 'isDeleted',
+            type: 1,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -216,7 +221,7 @@ ModelDefinition getObjectBoxModel() {
               ? null
               : fbb.writeString(object.thumbnailPath!);
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(19);
+          fbb.startTable(20);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
@@ -231,6 +236,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addBool(15, object.isLocal);
           fbb.addBool(16, object.isFavorite);
           fbb.addOffset(17, nameOffset);
+          fbb.addBool(18, object.isDeleted);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -263,7 +269,9 @@ ModelDefinition getObjectBoxModel() {
             ..thumbnailPath = const fb.StringReader(asciiOptimization: true)
                 .vTableGetNullable(buffer, rootOffset, 30)
             ..isFavorite =
-                const fb.BoolReader().vTableGet(buffer, rootOffset, 36, false);
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 36, false)
+            ..isDeleted =
+                const fb.BoolReader().vTableGet(buffer, rootOffset, 40, false);
 
           return object;
         }),
@@ -396,6 +404,10 @@ class Photo_ {
 
   /// see [Photo.name]
   static final name = QueryStringProperty<Photo>(_entities[0].properties[13]);
+
+  /// see [Photo.isDeleted]
+  static final isDeleted =
+      QueryBooleanProperty<Photo>(_entities[0].properties[14]);
 }
 
 /// [History] entity fields to define ObjectBox queries.

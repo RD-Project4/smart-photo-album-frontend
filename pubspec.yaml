@@ -88,6 +88,7 @@ dependencies:
   card_swiper: ^2.0.3
   scan: ^1.6.0
 #  adaptive_dialog: ^1.6.3
+  material_dialogs: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -117,8 +118,8 @@ flutter:
     - images/login_page/
     - images/filter/
     - assets/
-    - assets/data/
     - assets/images/
+    - assets/animation/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

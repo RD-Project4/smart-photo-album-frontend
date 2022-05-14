@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:objectbox/objectbox.dart';
 import 'package:smart_album/api/api.dart';
 
@@ -21,6 +20,7 @@ class Photo {
   bool isCloud; // 是否是云端照片，不在本地又不在云端就会从数据库里删除
   bool isLocal; // 是否在本地存在
   bool isFavorite = false;
+  bool isDeleted = false; // 在回收站吗
 
   Photo(this.entityId, this.name, this.path, this.labels, this.creationDateTime,
       this.width, this.height, this.location, this.isCloud, this.isLocal);

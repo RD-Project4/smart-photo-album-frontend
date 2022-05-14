@@ -23,7 +23,7 @@ class PhotoList extends StatelessWidget {
     final cubit = BlocProvider.of<PhotoCubit>(context);
 
     return BlocBuilder<PhotoCubit, PhotoState>(builder: (context, state) {
-      var photos = state.photoList;
+      var photos = state.photoListWithoutDeleted;
       if (photos == null) return LoadingCircle();
       return RefreshIndicator(
           onRefresh: () => cubit.refresh(context),

@@ -105,11 +105,20 @@ class ObjectStore {
         .map((query) => query.find());
   }
 
-  storePhoto(List<Photo> photoList) {
+  clearAndStorePhotoList(List<Photo> photoList) {
+    _photoBox.removeAll();
     _photoBox.putMany(photoList);
   }
 
-  removePhoto(List<int> photoIdList) {
+  storePhotoList(List<Photo> photoList) {
+    _photoBox.putMany(photoList);
+  }
+
+  storePhoto(Photo photo) {
+    _photoBox.put(photo);
+  }
+
+  removePhotoList(List<int> photoIdList) {
     _photoBox.removeMany(photoIdList);
   }
 

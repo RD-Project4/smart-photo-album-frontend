@@ -53,11 +53,9 @@ class Api {
 
   static Api? _instance;
 
-  Api._internal();
-
   static Api get() {
     if (_instance == null) {
-      _instance = Api._internal();
+      _instance = Api();
     }
     return _instance!;
   }
@@ -86,8 +84,10 @@ class Api {
     if (response.data["status"] > 5) {
       return LoginState.UNKNOWN_ERROR;
     } else {
-      authentication = Authentication(response.data["data"], userAccount);
-      return LoginState.values[response.data["status"]];
+      LoginState state = LoginState.values[response.data["status"]];
+      if (state == LoginState.LOGIN_SUCCESS)
+        authentication = Authentication(response.data["data"], userAccount);
+      return state;
     }
   }
 
@@ -152,6 +152,7 @@ class Api {
   }
 
   uploadPic(List<Photo> photoList) async {
+    if (photoList.isEmpty) return;
     FormData formData = FormData();
     for (var i = 0; i < photoList.length; i++) {
       Photo photo = photoList[i];

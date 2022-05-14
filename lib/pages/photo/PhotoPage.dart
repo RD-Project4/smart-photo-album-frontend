@@ -7,11 +7,17 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:recognition_qrcode/recognition_qrcode.dart';
 import 'package:scan/scan.dart';
+import 'package:smart_album/api/api.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
+import 'package:smart_album/bloc/uploadManager/UploadCubit.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/model/Photo.dart';
-import 'package:smart_album/util/CommonUtil.dart';
+import 'package:smart_album/util/DialogUtil.dart';
 import 'package:smart_album/util/ThemeUtil.dart';
 import 'package:smart_album/widgets/LightAppBar.dart';
+import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
+import 'package:smart_album/widgets/photo/UrlTip.dart';
+import 'package:tuple/tuple.dart';
 
 class PhotoPage extends StatefulWidget {
   final List<Photo> photoList;
@@ -54,71 +60,56 @@ class _PhotoPageState extends State<PhotoPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Photo photo = widget.photoList[indexNotifier.value];
     PhotoCubit cubit = context.read<PhotoCubit>();
     Map<String, List<Photo>> labelMap =
         cubit.getPhotoGroupedByLabel(photo.labels);
+    ThemeUtil.setSystemOverlayLight(context);
 
     return Scaffold(
         appBar: LightAppBar(
           context,
           photo.name,
-          actions: [_buildPopupMenu()],
+          backgroundColor: Colors.transparent,
+          actions: _buildAction(context, photo),
         ),
+        extendBodyBehindAppBar: true,
         body: SizedBox.expand(
-            child: Column(
+            child: Stack(
           children: [
-            Expanded(
-                child: PhotoViewGallery.builder(
-              scrollPhysics: const BouncingScrollPhysics(),
-              builder: _buildItem,
-              itemCount: widget.photoList.length,
-              backgroundDecoration: BoxDecoration(
-                color: ThemeUtil.getBackgroundColor(context),
+            PhotoViewGallery.builder(
+                scrollPhysics: const BouncingScrollPhysics(),
+                builder: _buildItem,
+                itemCount: widget.photoList.length,
+                backgroundDecoration: BoxDecoration(
+                  color: ThemeUtil.getBackgroundColor(context),
+                ),
+                pageController: pageController,
+                onPageChanged: (index) => setState(() => currentIndex = index)),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  FutureBuilder(
+                      future: RecognitionQrcode.recognition(photo.path),
+                      builder: (context, snapshot) => snapshot.data != null
+                          ? UrlTip(url: (snapshot.data! as Map)['value'])
+                          : Container()),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  PhotoToolBar(photo: photo)
+                ],
               ),
-              pageController: pageController,
-              onPageChanged: (index) =>
-                  setState(() => indexNotifier.value = index),
-            )),
-            SizedBox(
-              height: 160,
-              child: Row(
-                  children: labelMap.entries
-                      .map<Widget>((entries) => Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Container(
-                              width: 100,
-                              child: Card(
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                child: InkWell(
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                      Expanded(
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    fit: BoxFit.cover,
-                                                    image: photo.isLocal
-                                                        ? FileImage(File(entries
-                                                            .value[0].path))
-                                                        : NetworkImage(
-                                                                photo.path)
-                                                            as ImageProvider))),
-                                      ),
-                                      Padding(
-                                          padding:
-                                              EdgeInsets.symmetric(vertical: 5),
-                                          child: Text(
-                                              CommonUtil.capitalizeFirstLetter(
-                                                  entries.key))),
-                                    ])),
-                              ))))
-                      .toList()),
             )
           ],
         )));
@@ -128,74 +119,105 @@ class _PhotoPageState extends State<PhotoPage> {
     Photo photo = widget.photoList[index];
 
     return PhotoViewGalleryPageOptions(
-      imageProvider: photo.isLocal
-          ? FileImage(File(photo.path))
-          : NetworkImage(photo.path) as ImageProvider,
-      initialScale: PhotoViewComputedScale.contained,
-      minScale: PhotoViewComputedScale.contained,
-      maxScale: PhotoViewComputedScale.covered * 4,
-      heroAttributes: PhotoViewHeroAttributes(tag: photo.id),
-    );
+        imageProvider: photo.isLocal
+            ? FileImage(File(photo.path))
+            : NetworkImage(photo.path) as ImageProvider,
+        initialScale: PhotoViewComputedScale.contained,
+        minScale: PhotoViewComputedScale.contained,
+        maxScale: PhotoViewComputedScale.covered * 4,
+        heroAttributes: PhotoViewHeroAttributes(tag: photo.id));
   }
 
-  AlertDialog showDeleteConfirmDialog1(BuildContext context) {
-    return AlertDialog(
-      title: Text("提示"),
-      content: Text("您确定要删除当前文件吗?"),
-      actions: <Widget>[
-        TextButton(
-          child: Text("取消"),
-          onPressed: () => Navigator.of(context).pop(), // 关闭对话框
-        ),
-        TextButton(
-          child: Text("删除"),
+  List<Widget> _buildAction(BuildContext context, Photo photo) {
+    return [
+      IconButton(
           onPressed: () {
-            //关闭对话框并返回true
-            Navigator.of(context).pop(true);
+            deleteFromLocal() {
+              context.read<PhotoCubit>().movePhotoToTrashBin(photo);
+              widget.photoList.remove(photo);
+            }
+
+            deleteFromCloud() {
+              context.read<UploadCubit>().removePhotoFromCloud(context, photo);
+            }
+
+            refresh() {
+              // However it is anti-pattern
+              setState(() {
+                currentIndex = currentIndex >= widget.photoList.length
+                    ? currentIndex - 1
+                    : currentIndex;
+              });
+            }
+
+            if (photo.isLocal && photo.isCloud) {
+              DialogUtil.showSelectFromListDialog(
+                  context,
+                  "Delete",
+                  "Are you sure?",
+                  Tuple2("Delete from local only", "Delete local and cloud"),
+                  (i) async {
+                if (i == 0) {
+                  deleteFromLocal();
+                } else if (i == 1) {
+                  deleteFromLocal();
+                  deleteFromCloud();
+                }
+                refresh();
+                Navigator.of(context).pop();
+              });
+            } else if (photo.isCloud) {
+              DialogUtil.showConfirmDialog(
+                  context, "Delete from cloud", "Are you sure?", () {
+                deleteFromCloud();
+                refresh();
+                Navigator.of(context).pop();
+              });
+            } else
+              DialogUtil.showConfirmDialog(context, "Delete",
+                  "The photo will be move to the trash bin.\nAre you sure?",
+                  () {
+                deleteFromLocal();
+                refresh();
+                Navigator.of(context).pop();
+              });
           },
-        ),
-      ],
-    );
-  }
-
-  PopupMenuButton _buildPopupMenu() {
-    var _list = [
-      _buildPopupMenuItem(() {}, Icons.share, "Share", iconColor: Colors.green),
-      _buildPopupMenuItem(() {}, Icons.cloud_upload, "Upload",
-          iconColor: Colors.lightBlue),
-      _buildPopupMenuItem(() {}, Icons.favorite, "Favorite",
-          iconColor: Colors.red),
-      _buildPopupMenuItem(() {}, Icons.palette, "Palette",
-          iconColor: Colors.amber),
-      _buildPopupMenuItem(() {}, Icons.delete, "Delete",
-          iconColor: Colors.grey),
+          icon: Icon(Icons.delete_outline_outlined))
     ];
-
-    if (currentUrl != null) {
-      _list.add(_buildPopupMenuItem(() async {
-        Navigator.of(context).pop();
-      }, Icons.qr_code_2, "QR Code"));
-    }
-
-    return PopupMenuButton(itemBuilder: (context) => _list);
   }
 
-  PopupMenuItem _buildPopupMenuItem(onTap, IconData icon, String text,
-      {Color? iconColor}) {
-    return PopupMenuItem(
-        onTap: onTap,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: iconColor ?? Colors.black,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(text)
-          ],
-        ));
-  }
+  // Widget _buildLabelBar(Map<String, List<Photo>> labelMap) {
+  //   return Row(
+  //       children: labelMap.entries
+  //           .map<Widget>((entries) => Padding(
+  //               padding: EdgeInsets.all(10),
+  //               child: Container(
+  //                   width: 100,
+  //                   child: Card(
+  //                     clipBehavior: Clip.antiAliasWithSaveLayer,
+  //                     child: InkWell(
+  //                         child: Column(
+  //                             mainAxisAlignment: MainAxisAlignment.center,
+  //                             crossAxisAlignment: CrossAxisAlignment.center,
+  //                             children: [
+  //                           Expanded(
+  //                             child: Container(
+  //                                 decoration: BoxDecoration(
+  //                                     image: DecorationImage(
+  //                                         fit: BoxFit.cover,
+  //                                         image: entries.value[0].isLocal
+  //                                             ? FileImage(
+  //                                                 File(entries.value[0].path))
+  //                                             : NetworkImage(
+  //                                                     entries.value[0].path)
+  //                                                 as ImageProvider))),
+  //                           ),
+  //                           Padding(
+  //                               padding: EdgeInsets.symmetric(vertical: 5),
+  //                               child: Text(CommonUtil.capitalizeFirstLetter(
+  //                                   entries.key))),
+  //                         ])),
+  //                   ))))
+  //           .toList());
+  // }
 }

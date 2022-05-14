@@ -8,6 +8,15 @@ import 'UserState.dart';
 class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserState());
 
+  Future<LoginState> login(String userAccount, String userPassword) async {
+    LoginState loginState = await Api.get().login(userAccount, userPassword);
+    if (loginState == LoginState.LOGIN_SUCCESS) {
+      UserInfo userInfo = await Api.get().getUserInfo();
+      emit(state.clone()..user = userInfo);
+    }
+    return loginState;
+  }
+
   void changeUser(UserInfo user) {
     emit(state.clone()..user = user);
   }
