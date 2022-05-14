@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/src/provider.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/pages/Tabs.dart';
 
 class Setting extends StatefulWidget {
@@ -24,35 +26,36 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  // final arguments;
-
-  // _SettingState({
-  //   this.arguments,
-  // });
-
   bool flag = false;
   IconData changeIcon = Icons.arrow_drop_up_outlined;
   int _status = 4;
   String _msg = '';
+  UserCubit? userCubit;
+  var mainColor = Color.fromRGBO(243, 247, 249, 1);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   _logout() async {
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
-    var response = await http.post(apiurl,
-        body: {"userAccount": Setting.userEmail}); //Setting.userEmail
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-    });
-    if (this._status == 0) {
-      print('logut jump to setting');
-      Setting.userId = '';
-      Setting.userEmail = '';
-      Setting.userName = '';
-      Navigator.of(context).pushReplacementNamed('/');
-    }
-    print(_status);
+    // var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
+    // var response = await http.post(apiurl,
+    //     body: {"userAccount": Setting.userEmail}); //Setting.userEmail
+    // print('Response status : ${response.statusCode}');
+    // print('Response status : ${response.body}');
+    // setState(() {
+    //   this._status = jsonDecode(response.body)["status"];
+    //   this._msg = jsonDecode(response.body)["msg"];
+    // });
+    // if (this._status == 0) {
+    //   print('logut jump to setting');
+    //   Setting.userId = '';
+    //   Setting.userEmail = '';
+    //   Setting.userName = '';
+    //   Navigator.of(context).pushReplacementNamed('/');
+    // }
+    // print(_status);
   }
 
   /// 用户栏
@@ -94,65 +97,84 @@ class _SettingState extends State<Setting> {
     }
   }
 
+  /// 登陆后显示的组件
   Widget _buildSettingsAfterLogin() {
-    return Column(
-      children: [
+    return _buildSettingCard(
+      [
         SettingSelection(
-          icon: Icons.group_add,
-          title: Text("Add Other Accounts"),
-          onPressed: () {
-            Navigator.pushNamed(context, '/login-page');
-          },
+          icon: Icons.favorite,
+          title: Text("My Favorites"),
+          onPressed: () {},
+          iconColor: Colors.red,
         ),
         SettingSelection(
-            icon: Icons.app_blocking_rounded,
-            title: Text(
-              "Quit Your Account",
-              style: TextStyle(color: Colors.red[600]),
-            ),
-            onPressed: () {
-              _logout();
-              // Tabs.loginstate = 1;
-            }),
+          icon: Icons.group,
+          title: Text("My Friends"),
+          onPressed: () {
+            Navigator.pushNamed(context, '/friends');
+          },
+          iconColor: Colors.indigo,
+        ),
         TextButton(
           onPressed: () {},
           child: Row(
             children: [
               Expanded(
-                flex: 1,
+                flex: 3,
                 child: Icon(Icons.cloud),
               ),
               Expanded(
-                  flex: 4,
+                  flex: 16,
                   child: ListTile(
-                    title: Text("Storage"),
-                    subtitle: Text("Used：1GB，total 15GB"),
+                    title: Text("Cloud Storage Space"),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Used: 1 GB，Total: 15 GB"),
+                        LinearProgressIndicator(
+                          backgroundColor: Colors.grey[200],
+                          valueColor: AlwaysStoppedAnimation(Colors.blue),
+                          value: 1 / 15,
+                        )
+                      ],
+                    ),
                   ))
             ],
           ),
-        ),
-        SettingSelection(
-          icon: Icons.phone_iphone,
-          title: Text('400 items can be deleted from this device'),
-          onPressed: () {},
         ),
       ],
     );
   }
 
+  Widget _buildSettingCard(List<Widget> children) {
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      child: Column(
+        children: children,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // if (Tabs.loginstate == 1) {
-    //   Setting.userAccount = '';
-    // }
+    if (userCubit == null && mounted) {
+      setState(() {
+        userCubit = context.read<UserCubit>();
+      });
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
+        backgroundColor: mainColor,
+        appBar: AppBar(
+          backgroundColor: mainColor,
+          foregroundColor: mainColor,
+          elevation: 0,
+        ),
+        body: Column(children: [
           // AspectRatio(
           //   //Aspectratio
           //   aspectRatio: 20 / 9,
@@ -166,58 +188,43 @@ class _SettingState extends State<Setting> {
               Expanded(
                 flex: 4,
                 child: Container(
-                    margin: EdgeInsets.only(left: 20),
-                    child: _buildUserInfo(Setting.userName)
-
-                    // leading: CircleAvatar(
-                    //   //专门用来处理头像
-                    //   backgroundImage: NetworkImage(
-                    //       'https://www.itying.com/images/flutter/1.png'),
-                    // ),
-                    // title: Text("Username=${arguments['usetId']}"),
-                    // subtitle: Text(
-                    //   "arguments['userEmail']",
-                    //   overflow: TextOverflow.ellipsis,
-                    //   maxLines: 2,
-                    // ),
-                    ),
+                    margin: EdgeInsets.only(left: 20, bottom: 20),
+                    child: _buildUserInfo(Setting.userName)),
               ),
-              // Expanded(
-              //     flex: 1,
-              //     child: RaisedButton.icon(
-              //       elevation: 0,
-              //       color: Colors.white,
-              //       shape: CircleBorder(side: BorderSide(color: Colors.white)),
-              //       onPressed: () {
-              //         setState(() {
-              //           flag = !flag;
-              //           if (flag) {
-              //             this.changeIcon = Icons.arrow_drop_down_outlined;
-              //           } else {
-              //             this.changeIcon = Icons.arrow_drop_up_outlined;
-              //           }
-              //         });
-              //       },
-              //       icon: Icon(this.changeIcon),
-              //       label: Text(''),
-              //     ))
             ],
           ),
-          // _buildSettingsAfterLogin(),
-          Setting.userName != "" ? _buildSettingsAfterLogin() : Container(),
-          SettingSelection(
-            icon: Icons.health_and_safety_outlined,
-            title: Text("Your data in the album"),
+          _buildSettingsAfterLogin(), // 登入后才可显示
+          // userCubit!.isLogin() ? _buildSettingsAfterLogin() : Container(),
+          _buildSettingCard([
+            SettingSelection(
+              icon: Icons.settings,
+              title: Text("Settings"),
+              onPressed: () {},
+              iconColor: Color(0xff8ea2b1),
+            ),
+            SettingSelection(
+              icon: Icons.error,
+              title: Text("About"),
+              onPressed: () {},
+              iconColor: Color(0xff5ca5eb),
+            ),
+            SettingSelection(
+              icon: Icons.help,
+              title: Text("Help and Feedback"),
+              onPressed: () {},
+              iconColor: Color(0xff68cdc3),
+            ),
+          ]),
+          ElevatedButton(
+            // 登入后才可显示
+            style: ButtonStyle(
+                minimumSize: MaterialStateProperty.all(
+                    Size(MediaQuery.of(context).size.width - 40, 50)),
+                backgroundColor: MaterialStateProperty.all(Colors.red)),
             onPressed: () {},
-          ),
-          SettingSelection(
-            icon: Icons.help,
-            title: Text("Help and Feedback"),
-            onPressed: () {},
-          ),
-        ],
-      ),
-    );
+            child: Text("Log Out"),
+          )
+        ]));
   }
 }
 
@@ -225,12 +232,14 @@ class SettingSelection extends StatelessWidget {
   final IconData icon;
   final Widget title;
   final void Function() onPressed;
+  final Color iconColor;
 
   const SettingSelection(
       {Key? key,
       required this.icon,
       required this.title,
-      required this.onPressed})
+      required this.onPressed,
+      this.iconColor = Colors.black})
       : super(key: key);
 
   @override
@@ -246,12 +255,12 @@ class SettingSelection extends StatelessWidget {
           Expanded(
             child: Icon(
               icon,
-              color: Colors.black,
+              color: iconColor,
             ),
-            flex: 1,
+            flex: 3,
           ),
           Expanded(
-              flex: 4,
+              flex: 16,
               child: ListTile(
                 title: title,
               ))

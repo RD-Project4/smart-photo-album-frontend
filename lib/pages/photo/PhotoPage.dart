@@ -1,10 +1,12 @@
 import 'dart:io';
 
+// import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:recognition_qrcode/recognition_qrcode.dart';
+import 'package:scan/scan.dart';
 import 'package:smart_album/api/api.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/uploadManager/UploadCubit.dart';
@@ -29,13 +31,32 @@ class PhotoPage extends StatefulWidget {
 }
 
 class _PhotoPageState extends State<PhotoPage> {
-  late int currentIndex = widget.initialIndex;
+  // late int currentIndex = widget.initialIndex;
+  late ValueNotifier<int> indexNotifier = ValueNotifier(widget.initialIndex);
   late PageController pageController;
+  String? currentUrl;
+
+  void _parseQrCode() {
+    var _photo = widget.photoList[indexNotifier.value];
+    Scan.parse(_photo.path).then((result) {
+      if (result == null) {
+        print("图中无二维码");
+        return;
+      }
+      print("识别成功。url: $result");
+      setState(() {
+        currentUrl = result;
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: currentIndex);
+    pageController = PageController(initialPage: indexNotifier.value);
+    _parseQrCode();
+
+    indexNotifier.addListener(_parseQrCode);
   }
 
   @override
@@ -46,8 +67,11 @@ class _PhotoPageState extends State<PhotoPage> {
 
   @override
   Widget build(BuildContext context) {
+    Photo photo = widget.photoList[indexNotifier.value];
+    PhotoCubit cubit = context.read<PhotoCubit>();
+    Map<String, List<Photo>> labelMap =
+        cubit.getPhotoGroupedByLabel(photo.labels);
     ThemeUtil.setSystemOverlayLight(context);
-    Photo photo = widget.photoList[currentIndex];
 
     return Scaffold(
         appBar: LightAppBar(

@@ -36,9 +36,7 @@ class CategoryPage extends StatelessWidget {
                                         title: const Text("Category"),
                                         backgroundColor: Theme.of(context)
                                             .scaffoldBackgroundColor,
-                                        titleTextStyle: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge,
+
                                         floating: true,
                                         snap: false,
                                         pinned: true,

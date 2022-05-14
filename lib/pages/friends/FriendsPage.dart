@@ -6,6 +6,7 @@ import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/TabsDrawer.dart';
 import 'package:smart_album/model/FriendInfo.dart';
@@ -25,7 +26,7 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   void initState() {
     super.initState();
-    loadData();
+    _loadFriendsData();
   }
 
   void loadData() async {
@@ -66,9 +67,10 @@ class _FriendsPageState extends State<FriendsPage> {
     SuspensionUtil.setShowSuspensionStatus(_friends);
 
     // add header.
-    // _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑'));
-
-    setState(() {});
+    _friends.insert(0, FriendInfo(userName: 'header', tagIndex: '↑', userEmail: ''));
+    if(mounted){
+      setState(() {});
+    }
   }
 
   /// 用户个人信息
@@ -161,7 +163,7 @@ class _FriendsPageState extends State<FriendsPage> {
       builder: (context) {
         return AddFriend(
           buildItemFn: _buildListItem,
-          friends: _friends,
+          reloadFriendsFn: _loadFriendsData,
         );
       },
     );
@@ -182,9 +184,10 @@ class _FriendsPageState extends State<FriendsPage> {
           elevation: 0,
           actions: [
             IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/add-friends');
-                },
+                // onPressed: () {
+                //   Navigator.pushNamed(context, '/add-friends');
+                // },
+                onPressed: addFriend,
                 icon: Icon(Icons.person_add))
           ],
         ),
@@ -223,9 +226,11 @@ class _FriendsPageState extends State<FriendsPage> {
 
 class AddFriend extends StatefulWidget {
   final buildItemFn;
-  final List<FriendInfo> friends; // 临时变量，在对接接口需删除
+  final reloadFriendsFn;
+  // final List<FriendInfo> friends; // 临时变量，在对接接口需删除
 
-  AddFriend({Key? key, this.buildItemFn, required this.friends})
+  AddFriend(
+      {Key? key, this.buildItemFn, this.reloadFriendsFn})
       : super(key: key);
 
   @override
@@ -234,7 +239,7 @@ class AddFriend extends StatefulWidget {
 
 class _AddFriendState extends State<AddFriend> {
   String _newFriendEmail = "";
-  Widget? searchRes;
+  // Widget? searchRes;
 
   _addFriend() async {
     var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
@@ -242,21 +247,16 @@ class _AddFriendState extends State<AddFriend> {
       "userAccount": Setting.userAccount, //自己的邮箱
       "userEmail": _newFriendEmail //对方的邮箱
     });
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
+    // print('Response status : ${response.statusCode}');
+    // print('Response status : ${response.body}');
     Navigator.of(context).pop();
-    // setState(() {
-    //   this._status = jsonDecode(response.body)["status"];
-    //   this._msg = jsonDecode(response.body)["msg"];
-    // });
-    // if (this._status == 0) {
-    //   Navigator.pushNamed(
-    //     context,
-    //     '/',
-    //   ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
-    // } else {
-    //   print('jump to addfriends');
-    // }
+
+    if (jsonDecode(response.body)["status"] == 0) {
+      showToast('Add successfully');
+      if (widget.reloadFriendsFn != null) {
+        widget.reloadFriendsFn();
+      }
+    }
   }
 
   @override
@@ -276,7 +276,6 @@ class _AddFriendState extends State<AddFriend> {
               });
             },
           ),
-          searchRes ?? Container(),
         ],
       ),
       actions: <Widget>[
@@ -291,44 +290,10 @@ class _AddFriendState extends State<AddFriend> {
           child: Text(
             "Add", // 临时处理，最后应改为Search
           ),
-          onPressed: _newFriendEmail != "" ? searchFriend : null,
+          // onPressed: _newFriendEmail != "" ? searchFriend : null,
+          onPressed: _addFriend,
         ),
       ],
     );
-  }
-
-  void searchFriend() {
-    print(_newFriendEmail);
-
-    // TODO: 从api获取输入的email所对应的用户，并赋值给_model，这里暂时用friends列表中的一项代替
-    FriendInfo _model = FriendInfo.copy(widget.friends[1]);
-    _model.isShowSuspension = false;
-
-    setState(() {
-      if (_model != null) {
-        // 输入的email有对应的用户
-        // TODO: 处理搜索的用户已在好友列表的情况
-
-        searchRes = Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            widget.buildItemFn(_model),
-            Container(
-              padding: EdgeInsets.only(left: 15),
-              child:
-                  TextButton(onPressed: () {}, child: Text('Send invitation')),
-            ),
-          ],
-        );
-      } else {
-        searchRes = Container(
-          width: double.infinity,
-          child: Text(
-            "User does not exist",
-            style: TextStyle(color: Colors.red),
-          ),
-        );
-      }
-    });
   }
 }
