@@ -96,53 +96,58 @@ class _PhotoEditPage extends State<PhotoEditPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              GroupButton(
-                isRadio: true,
-                buttons: ['Filter', 'Adjust', 'Markup'],
-                onSelected: (index, isSelected) =>
-                    debugPrint('Button $index selected'),
-                controller: GroupButtonController(
-                  selectedIndex: 0, // 默认选中
-                ),
-                options: GroupButtonOptions(
-                  borderRadius: BorderRadius.circular(1000),
-                  selectedColor: Color.fromARGB(255, 68, 71, 70),
-                  selectedTextStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 227, 227, 227),
-                  ),
-                  unselectedColor: Colors.black,
-                  unselectedTextStyle: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color.fromARGB(255, 117, 117, 117),
-                  ),
-                ),
-              ),
+              // GroupButton(
+              //   isRadio: true,
+              //   buttons: ['Filter', 'Adjust', 'Markup'],
+              //   onSelected: (index, isSelected) =>
+              //       debugPrint('Button $index selected'),
+              //   controller: GroupButtonController(
+              //     selectedIndex: 0, // 默认选中
+              //   ),
+              //   options: GroupButtonOptions(
+              //     borderRadius: BorderRadius.circular(1000),
+              //     selectedColor: Color.fromARGB(255, 68, 71, 70),
+              //     selectedTextStyle: const TextStyle(
+              //       fontWeight: FontWeight.w600,
+              //       fontSize: 16,
+              //       color: Color.fromARGB(255, 227, 227, 227),
+              //     ),
+              //     unselectedColor: Colors.black,
+              //     unselectedTextStyle: TextStyle(
+              //       fontWeight: FontWeight.w600,
+              //       fontSize: 14,
+              //       color: Color.fromARGB(255, 117, 117, 117),
+              //     ),
+              //   ),
+              // ),
               FilterSelector(
                   filters: _filters, onFilterChanged: _onFilterChanged),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.white),
-                      )),
-                  ElevatedButton(
-                      onPressed: saveEditing,
-                      child: Text(
-                        'Save',
-                        // style: TextStyle(
-                        //     color: ableToSave ? Colors.white : Colors.grey),
-                      )),
-                ],
-              )
+              Container(
+                margin: EdgeInsets.only(left: 20,right: 20),
+                child:  Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    ElevatedButton(
+                        onPressed: saveEditing,
+                        child: Text(
+                          'Save',
+                          // style: TextStyle(
+                          //     color: ableToSave ? Colors.white : Colors.grey),
+                        )),
+                  ],
+                ),
+              ),
+
             ],
           ),
         )
