@@ -46,38 +46,38 @@ class _SettingState extends State<Setting> {
     return BlocBuilder<UserCubit, UserState>(
         builder: (context, state) => state.user == null
             ? GestureDetector(
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage:
-                AssetImage('assets/images/default_avatar.png'),
-              ),
-              SizedBox(width: 25),
-              Text(
-                "Click to login",
-                style: TextStyle(color: Colors.grey, fontSize: 20),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          AssetImage('assets/images/default_avatar.png'),
+                    ),
+                    SizedBox(width: 25),
+                    Text(
+                      "Click to login",
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    )
+                  ],
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, '/login-page');
+                },
               )
-            ],
-          ),
-          onTap: () {
-            Navigator.pushNamed(context, '/login-page');
-          },
-        )
             : Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage:
-              AssetImage("assets/images/default_avatar.png"),
-            ),
-            Expanded(
-                child: ListTile(
-                  title: Text("${state.user!.userName}"),
-                  subtitle: Text("${state.user!.userEmail}"),
-                ))
-          ],
-        ));
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage:
+                        AssetImage("assets/images/default_avatar.png"),
+                  ),
+                  Expanded(
+                      child: ListTile(
+                    title: Text("${state.user!.userName}"),
+                    subtitle: Text("${state.user!.userEmail}"),
+                  ))
+                ],
+              ));
   }
 
   /// 登陆后显示的组件
@@ -104,10 +104,10 @@ class _SettingState extends State<Setting> {
           icon: Icons.share,
           title: Text("My Share"),
           onPressed: () {
-            // if (context.read<UserCubit>().isLogin())
+            if (context.read<UserCubit>().isLogin())
               Navigator.pushNamed(context, '/manage-share');
-            // else
-            //   showToast("Please login first");
+            else
+              showToast("Please login first");
           },
           iconColor: Colors.green,
         ),
@@ -162,7 +162,8 @@ class _SettingState extends State<Setting> {
           foregroundColor: mainColor,
           elevation: 0,
         ),
-        body: Column(children: [
+        body: SingleChildScrollView(
+            child: Column(children: [
           // AspectRatio(
           //   //Aspectratio
           //   aspectRatio: 20 / 9,
@@ -205,21 +206,26 @@ class _SettingState extends State<Setting> {
           ]),
           BlocBuilder<UserCubit, UserState>(
               builder: (context, state) => state.user != null
-                  ? ElevatedButton(
-                // 登入后才可显示
-                style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(
-                        Size(MediaQuery.of(context).size.width - 40, 50)),
-                    backgroundColor:
-                    MaterialStateProperty.all(Colors.red)),
-                onPressed: () {
-                  context.read<UserCubit>().logout();
-                  showToast("Log out");
-                },
-                child: Text("Log Out"),
-              )
+                  ? Column(children: [
+                      ElevatedButton(
+                        // 登入后才可显示
+                        style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all(Size(
+                                MediaQuery.of(context).size.width - 40, 50)),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red)),
+                        onPressed: () {
+                          context.read<UserCubit>().logout();
+                          showToast("Log out");
+                        },
+                        child: Text("Log Out"),
+                      ),
+                      SizedBox(
+                        height: 100,
+                      )
+                    ])
                   : Container())
-        ]));
+        ])));
   }
 }
 
@@ -231,10 +237,10 @@ class SettingSelection extends StatelessWidget {
 
   const SettingSelection(
       {Key? key,
-        required this.icon,
-        required this.title,
-        required this.onPressed,
-        this.iconColor = Colors.black})
+      required this.icon,
+      required this.title,
+      required this.onPressed,
+      this.iconColor = Colors.black})
       : super(key: key);
 
   @override
