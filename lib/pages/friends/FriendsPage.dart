@@ -26,30 +26,11 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   void initState() {
     super.initState();
-    _loadFriendsData();
+    loadData();
   }
 
-  void _loadFriendsData() async {
-    if (mounted) {
-      setState(() {
-        _friends = [];
-      });
-    }
-    print('Load friends data');
-    var apiUrl =
-        Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
-    var response =
-        await http.post(apiUrl, body: {"userAccount": Setting.userAccount});
 
-    var data = jsonDecode(response.body)["data"];
-    data.forEach((v) {
-      _friends.add(FriendInfo.fromJson(v));
-    });
-
-    _handleList(_friends);
-  }
-
-  void loadData() async {
+   loadData() async {
     //加载联系人列表
     // rootBundle.loadString('assets/data/friends.json').then((value) {
     //   // print(value);
@@ -184,7 +165,7 @@ class _FriendsPageState extends State<FriendsPage> {
       builder: (context) {
         return AddFriend(
           buildItemFn: _buildListItem,
-          reloadFriendsFn: _loadFriendsData,
+          reloadFriendsFn: loadData(),
         );
       },
     );
