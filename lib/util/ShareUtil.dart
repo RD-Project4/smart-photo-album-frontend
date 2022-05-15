@@ -62,7 +62,7 @@ class ShareUtil {
   static void shareToEveryone(BuildContext context,String url) {
     // TODO: 从api获取分享链接并赋值给shareUrl
     // var shareUrl = FriendsSelectPage.url;
-    _showLink(context, url);
+    showLink(context, url);
   }
 
   static void shareToFriends(BuildContext context, List<FriendInfo> friends,String url) {
@@ -70,10 +70,10 @@ class ShareUtil {
 
     // TODO: 从api获取分享链接并赋值给shareUrl
     // var shareUrl = FriendsSelectPage.url;
-    _showLink(context, url);
+    showLink(context, url);
   }
 
-  static _showLink(BuildContext context, String shareUrl) {
+  static void showLink(BuildContext context, String shareUrl) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {

@@ -104,10 +104,10 @@ class _SettingState extends State<Setting> {
           icon: Icons.share,
           title: Text("My Share"),
           onPressed: () {
-            if (context.read<UserCubit>().isLogin())
+            // if (context.read<UserCubit>().isLogin())
               Navigator.pushNamed(context, '/manage-share');
-            else
-              showToast("Please login first");
+            // else
+            //   showToast("Please login first");
           },
           iconColor: Colors.green,
         ),
