@@ -1,20 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/src/provider.dart';
 import 'package:smart_album/bloc/user/UserCubit.dart';
+import 'package:smart_album/bloc/user/UserState.dart';
 import 'package:smart_album/pages/Tabs.dart';
 
 class Setting extends StatefulWidget {
   // final arguments;
   static int state = 4;
 
-  static var userId = '';
-  static var userEmail = '';
-  static var userName = '';
-  static var session = '';
-  static var userAccount = '';
+  // static var userId = '';
+  // static var userEmail = '';
+  // static var userName = '';
+  // static var session = '';
+  // static var userAccount = '';
 
   Setting({
     Key? key,
@@ -38,75 +41,49 @@ class _SettingState extends State<Setting> {
     super.didChangeDependencies();
   }
 
-  _logout() async {
-    // var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/logout.do');
-    // var response = await http.post(apiurl,
-    //     body: {"userAccount": Setting.userEmail}); //Setting.userEmail
-    // print('Response status : ${response.statusCode}');
-    // print('Response status : ${response.body}');
-    // setState(() {
-    //   this._status = jsonDecode(response.body)["status"];
-    //   this._msg = jsonDecode(response.body)["msg"];
-    // });
-    // if (this._status == 0) {
-    //   print('logut jump to setting');
-    //   Setting.userId = '';
-    //   Setting.userEmail = '';
-    //   Setting.userName = '';
-    //   Navigator.of(context).pushReplacementNamed('/');
-    // }
-    // print(_status);
-  }
-
   /// 用户栏
-  Widget _buildUserInfo(userName) {
-    if (userName == "") {
-      return GestureDetector(
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage('assets/images/default_avatar.png'),
-            ),
-            SizedBox(width: 25),
-            Text(
-              "Click to login",
-              style: TextStyle(color: Colors.grey, fontSize: 20),
-            )
-          ],
-        ),
-        onTap: () {
-          Navigator.pushNamed(context, '/login-page');
-        },
-      );
-    } else {
-      return Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(
-                "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf"),
-          ),
-          SizedBox(width: 25),
-          Text(
-            "${Setting.userName}",
-            style: TextStyle(fontSize: 25),
-          )
-        ],
-      );
-    }
+  Widget _buildUserInfo() {
+    return BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) => state.user == null
+            ? GestureDetector(
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage:
+                          AssetImage('assets/images/default_avatar.png'),
+                    ),
+                    SizedBox(width: 25),
+                    Text(
+                      "Click to login",
+                      style: TextStyle(color: Colors.grey, fontSize: 20),
+                    )
+                  ],
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, '/login-page');
+                },
+              )
+            : Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage:
+                        AssetImage("assets/images/default_avatar.png"),
+                  ),
+                  Expanded(
+                      child: ListTile(
+                    title: Text("${state.user!.userName}"),
+                    subtitle: Text("${state.user!.userEmail}"),
+                  ))
+                ],
+              ));
   }
 
   /// 登陆后显示的组件
   Widget _buildSettingsAfterLogin() {
     return _buildSettingCard(
       [
-        SettingSelection(
-          icon: Icons.favorite,
-          title: Text("My Favorites"),
-          onPressed: () {},
-          iconColor: Colors.red,
-        ),
         SettingSelection(
           icon: Icons.group,
           title: Text("My Friends"),
@@ -115,32 +92,32 @@ class _SettingState extends State<Setting> {
           },
           iconColor: Colors.indigo,
         ),
-        TextButton(
-          onPressed: () {},
-          child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Icon(Icons.cloud),
-              ),
-              Expanded(
-                  flex: 16,
-                  child: ListTile(
-                    title: Text("Cloud Storage Space"),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Used: 1 GB，Total: 15 GB"),
-                        LinearProgressIndicator(
-                          backgroundColor: Colors.grey[200],
-                          valueColor: AlwaysStoppedAnimation(Colors.blue),
-                          value: 1 / 15,
-                        )
-                      ],
-                    ),
-                  ))
-            ],
-          ),
+        SettingSelection(
+          icon: Icons.favorite,
+          title: Text("My Favorites"),
+          onPressed: () {
+            Navigator.pushNamed(context, '/favorite');
+          },
+          iconColor: Colors.red,
+        ),
+        SettingSelection(
+          icon: Icons.delete_rounded,
+          title: Text("Trash bin"),
+          onPressed: () {
+            Navigator.pushNamed(context, '/trashbin');
+          },
+          iconColor: Colors.grey,
+        ),
+        SettingSelection(
+          icon: Icons.cloud_rounded,
+          title: Text('Backup manager'),
+          onPressed: () {
+            if (context.read<UserCubit>().isLogin())
+              Navigator.pushNamed(context, '/uploadList');
+            else
+              showToast("Please login first");
+          },
+          iconColor: Colors.blue,
         ),
       ],
     );
@@ -189,7 +166,7 @@ class _SettingState extends State<Setting> {
                 flex: 4,
                 child: Container(
                     margin: EdgeInsets.only(left: 20, bottom: 20),
-                    child: _buildUserInfo(Setting.userName)),
+                    child: _buildUserInfo()),
               ),
             ],
           ),
@@ -215,15 +192,22 @@ class _SettingState extends State<Setting> {
               iconColor: Color(0xff68cdc3),
             ),
           ]),
-          ElevatedButton(
-            // 登入后才可显示
-            style: ButtonStyle(
-                minimumSize: MaterialStateProperty.all(
-                    Size(MediaQuery.of(context).size.width - 40, 50)),
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
-            onPressed: () {},
-            child: Text("Log Out"),
-          )
+          BlocBuilder<UserCubit, UserState>(
+              builder: (context, state) => state.user != null
+                  ? ElevatedButton(
+                      // 登入后才可显示
+                      style: ButtonStyle(
+                          minimumSize: MaterialStateProperty.all(
+                              Size(MediaQuery.of(context).size.width - 40, 50)),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.red)),
+                      onPressed: () {
+                        context.read<UserCubit>().logout();
+                        showToast("Log out");
+                      },
+                      child: Text("Log Out"),
+                    )
+                  : Container())
         ]));
   }
 }

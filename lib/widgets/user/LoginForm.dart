@@ -57,7 +57,6 @@ class _LoginFormState extends State<LoginForm> {
       showToast("Mail or password is incorrect",
           textStyle: TextStyle(fontSize: 20));
     } else if (state == LoginState.LOGIN_SUCCESS) {
-      Setting.userEmail = this.account;
       // Tabs.loginstate = 0;
       Navigator.of(context)
           .pop(); //arguments: {"userId": this.userId, "userEmail": this.userEmail}

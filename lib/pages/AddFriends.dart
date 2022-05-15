@@ -37,25 +37,7 @@ class _AddFriendsState extends State<AddFriends> {
   var _msg = '';
 
   _addfriends() async {
-    var apiurl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
-    var response = await http.post(apiurl, body: {
-      "userAccount": Setting.userAccount, //自己的邮箱
-      "userEmail": this.account //对方的邮箱
-    });
-    print('Response status : ${response.statusCode}');
-    print('Response status : ${response.body}');
-    setState(() {
-      this._status = jsonDecode(response.body)["status"];
-      this._msg = jsonDecode(response.body)["msg"];
-    });
-    if (this._status == 0) {
-      Navigator.pushNamed(
-        context,
-        '/',
-      ); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
-    } else {
-      print('jump to addfriends');
-    }
+    
   }
 
   @override

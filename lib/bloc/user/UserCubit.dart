@@ -17,6 +17,11 @@ class UserCubit extends Cubit<UserState> {
     return loginState;
   }
 
+  logout() {
+    Api.get().logout();
+    emit(state.clone()..user = null);
+  }
+
   void changeUser(UserInfo user) {
     emit(state.clone()..user = user);
   }

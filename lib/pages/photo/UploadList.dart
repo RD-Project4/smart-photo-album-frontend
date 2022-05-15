@@ -68,6 +68,33 @@ class UploadList extends StatelessWidget {
                         )),
                 decoration: BoxDecoration(color: Colors.blueAccent),
               )),
+          TextButton(
+            onPressed: () {},
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Icon(Icons.cloud),
+                ),
+                Expanded(
+                    flex: 16,
+                    child: ListTile(
+                      title: Text("Cloud Storage Space"),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Used: 1 GB，Total: 15 GB"),
+                          LinearProgressIndicator(
+                            backgroundColor: Colors.grey[200],
+                            valueColor: AlwaysStoppedAnimation(Colors.blue),
+                            value: 1 / 15,
+                          )
+                        ],
+                      ),
+                    ))
+              ],
+            ),
+          ),
           Expanded(child:
               BlocBuilder<UploadCubit, UploadState>(builder: (context, state) {
             var photoList = state.uploadList.reversed.toList();

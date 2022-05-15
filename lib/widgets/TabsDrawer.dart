@@ -22,7 +22,7 @@ class _TabsDrawerState extends State<TabsDrawer> {
                   ),
                   accountName: Text("Smart Album",
                       style: TextStyle(color: Colors.black)),
-                  accountEmail: Text(Setting.userEmail),
+                  accountEmail: Text(""),
                   currentAccountPicture: Image.asset("images/logo.png"),
                 ),
               )

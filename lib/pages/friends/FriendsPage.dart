@@ -86,14 +86,14 @@ class _FriendsPageState extends State<FriendsPage> {
             "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf",
             width: 80.0,
           )),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              Setting.userName,
-              textScaleFactor: 1.2,
-            ),
-          ),
-          Text(Setting.userEmail),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Text(
+          //     Setting.userName,
+          //     textScaleFactor: 1.2,
+          //   ),
+          // ),
+          // Text(Setting.userEmail),
         ],
       ),
     );
@@ -242,21 +242,21 @@ class _AddFriendState extends State<AddFriend> {
   // Widget? searchRes;
 
   _addFriend() async {
-    var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
-    var response = await http.post(apiUrl, body: {
-      "userAccount": Setting.userAccount, //自己的邮箱
-      "userEmail": _newFriendEmail //对方的邮箱
-    });
-    // print('Response status : ${response.statusCode}');
-    // print('Response status : ${response.body}');
-    Navigator.of(context).pop();
+    // var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
+    // var response = await http.post(apiUrl, body: {
+    //   "userAccount": Setting.userAccount, //自己的邮箱
+    //   "userEmail": _newFriendEmail //对方的邮箱
+    // });
+    // // print('Response status : ${response.statusCode}');
+    // // print('Response status : ${response.body}');
+    // Navigator.of(context).pop();
 
-    if (jsonDecode(response.body)["status"] == 0) {
-      showToast('Add successfully');
-      if (widget.reloadFriendsFn != null) {
-        widget.reloadFriendsFn();
-      }
-    }
+    // if (jsonDecode(response.body)["status"] == 0) {
+    //   showToast('Add successfully');
+    //   if (widget.reloadFriendsFn != null) {
+    //     widget.reloadFriendsFn();
+    //   }
+    // }
   }
 
   @override
