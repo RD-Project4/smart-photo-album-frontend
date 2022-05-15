@@ -101,6 +101,17 @@ class _SettingState extends State<Setting> {
           iconColor: Colors.red,
         ),
         SettingSelection(
+          icon: Icons.share,
+          title: Text("My Share"),
+          onPressed: () {
+            if (context.read<UserCubit>().isLogin())
+              Navigator.pushNamed(context, '/manage-share');
+            else
+              showToast("Please login first");
+          },
+          iconColor: Colors.green,
+        ),
+        SettingSelection(
           icon: Icons.delete_rounded,
           title: Text("Trash bin"),
           onPressed: () {
@@ -151,7 +162,8 @@ class _SettingState extends State<Setting> {
           foregroundColor: mainColor,
           elevation: 0,
         ),
-        body: Column(children: [
+        body: SingleChildScrollView(
+            child: Column(children: [
           // AspectRatio(
           //   //Aspectratio
           //   aspectRatio: 20 / 9,
@@ -194,21 +206,26 @@ class _SettingState extends State<Setting> {
           ]),
           BlocBuilder<UserCubit, UserState>(
               builder: (context, state) => state.user != null
-                  ? ElevatedButton(
-                      // 登入后才可显示
-                      style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all(
-                              Size(MediaQuery.of(context).size.width - 40, 50)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.red)),
-                      onPressed: () {
-                        context.read<UserCubit>().logout();
-                        showToast("Log out");
-                      },
-                      child: Text("Log Out"),
-                    )
+                  ? Column(children: [
+                      ElevatedButton(
+                        // 登入后才可显示
+                        style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all(Size(
+                                MediaQuery.of(context).size.width - 40, 50)),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red)),
+                        onPressed: () {
+                          context.read<UserCubit>().logout();
+                          showToast("Log out");
+                        },
+                        child: Text("Log Out"),
+                      ),
+                      SizedBox(
+                        height: 100,
+                      )
+                    ])
                   : Container())
-        ]));
+        ])));
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:smart_album/pages/friends/FriendsSelectPage.dart';
 import 'package:smart_album/pages/photo/FavoritePage.dart';
 import 'package:smart_album/pages/photo/TrashBIn.dart';
 import 'package:smart_album/pages/photo/UploadList.dart';
+import 'package:smart_album/pages/share/ManageSharePage.dart';
 import 'package:smart_album/pages/user/PassResetPage.dart';
 import 'package:smart_album/pages/user/RegisterPage.dart';
 
@@ -32,7 +33,8 @@ final routes = {
   '/add-friends': (context) => AddFriends(),
   '/friends-select': (context) => FriendsSelectPage(),
   '/scanner': (context) => ScannerPage(),
-  '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments)
+  '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments),
+  '/manage-share': (context) => ManageSharePage(),
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {
