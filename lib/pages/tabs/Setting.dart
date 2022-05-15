@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/src/provider.dart';
 import 'package:smart_album/bloc/user/UserCubit.dart';
@@ -115,6 +116,14 @@ class _SettingState extends State<Setting> {
           },
           iconColor: Colors.indigo,
         ),
+        SettingSelection(
+          icon: Icons.share,
+          title: Text("My Share"),
+          onPressed: () {
+            Navigator.pushNamed(context, '/manage-share');
+          },
+          iconColor: Colors.green,
+        ),
         TextButton(
           onPressed: () {},
           child: Row(
@@ -174,7 +183,8 @@ class _SettingState extends State<Setting> {
           foregroundColor: mainColor,
           elevation: 0,
         ),
-        body: Column(children: [
+        body: SingleChildScrollView(
+            child: Column(children: [
           // AspectRatio(
           //   //Aspectratio
           //   aspectRatio: 20 / 9,
@@ -193,7 +203,8 @@ class _SettingState extends State<Setting> {
               ),
             ],
           ),
-          _buildSettingsAfterLogin(), // 登入后才可显示
+          _buildSettingsAfterLogin(),
+          // 登入后才可显示
           // userCubit!.isLogin() ? _buildSettingsAfterLogin() : Container(),
           _buildSettingCard([
             SettingSelection(
@@ -223,8 +234,11 @@ class _SettingState extends State<Setting> {
                 backgroundColor: MaterialStateProperty.all(Colors.red)),
             onPressed: () {},
             child: Text("Log Out"),
+          ),
+          SizedBox(
+            height: 100,
           )
-        ]));
+        ])));
   }
 }
 
