@@ -32,10 +32,12 @@ class PhotoPage extends StatefulWidget {
 class _PhotoPageState extends State<PhotoPage> {
   late int currentIndex = widget.initialIndex;
   late PageController pageController;
+  late ValueNotifier<int> indexNotifier;
 
   @override
   void initState() {
     super.initState();
+    indexNotifier = ValueNotifier(widget.initialIndex);
     pageController = PageController(initialPage: currentIndex);
   }
 
@@ -69,7 +71,8 @@ class _PhotoPageState extends State<PhotoPage> {
                   color: ThemeUtil.getBackgroundColor(context),
                 ),
                 pageController: pageController,
-                onPageChanged: (index) => setState(() => indexNotifier.value = index)),
+                onPageChanged: (index) =>
+                    setState(() => indexNotifier.value = index)),
             Positioned(
               bottom: 0,
               left: 0,
@@ -121,9 +124,10 @@ class _PhotoPageState extends State<PhotoPage> {
             refresh() {
               // However it is anti-pattern
               setState(() {
-                indexNotifier.value = indexNotifier.value >= widget.photoList.length
-                    ? indexNotifier.value - 1
-                    : indexNotifier.value;
+                indexNotifier.value =
+                    indexNotifier.value >= widget.photoList.length
+                        ? indexNotifier.value - 1
+                        : indexNotifier.value;
               });
             }
 
@@ -163,38 +167,38 @@ class _PhotoPageState extends State<PhotoPage> {
     ];
   }
 
-  // Widget _buildLabelBar(Map<String, List<Photo>> labelMap) {
-  //   return Row(
-  //       children: labelMap.entries
-  //           .map<Widget>((entries) => Padding(
-  //               padding: EdgeInsets.all(10),
-  //               child: Container(
-  //                   width: 100,
-  //                   child: Card(
-  //                     clipBehavior: Clip.antiAliasWithSaveLayer,
-  //                     child: InkWell(
-  //                         child: Column(
-  //                             mainAxisAlignment: MainAxisAlignment.center,
-  //                             crossAxisAlignment: CrossAxisAlignment.center,
-  //                             children: [
-  //                           Expanded(
-  //                             child: Container(
-  //                                 decoration: BoxDecoration(
-  //                                     image: DecorationImage(
-  //                                         fit: BoxFit.cover,
-  //                                         image: entries.value[0].isLocal
-  //                                             ? FileImage(
-  //                                                 File(entries.value[0].path))
-  //                                             : NetworkImage(
-  //                                                     entries.value[0].path)
-  //                                                 as ImageProvider))),
-  //                           ),
-  //                           Padding(
-  //                               padding: EdgeInsets.symmetric(vertical: 5),
-  //                               child: Text(CommonUtil.capitalizeFirstLetter(
-  //                                   entries.key))),
-  //                         ])),
-  //                   ))))
-  //           .toList());
-  // }
+// Widget _buildLabelBar(Map<String, List<Photo>> labelMap) {
+//   return Row(
+//       children: labelMap.entries
+//           .map<Widget>((entries) => Padding(
+//               padding: EdgeInsets.all(10),
+//               child: Container(
+//                   width: 100,
+//                   child: Card(
+//                     clipBehavior: Clip.antiAliasWithSaveLayer,
+//                     child: InkWell(
+//                         child: Column(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             crossAxisAlignment: CrossAxisAlignment.center,
+//                             children: [
+//                           Expanded(
+//                             child: Container(
+//                                 decoration: BoxDecoration(
+//                                     image: DecorationImage(
+//                                         fit: BoxFit.cover,
+//                                         image: entries.value[0].isLocal
+//                                             ? FileImage(
+//                                                 File(entries.value[0].path))
+//                                             : NetworkImage(
+//                                                     entries.value[0].path)
+//                                                 as ImageProvider))),
+//                           ),
+//                           Padding(
+//                               padding: EdgeInsets.symmetric(vertical: 5),
+//                               child: Text(CommonUtil.capitalizeFirstLetter(
+//                                   entries.key))),
+//                         ])),
+//                   ))))
+//           .toList());
+// }
 }
