@@ -1,7 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:recognition_qrcode/recognition_qrcode.dart';
@@ -17,6 +22,7 @@ import 'package:smart_album/widgets/LightAppBar.dart';
 import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
 import 'package:smart_album/widgets/photo/UrlTip.dart';
 import 'package:tuple/tuple.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PhotoPage extends StatefulWidget {
   final List<Photo> photoList;
@@ -30,15 +36,37 @@ class PhotoPage extends StatefulWidget {
 }
 
 class _PhotoPageState extends State<PhotoPage> {
-  late int currentIndex = widget.initialIndex;
+  // late int currentIndex = widget.initialIndex;
   late PageController pageController;
   late ValueNotifier<int> indexNotifier;
+  String? currentUrl;
+
+  _parseQrCode() {
+    Photo photo = widget.photoList[indexNotifier.value];
+
+    Scan.parse(photo.path).then((value) {
+      if (value != null && mounted) {
+        setState(() {
+          currentUrl = value;
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     indexNotifier = ValueNotifier(widget.initialIndex);
-    pageController = PageController(initialPage: currentIndex);
+    _parseQrCode();
+    indexNotifier.addListener(() {
+      if (mounted) {
+        setState(() {
+          currentUrl = null;
+        });
+        _parseQrCode();
+      }
+    });
+    pageController = PageController(initialPage: indexNotifier.value);
   }
 
   @override
@@ -50,9 +78,48 @@ class _PhotoPageState extends State<PhotoPage> {
   @override
   Widget build(BuildContext context) {
     ThemeUtil.setSystemOverlayLight(context);
-    Photo photo = widget.photoList[currentIndex];
+    Photo photo = widget.photoList[indexNotifier.value];
 
     return Scaffold(
+      floatingActionButtonLocation: CustomFloatingActionButtonLocation(FloatingActionButtonLocation.endFloat, 0, -100),
+      floatingActionButton:  currentUrl != null
+          ? FloatingActionButton(
+          onPressed: () {
+            Dialogs.materialDialog(
+                msg: currentUrl,
+                title: "The QR code in the picture is detected",
+                color: Colors.white,
+                context: context,
+                actions: [
+                  IconsOutlineButton(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: currentUrl));
+                      Navigator.pop(context);
+                      showToast('Link copied');
+                    },
+                    text: 'Copy',
+                    iconData: Icons.content_copy,
+                    textStyle: TextStyle(color: Colors.black),
+                    iconColor: Colors.black,
+                  ),
+                  IconsButton(
+                    onPressed: () async{
+                      Navigator.pop(context);
+                      final Uri _url = Uri.parse(currentUrl!);
+                      if (!await launchUrl(_url)) throw '无法打开 $_url';
+                    },
+                    text: 'Open',
+                    iconData: Icons.open_in_new,
+                    color: Colors.blue,
+                    textStyle: TextStyle(color: Colors.white),
+                    iconColor: Colors.white,
+                  ),
+                ]);
+
+          },
+          child: Icon(Icons.qr_code_2,color: Colors.black,),
+          backgroundColor: Colors.white)
+          : Container(),
         appBar: LightAppBar(
           context,
           photo.name,
@@ -79,11 +146,15 @@ class _PhotoPageState extends State<PhotoPage> {
               right: 0,
               child: Column(
                 children: [
-                  FutureBuilder(
-                      future: Scan.parse(photo.path), // TODO @clw 你的二维码
-                      builder: (context, snapshot) => snapshot.data != null
-                          ? UrlTip(url: snapshot.data as String)
-                          : Container()),
+                  // FutureBuilder(
+                  //     initialData: null,
+                  //     future: Scan.parse(photo.path), // TODO @clw 你的二维码
+                  //     builder: (context, snapshot) =>snapshot.data != null
+                  //           ? UrlTip(url: snapshot.data as String)
+                  //           : Container()
+                  //     ),
+                  // currentUrl != null ? UrlTip(url: currentUrl!) : Container(),
+
                   SizedBox(
                     height: 10,
                   ),
@@ -201,4 +272,17 @@ class _PhotoPageState extends State<PhotoPage> {
 //                   ))))
 //           .toList());
 // }
+}
+
+class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
+  FloatingActionButtonLocation location;
+  double offsetX;    // X方向的偏移量
+  double offsetY;    // Y方向的偏移量
+  CustomFloatingActionButtonLocation(this.location, this.offsetX, this.offsetY);
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    Offset offset = location.getOffset(scaffoldGeometry);
+    return Offset(offset.dx + offsetX, offset.dy + offsetY);
+  }
 }

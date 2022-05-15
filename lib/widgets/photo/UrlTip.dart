@@ -46,7 +46,7 @@ class UrlTip extends StatelessWidget {
                     )),
                 IconButton(
                     onPressed: () async {
-                      final Uri _url = Uri.parse('https://' + url);
+                      final Uri _url = Uri.parse(url);
                       if (!await launchUrl(_url)) throw '无法打开 $_url';
                     },
                     icon: Icon(Icons.open_in_new, color: Colors.white))

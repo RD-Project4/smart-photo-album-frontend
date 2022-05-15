@@ -32,6 +32,16 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
     return BlocBuilder<PhotoCubit, PhotoState>(
         builder: (context, state) => Container(
               height: 70,
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  gradient: LinearGradient(
+                    begin: FractionalOffset.bottomLeft,
+                    end: FractionalOffset.topRight,
+                    colors: <Color>[Color(0xffe6e9f0), Color(0xffeef2f3)],
+                  ),
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey, offset: Offset(0, -5.0),blurRadius: 10)
+                  ]),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -89,11 +99,6 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
                           .markOrUnMarkPhotoAsFavorite(photo);
                     },
                   ),
-                  // IconText(
-                  //   icon: Icons.delete,
-                  //   text: "Delete",
-                  //   onTap: () {},
-                  // )
                 ],
               ),
             ));
