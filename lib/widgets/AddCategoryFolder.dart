@@ -19,7 +19,7 @@ class AddCategoryFolder extends StatelessWidget {
         child: Scaffold(
             appBar: LightAppBar(
               context,
-              "Add Category Folder",
+              "Create new folder",
               actions: [
                 IconButton(
                   icon: Icon(Icons.add),

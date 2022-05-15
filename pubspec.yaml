@@ -89,6 +89,7 @@ dependencies:
   scan: ^1.6.0
 #  adaptive_dialog: ^1.6.3
   material_dialogs: ^1.1.2
+  simple_animated_icon: ^1.1.0
 
 dev_dependencies:
   flutter_test:

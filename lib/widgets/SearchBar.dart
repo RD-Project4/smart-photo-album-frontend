@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_animated_icon/simple_animated_icon.dart';
 import 'package:smart_album/SearchQuery.dart';
 import 'package:smart_album/SearchResult.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
@@ -8,9 +10,8 @@ import 'package:smart_album/bloc/search/SearchState.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 import 'package:smart_album/util/CommonUtil.dart';
 
-import 'CustomSearchBar/CustomFloatingSearchBar.dart';
 import 'ChipsInput.dart';
-import 'package:collection/collection.dart';
+import 'CustomSearchBar/CustomFloatingSearchBar.dart';
 
 class Label {
   final String name;
@@ -100,7 +101,6 @@ class _SearchBarContent extends StatelessWidget {
           },
           clearQueryOnClose: true,
           actions: [
-
             FloatingSearchBarAction(
               showIfOpened: true,
               showIfClosed: false,
@@ -127,14 +127,29 @@ class _SearchBarContent extends StatelessWidget {
           ],
           leadingActions: [
             FloatingSearchBarAction(
-              showIfOpened: false,
-              showIfClosed: true,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/scanner');
-                },
-                icon: Icon(Icons.qr_code_scanner),
-              ),
+              showIfOpened: true,
+              builder: (context, animation) {
+                return CircularButton(
+                  icon: SimpleAnimatedIcon(
+                    startIcon: Icons.qr_code_scanner,
+                    endIcon: Icons.arrow_back_outlined,
+                    progress: animation,
+                  ),
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      var cubit = context.read<SearchCubit>();
+                      if (cubit.hasSearchResult())
+                        cubit.clearSearchResult();
+                      else {
+                        cubit.clearSearchQuery();
+                        controller.close();
+                      }
+                    } else {
+                      Navigator.pushNamed(context, '/scanner');
+                    }
+                  },
+                );
+              },
             ),
           ],
           transition: ExpandingFloatingSearchBarTransition(),
