@@ -7,7 +7,7 @@ class Category {
   int id = 0;
   @Index()
   String name;
-  List<String>? labelList;
+  List<String> labelList;
   Tuple2<DateTime, DateTime>? dateRange;
   List<String>? locationList;
 

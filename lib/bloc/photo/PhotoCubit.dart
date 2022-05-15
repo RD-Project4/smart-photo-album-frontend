@@ -103,7 +103,6 @@ class PhotoCubit extends Cubit<PhotoState> {
           (await TensorflowProvider.recognizeObjectInFile(path));
       var labelsString = labels
           .take(3)
-          .where((e) => e.score > 0.0001)
           .map((e) => e.label)
           .toList();
 

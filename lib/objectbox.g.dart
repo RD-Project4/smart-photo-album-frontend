@@ -311,11 +311,8 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Category object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          final labelListOffset = object.labelList == null
-              ? null
-              : fbb.writeList(object.labelList!
-                  .map(fbb.writeString)
-                  .toList(growable: false));
+          final labelListOffset = fbb.writeList(
+              object.labelList.map(fbb.writeString).toList(growable: false));
           final locationListOffset = object.locationList == null
               ? null
               : fbb.writeList(object.locationList!
@@ -339,7 +336,7 @@ ModelDefinition getObjectBoxModel() {
               const fb.ListReader<String>(
                       fb.StringReader(asciiOptimization: true),
                       lazy: false)
-                  .vTableGetNullable(buffer, rootOffset, 8),
+                  .vTableGet(buffer, rootOffset, 8, []),
               const fb.ListReader<String>(
                       fb.StringReader(asciiOptimization: true),
                       lazy: false)

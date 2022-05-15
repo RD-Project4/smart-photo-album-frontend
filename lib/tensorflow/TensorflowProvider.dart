@@ -6,6 +6,7 @@ import 'package:image/image.dart';
 
 import 'package:flutter/services.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:smart_album/util/Labels.dart';
 import 'package:smart_album/util/ServiceUtil.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
@@ -108,17 +109,13 @@ class TensorflowProvider {
     ImageProcessor imageProcessor = ImageProcessorBuilder()
         .add(ResizeWithCropOrPadOp(cropSize, cropSize))
         .add(ResizeOp(224, 224, ResizeMethod.NEAREST_NEIGHBOUR))
+        .add(NormalizeOp(0, 255))
         .build();
     tensorImage = imageProcessor.process(tensorImage);
 
     TensorBuffer probabilityBuffer = objectModel.run(tensorImage)[0];
 
-    SequentialProcessor<TensorBuffer> probabilityProcessor =
-        TensorProcessorBuilder().add(NormalizeOp(0, 255)).build();
-    TensorBuffer processedBuffer =
-        probabilityProcessor.process(probabilityBuffer);
-
-    TensorLabel tensorLabel = TensorLabel.fromList(_labels, processedBuffer);
+    TensorLabel tensorLabel = TensorLabel.fromList(_labels, probabilityBuffer);
     return tensorLabel.getCategoryList()
       ..sort((a, b) => b.score.compareTo(a.score));
   }
@@ -130,11 +127,11 @@ class TensorflowProvider {
     return recognisedText.text;
   }
 
-  static List<String>? _staticLabels;
-
   static Future<List<String>> getLabels() async {
-    return _staticLabels ??
-        (_staticLabels = FileUtil.labelListFromString(
-            await rootBundle.loadString(LABELS_LOCATION)));
+    List<String> labelList = [];
+    for (var superCategory in superCategories) {
+      labelList.addAll(superCategory.labels);
+    }
+    return labelList;
   }
 }

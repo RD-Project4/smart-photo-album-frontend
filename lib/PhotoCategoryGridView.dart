@@ -9,6 +9,7 @@ import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/photo/PhotoState.dart';
 import 'package:smart_album/model/Category.dart';
 import 'package:smart_album/model/Photo.dart';
+import 'package:smart_album/util/Labels.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
 import 'package:smart_album/widgets/ThumbnailImageProvider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -16,16 +17,14 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../util/CommonUtil.dart';
 
 class PhotoCategoryGridView extends StatelessWidget {
+  final SuperCategory superCategory;
   final void Function(Category, List<Photo>)? onTap;
-
   final EdgeInsets? padding;
 
-  const PhotoCategoryGridView({this.onTap, this.padding});
+  const PhotoCategoryGridView(this.superCategory, {this.onTap, this.padding});
 
   @override
   Widget build(BuildContext context) {
-    Random random = Random();
-
     return BlocBuilder<CategoryFolderCubit, CategoryFolderState>(
         builder: (context, categoryState) =>
             BlocBuilder<PhotoCubit, PhotoState>(
@@ -33,9 +32,15 @@ class PhotoCategoryGridView extends StatelessWidget {
               if (categoryState.categoryList == null) return LoadingCircle();
               var categoryList = categoryState.categoryList!;
               var photoListList = categoryList
-                  .map((category) => categoryState.getPhotoByCategory(
-                      category, photoState.photoListWithoutDeleted)!)
-                  .toList();
+                  .where((category) => category.labelList
+                      .firstWhere(
+                          (label) => superCategory.labels.contains(label),
+                          orElse: () => "")
+                      .isNotEmpty)
+                  .map((category) {
+                return categoryState.getPhotoByCategory(
+                    category, photoState.photoListWithoutDeleted)!;
+              }).toList();
 
               return WaterfallFlow.builder(
                 padding: this.padding ?? EdgeInsets.all(10.0),
