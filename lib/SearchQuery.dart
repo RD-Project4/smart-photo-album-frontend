@@ -60,27 +60,35 @@ class SearchQuery extends StatelessWidget {
                     Set.from(state.historyList!.map((e) => e.name)))),
           )));
     widgetList.addAll([
-      OutlineCard(
-          margin: spacing,
-          title: "Date",
-          child: SfDateRangePicker(
-            selectionMode: DateRangePickerSelectionMode.range,
-            onSelectionChanged: (args) {
-              PickerDateRange range = args.value;
-              if (range.endDate != null && range.endDate != null)
-                cubit.setDateRange(Tuple2(range.startDate!, range.endDate!));
-              else
-                cubit.setDateRange(null);
-            },
-          )),
-      OutlineCard(
-          margin: spacing,
-          title: "Location",
-          child: MultiChoiceChip(
-            Set.from(cubit.getCities()),
-            onSelectionChanged: (cities) =>
-                cubit.setLocationList(cities.toList()),
-          ))
+      BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) => OutlineCard(
+              margin: spacing,
+              title: "Date",
+              child: SfDateRangePicker(
+                initialSelectedRange: state.dateRange == null
+                    ? null
+                    : PickerDateRange(
+                        state.dateRange!.item1, state.dateRange!.item2),
+                selectionMode: DateRangePickerSelectionMode.range,
+                onSelectionChanged: (args) {
+                  PickerDateRange range = args.value;
+                  if (range.endDate != null && range.endDate != null)
+                    cubit
+                        .setDateRange(Tuple2(range.startDate!, range.endDate!));
+                  else
+                    cubit.setDateRange(null);
+                },
+              ))),
+      BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) => OutlineCard(
+              margin: spacing,
+              title: "Location",
+              child: MultiChoiceChip(
+                Set.from(cubit.getCities()),
+                initSelected: state.locationList.toSet(),
+                onSelectionChanged: (cities) =>
+                    cubit.setLocationList(cities.toList()),
+              )))
     ]);
 
     return SingleChildScrollView(

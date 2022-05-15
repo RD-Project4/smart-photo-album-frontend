@@ -101,10 +101,8 @@ class PhotoCubit extends Cubit<PhotoState> {
 
       List<Category> labels =
           (await TensorflowProvider.recognizeObjectInFile(path));
-      var labelsString = labels
-          .take(3)
-          .map((e) => e.label)
-          .toList();
+      var labelsString =
+          labels.take(3).where((e) => e.score > 0).map((e) => e.label).toList();
 
       var latLng = await entity.latlngAsync();
       String? location;

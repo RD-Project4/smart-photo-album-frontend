@@ -29,11 +29,12 @@ class FavoritePage extends StatelessWidget {
                       var listState = cubit.state;
                       var photoList = listState.mode == ListMode.Selection
                           ? listState.selectedItems.toList()
-                          : state.deletedPhotoList;
+                          : state.favoritePhotoList;
                       photoList.forEach((photo) {
                         BlocProvider.of<PhotoCubit>(context)
                             .markOrUnMarkPhotoAsFavorite(photo);
                         cubit.setModeView();
+                        Navigator.of(context).pop();
                       });
                     });
                   },

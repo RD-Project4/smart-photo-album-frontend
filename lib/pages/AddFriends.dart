@@ -2,9 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:oktoast/oktoast.dart';
 import 'package:passwordfield/passwordfield.dart';
+import 'package:smart_album/api/api.dart';
+import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/pages/Tabs.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 
@@ -37,7 +41,8 @@ class _AddFriendsState extends State<AddFriends> {
   var _msg = '';
 
   _addfriends() async {
-    
+    if (context.read<UserCubit>().isLogin()) showToast("Please login first");
+    await Api.get().addFriend(account);
   }
 
   @override
@@ -55,9 +60,7 @@ class _AddFriendsState extends State<AddFriends> {
               decoration: const InputDecoration(
                   border: OutlineInputBorder(), hintText: 'Email'),
               onChanged: (value) {
-                setState(() {
-                  account = value;
-                });
+                account = value;
               },
             ),
             SizedBox(

@@ -74,7 +74,7 @@ dependencies:
   image_utils_class: ^2.0.0
   event_bus: ^2.0.0
   path_provider: ^2.0.9
-  objectbox: ^1.4.1
+  objectbox: 1.4.1
   objectbox_flutter_libs: any
   shared_preferences: ^2.0.15
   splashscreen:

@@ -3,15 +3,31 @@ import 'package:flutter/material.dart';
 class MultiChoiceChip extends StatefulWidget {
   final Set<String> reportList;
   final Function(Set<String>)? onSelectionChanged;
+  late final Set<String> initSelected;
 
-  MultiChoiceChip(this.reportList, {this.onSelectionChanged});
+  MultiChoiceChip(this.reportList,
+      {this.onSelectionChanged, Set<String>? initSelected}) {
+    this.initSelected = initSelected ?? Set();
+  }
 
   @override
   _MultiSelectChipState createState() => _MultiSelectChipState();
 }
 
 class _MultiSelectChipState extends State<MultiChoiceChip> {
-  Set<String> selectedChoices = Set();
+  late Set<String> selectedChoices;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedChoices = widget.initSelected;
+  }
+
+  @override
+  void didUpdateWidget(covariant MultiChoiceChip oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    selectedChoices = widget.initSelected;
+  }
 
   @override
   Widget build(BuildContext context) {

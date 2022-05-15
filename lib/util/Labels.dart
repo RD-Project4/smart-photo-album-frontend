@@ -11,6 +11,6 @@ class SuperCategory {
 var superCategories = [
   SuperCategory("Landscape", Icons.landscape_outlined,
       ["Nature", "Buildings", "Snowscape", "Sea"]),
-  SuperCategory("Animals", Icons.pets_outlined, ["Cat", "Sea life"]),
+  SuperCategory("Animals", Icons.pets_outlined, ["Pet", "Sea life"]),
   SuperCategory("Character", Icons.person_outline, ["Group photo", "Selfie"]),
 ];

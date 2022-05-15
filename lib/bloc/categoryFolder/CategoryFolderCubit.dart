@@ -10,7 +10,7 @@ class CategoryFolderCubit
   late StreamSubscription subscription;
 
   CategoryFolderCubit() : super(CategoryFolderState()) {
-    ObjectStore.get().getCategoryStream().listen((list) {
+    subscription = ObjectStore.get().getCategoryStream().listen((list) {
       emit(state.clone()..categoryList = list);
     });
   }

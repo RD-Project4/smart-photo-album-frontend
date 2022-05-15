@@ -30,21 +30,21 @@ class PhotoCategoryGridView extends StatelessWidget {
             BlocBuilder<PhotoCubit, PhotoState>(
                 builder: ((context, photoState) {
               if (categoryState.categoryList == null) return LoadingCircle();
-              var categoryList = categoryState.categoryList!;
-              var photoListList = categoryList
+              var categoryList = categoryState.categoryList!
                   .where((category) => category.labelList
                       .firstWhere(
                           (label) => superCategory.labels.contains(label),
                           orElse: () => "")
                       .isNotEmpty)
-                  .map((category) {
+                  .toList();
+              var photoListList = categoryList.map((category) {
                 return categoryState.getPhotoByCategory(
                     category, photoState.photoListWithoutDeleted)!;
               }).toList();
 
               return WaterfallFlow.builder(
                 padding: this.padding ?? EdgeInsets.all(10.0),
-                itemCount: categoryList.length,
+                itemCount: photoListList.length,
                 itemBuilder: (context, index) {
                   var category = categoryList[index];
                   var photoList = photoListList[index];

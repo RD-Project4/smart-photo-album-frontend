@@ -109,7 +109,7 @@ class _SearchBarContent extends StatelessWidget {
                 onPressed: () {
                   controller.clear();
                   var cubit = context.read<SearchCubit>();
-                  if (cubit.hasSearchResult()) cubit.clearSearchResult();
+                  cubit.clearSearchQuery();
                 },
               ),
             ),

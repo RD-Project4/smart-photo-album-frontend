@@ -1,8 +1,8 @@
-group photo
-nature
-buildings
-sea
-sea life
-pet
-selfie
-snowscape
+Group photo
+Nature
+Buildings
+Sea
+Sea life
+Pet
+Selfie
+Snowscape
