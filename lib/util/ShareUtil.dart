@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:smart_album/api/api.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 import 'package:smart_album/model/Photo.dart';
@@ -102,10 +103,16 @@ class ShareUtil {
                   ),
                   IconButton(
                       onPressed: () {
-                        showToast("Link Saved");
+                        showToast("Link Copied");
                         Clipboard.setData(ClipboardData(text: shareUrl));
                       },
                       icon: Icon(Icons.content_copy)),
+                  IconButton(
+                    icon: Icon(Icons.share_outlined),
+                    onPressed: () {
+                      Share.share(shareUrl);
+                    },
+                  ),
                   // CopyBtn(
                   //   text: shareUrl,
                   // )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_album/ShareViewPage.dart';
 import 'package:smart_album/pages/AddFriends.dart';
 import 'package:smart_album/pages/ScannerPage.dart';
 import 'package:smart_album/pages/friends/FriendsPage.dart';
@@ -35,23 +36,28 @@ final routes = {
   '/scanner': (context) => ScannerPage(),
   '/folderPage': (context, {arguments}) => FolderPage(arguments: arguments),
   '/manage-share': (context) => ManageSharePage(),
+  '/share-view': (context, {arguments}) => ShareViewPage(shareId: arguments)
 };
 //固定写法
 var onGenerateRoute = (RouteSettings settings) {
-  final String? name = settings.name;
-  print(settings.name);
-  print(settings.arguments);
+  var name = settings.name;
+  var arguments = settings.arguments;
+  if (name!.contains("?")) {
+    var splitList = name.split("?");
+    name = splitList[0];
+    arguments = splitList[1];
+  }
+  print(name);
+  print(arguments);
   final Function pageContentBuilder = routes[name] as Function;
-  if (pageContentBuilder != null) {
-    if (settings.arguments != null) {
-      final Route route = MaterialPageRoute(
-          builder: (context) =>
-              pageContentBuilder(context, arguments: settings.arguments));
-      return route;
-    } else {
-      final Route route =
-          MaterialPageRoute(builder: (context) => pageContentBuilder(context));
-      return route;
-    }
+  if (arguments != null) {
+    final Route route = MaterialPageRoute(
+        builder: (context) =>
+            pageContentBuilder(context, arguments: arguments));
+    return route;
+  } else {
+    final Route route =
+        MaterialPageRoute(builder: (context) => pageContentBuilder(context));
+    return route;
   }
 };

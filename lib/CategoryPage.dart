@@ -57,17 +57,29 @@ class CategoryPage extends StatelessWidget {
                                                         Icons.delete_outline,
                                                         color: Colors.black))
                                               ],
-                                        bottom: ShiftingTabBar(
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                          tabs: superCategories
-                                              .map((superCategory) =>
-                                                  ShiftingTab(
-                                                    icon: Icon(
-                                                        superCategory.icon),
-                                                    text: superCategory.name,
-                                                  ))
-                                              .toList(),
+                                        bottom: PreferredSize(
+                                          preferredSize: Size.fromHeight(46),
+                                          child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: SizedBox(
+                                                  width:
+                                                      superCategories.length *
+                                                          120,
+                                                  child: ShiftingTabBar(
+                                                    color: Theme.of(context)
+                                                        .scaffoldBackgroundColor,
+                                                    tabs: superCategories
+                                                        .map((superCategory) =>
+                                                            ShiftingTab(
+                                                              icon: Icon(
+                                                                  superCategory
+                                                                      .icon),
+                                                              text:
+                                                                  superCategory
+                                                                      .name,
+                                                            ))
+                                                        .toList(),
+                                                  ))),
                                         ),
                                       )))
                         ];

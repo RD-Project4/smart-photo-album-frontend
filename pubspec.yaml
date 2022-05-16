@@ -91,6 +91,7 @@ dependencies:
   material_dialogs: ^1.1.2
   simple_animated_icon: ^1.1.0
   exif: ^3.1.1
+  share_plus: ^4.0.4
 
 dev_dependencies:
   flutter_test:

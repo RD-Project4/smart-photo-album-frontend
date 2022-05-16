@@ -9,18 +9,14 @@ import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:recognition_qrcode/recognition_qrcode.dart';
 import 'package:scan/scan.dart';
-import 'package:smart_album/api/api.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/uploadManager/UploadCubit.dart';
-import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/DialogUtil.dart';
 import 'package:smart_album/util/ThemeUtil.dart';
 import 'package:smart_album/widgets/LightAppBar.dart';
 import 'package:smart_album/widgets/photo/PhotoToolBar.dart';
-import 'package:smart_album/widgets/photo/UrlTip.dart';
 import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -44,13 +40,14 @@ class _PhotoPageState extends State<PhotoPage> {
   _parseQrCode() {
     Photo photo = widget.photoList[indexNotifier.value];
 
-    Scan.parse(photo.path).then((value) {
-      if (value != null && mounted) {
-        setState(() {
-          currentUrl = value;
-        });
-      }
-    });
+    if (photo.isLocal)
+      Scan.parse(photo.path).then((value) {
+        if (value != null && mounted) {
+          setState(() {
+            currentUrl = value;
+          });
+        }
+      });
   }
 
   @override
@@ -81,45 +78,48 @@ class _PhotoPageState extends State<PhotoPage> {
     Photo photo = widget.photoList[indexNotifier.value];
 
     return Scaffold(
-      floatingActionButtonLocation: CustomFloatingActionButtonLocation(FloatingActionButtonLocation.endFloat, 0, -100),
-      floatingActionButton:  currentUrl != null
-          ? FloatingActionButton(
-          onPressed: () {
-            Dialogs.materialDialog(
-                msg: currentUrl,
-                title: "The QR code in the picture is detected",
-                color: Colors.white,
-                context: context,
-                actions: [
-                  IconsOutlineButton(
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: currentUrl));
-                      Navigator.pop(context);
-                      showToast('Link copied');
-                    },
-                    text: 'Copy',
-                    iconData: Icons.content_copy,
-                    textStyle: TextStyle(color: Colors.black),
-                    iconColor: Colors.black,
-                  ),
-                  IconsButton(
-                    onPressed: () async{
-                      Navigator.pop(context);
-                      final Uri _url = Uri.parse(currentUrl!);
-                      if (!await launchUrl(_url)) throw '无法打开 $_url';
-                    },
-                    text: 'Open',
-                    iconData: Icons.open_in_new,
-                    color: Colors.blue,
-                    textStyle: TextStyle(color: Colors.white),
-                    iconColor: Colors.white,
-                  ),
-                ]);
-
-          },
-          child: Icon(Icons.qr_code_2,color: Colors.black,),
-          backgroundColor: Colors.white)
-          : Container(),
+        floatingActionButtonLocation: CustomFloatingActionButtonLocation(
+            FloatingActionButtonLocation.endFloat, 0, -100),
+        floatingActionButton: currentUrl != null
+            ? FloatingActionButton(
+                onPressed: () {
+                  Dialogs.materialDialog(
+                      msg: currentUrl,
+                      title: "The QR code in the picture is detected",
+                      color: Colors.white,
+                      context: context,
+                      actions: [
+                        IconsOutlineButton(
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: currentUrl));
+                            Navigator.pop(context);
+                            showToast('Link copied');
+                          },
+                          text: 'Copy',
+                          iconData: Icons.content_copy,
+                          textStyle: TextStyle(color: Colors.black),
+                          iconColor: Colors.black,
+                        ),
+                        IconsButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            final Uri _url = Uri.parse(currentUrl!);
+                            if (!await launchUrl(_url)) throw '无法打开 $_url';
+                          },
+                          text: 'Open',
+                          iconData: Icons.open_in_new,
+                          color: Colors.blue,
+                          textStyle: TextStyle(color: Colors.white),
+                          iconColor: Colors.white,
+                        ),
+                      ]);
+                },
+                child: Icon(
+                  Icons.qr_code_2,
+                  color: Colors.black,
+                ),
+                backgroundColor: Colors.white)
+            : Container(),
         appBar: LightAppBar(
           context,
           photo.name,
@@ -276,8 +276,8 @@ class _PhotoPageState extends State<PhotoPage> {
 
 class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
   FloatingActionButtonLocation location;
-  double offsetX;    // X方向的偏移量
-  double offsetY;    // Y方向的偏移量
+  double offsetX; // X方向的偏移量
+  double offsetY; // Y方向的偏移量
   CustomFloatingActionButtonLocation(this.location, this.offsetX, this.offsetY);
 
   @override

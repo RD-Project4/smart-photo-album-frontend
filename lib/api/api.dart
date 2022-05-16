@@ -215,7 +215,7 @@ class Api {
   }
 
   static toShareLink(String id) {
-    return BASE_URL + 'share.do?sharelink.do?shareId=' + id;
+    return 'http://smartalbum.com/share-view?' + id;
   }
 
   Future<String> shareTo(
@@ -250,15 +250,15 @@ class Api {
   Future<List<Photo>> getSharePhotoList(String shareId) async {
     var response =
         await dio.post('share.do', queryParameters: {"shareId": shareId});
+    if (response.data["status"] == 1)
+      throw NotLoginException(response);
+    else if (response.data["status"] == 2)
+      throw NotYourShareException(response);
     List<Photo> photos = [];
     for (var item in response.data["data"]) {
       item["custom"] = jsonDecode(item["custom"]);
       photos.add(Photo.fromJson(item));
     }
-    if (response.data["status"] == 1)
-      throw NotLoginException(response);
-    else if (response.data["status"] == 2)
-      throw NotYourShareException(response);
     return photos;
   }
 

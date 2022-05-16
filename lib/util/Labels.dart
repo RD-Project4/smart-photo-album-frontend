@@ -13,4 +13,5 @@ var superCategories = [
       ["Nature", "Buildings", "Snowscape", "Sea"]),
   SuperCategory("Animals", Icons.pets_outlined, ["Pet", "Sea life"]),
   SuperCategory("Character", Icons.person_outline, ["Group photo", "Selfie"]),
+  SuperCategory("Food", Icons.food_bank_outlined, [])
 ];

@@ -29,7 +29,9 @@ class _ManageSharePageState extends State<ManageSharePage> {
 
   Widget _buildRecord(Share share) {
     return ListTile(
-      onTap: () { ShareUtil.showLink(context, share.getShareLink());},
+      onTap: () {
+        ShareUtil.showLink(context, share.getShareLink());
+      },
       title: Row(
         children: [
           Expanded(
@@ -40,7 +42,7 @@ class _ManageSharePageState extends State<ManageSharePage> {
             flex: 7,
           ),
           IconButton(
-            icon: Icon(Icons.content_copy),
+            icon: Icon(Icons.copy_outlined),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: share.getShareLink()));
               showToast("Link copied");

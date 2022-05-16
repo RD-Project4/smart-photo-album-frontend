@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'dart:io' show Platform;
-import 'package:image_picker/image_picker.dart';
-import 'package:recognition_qrcode/recognition_qrcode.dart';
 
-import 'package:smart_album/widgets/CustomSearchBar/CustomFloatingSearchBar.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:recognition_qrcode/recognition_qrcode.dart';
+import 'package:smart_album/ShareViewPage.dart';
 
 class ScannerPage extends StatefulWidget {
   @override
@@ -21,7 +20,6 @@ class _ScannerPageState extends State<ScannerPage> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
     _scanRes.addListener(() {
@@ -31,9 +29,19 @@ class _ScannerPageState extends State<ScannerPage> {
 
       var url = _scanRes.value!.code;
 
-      if (!url!.startsWith("www.smartalbum.top/share")) {
+      if (!url!.contains("smartAlbum.com")) {
         // 如果扫描到的url不是分享的url
         return;
+      } else {
+        // 如果扫描到的url是分享的url
+        // 则跳转到分享页面
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ShareViewPage(
+              shareId: url.split("/").last,
+            ),
+          ),
+        );
       }
     });
   }
@@ -68,7 +76,7 @@ class _ScannerPageState extends State<ScannerPage> {
               backgroundColor: Color.fromRGBO(255, 255, 255, 0.5),
               child: Center(
                   child: IconButton(
-                    color: Colors.white,
+                      color: Colors.white,
                       onPressed: () {
                         Navigator.pop(context);
                       },
