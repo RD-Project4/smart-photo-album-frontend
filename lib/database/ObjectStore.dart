@@ -65,10 +65,16 @@ class ObjectStore {
   }
 
   List<Photo> getPhotoBy(
-      {List<String>? labelList,
+      {String? text,
+      List<String>? labelList,
       Tuple2<DateTime, DateTime>? dateRange,
       List<String>? locationList}) {
     Condition<Photo> condition = EmptyCondition();
+
+    if (text != null) {
+      condition.and(Photo_.text.contains(text));
+    }
+
     if (labelList != null && labelList.isNotEmpty) {
       Condition<Photo> labelCondition = EmptyCondition();
       for (var label in labelList) {

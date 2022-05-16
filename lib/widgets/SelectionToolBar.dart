@@ -53,6 +53,7 @@ class _SelectionToolBarState extends State<SelectionToolBar> {
                 context
                     .read<UploadCubit>()
                     .uploadPhotoList(context, state.selectedItems.toList());
+                showToast("Uploading in the background, please check status in the backup manager");
                 context.read<PhotoListCubit>()
                   ..setModeView()
                   ..clearSelectedPhotos();

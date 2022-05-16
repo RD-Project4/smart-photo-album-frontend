@@ -17,13 +17,24 @@ class Photo {
   int width;
   int height;
   String? location;
+  List<String> text;
   bool isCloud; // 是否是云端照片，不在本地又不在云端就会从数据库里删除
   bool isLocal; // 是否在本地存在
   bool isFavorite = false;
   bool isDeleted = false; // 在回收站吗
 
-  Photo(this.entityId, this.name, this.path, this.labels, this.creationDateTime,
-      this.width, this.height, this.location, this.isCloud, this.isLocal);
+  Photo(
+      this.entityId,
+      this.name,
+      this.path,
+      this.labels,
+      this.creationDateTime,
+      this.width,
+      this.height,
+      this.location,
+      this.text,
+      this.isCloud,
+      this.isLocal);
 
   Photo.fromJson(dynamic json)
       : cloudId = json["picId"],
@@ -36,6 +47,7 @@ class Photo {
         width = json["custom"]["width"],
         height = json["custom"]["height"],
         location = json["custom"]["location"],
+        text = json["custom"]["text"].split(','),
         isCloud = true,
         isLocal = false,
         isFavorite = json["custom"]["isFavorite"];
@@ -48,6 +60,7 @@ class Photo {
       "height": height,
       "location": location,
       "isFavorite": isFavorite,
+      "text": text.join(',')
     };
   }
 
@@ -62,6 +75,7 @@ class Photo {
         width = 0,
         height = 0,
         location = "",
+        text = [],
         isCloud = true,
         isLocal = false,
         isFavorite = false;

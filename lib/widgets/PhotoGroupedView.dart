@@ -53,7 +53,8 @@ class PhotoGroupedView extends StatelessWidget {
                   .mapIndexed((index, element) => ListedPhoto(
                         path: element.path,
                         entity: element,
-                        onTap: () => onTap?.call(element, index, allElement),
+                        onTap: () => onTap?.call(
+                            element, overallIndex + index, allElement),
                       ))
                   .toList());
         });

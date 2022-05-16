@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8452154140893309457",
-      "lastPropertyId": "19:8794456690119365015",
+      "lastPropertyId": "20:4372493872483911245",
       "name": "Photo",
       "properties": [
         {
@@ -85,6 +85,11 @@
           "id": "19:8794456690119365015",
           "name": "isDeleted",
           "type": 1
+        },
+        {
+          "id": "20:4372493872483911245",
+          "name": "text",
+          "type": 30
         }
       ],
       "relations": []

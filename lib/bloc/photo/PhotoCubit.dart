@@ -126,8 +126,25 @@ class PhotoCubit extends Cubit<PhotoState> {
         location = await GeoUtil.locationFromCoordinates(
             latLng.latitude!, latLng.longitude!);
 
-      photoToStoreList.add(Photo(entity.id, entity.title!, path, labelsString,
-          createTime, entity.width, entity.height, location, false, true));
+      var text = await TensorflowProvider.recognizeTextInFile(path);
+      List<String> textList;
+      if (text.isNotEmpty)
+        textList = text.split("\n");
+      else
+        textList = [];
+
+      photoToStoreList.add(Photo(
+          entity.id,
+          entity.title!,
+          path,
+          labelsString,
+          createTime,
+          entity.width,
+          entity.height,
+          location,
+          textList,
+          false,
+          true));
     }
 
     for (Photo photo in photoToStoreList) {
@@ -147,19 +164,8 @@ class PhotoCubit extends Cubit<PhotoState> {
 
   LruMap<String, List<Photo>> cachePhoto = LruMap(maximumSize: 10);
 
-  Map<String, List<Photo>> getPhotoGroupedByLabel(List<String> labelList) {
-    Map<String, List<Photo>> map = Map();
-    labelList.forEach((label) {
-      if (cachePhoto.containsKey(label))
-        map[label] = cachePhoto[label]!;
-      else {
-        var photoList = ObjectStore.get().getPhotoBy(labelList: [label]);
-        if (photoList.length < 1) return;
-        map[label] = photoList;
-      }
-    });
-    cachePhoto.addAll(map);
-    return map;
+  List<Photo> getPhotoListByLabel(String label) {
+    return ObjectStore.get().getPhotoBy(labelList: [label]);
   }
 
   movePhotoToTrashBin(Photo photo) {

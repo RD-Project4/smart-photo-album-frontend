@@ -23,7 +23,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(19, 8794456690119365015),
+      lastPropertyId: const IdUid(20, 4372493872483911245),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -101,6 +101,11 @@ final _entities = <ModelEntity>[
             id: const IdUid(19, 8794456690119365015),
             name: 'isDeleted',
             type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(20, 4372493872483911245),
+            name: 'text',
+            type: 30,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -221,7 +226,9 @@ ModelDefinition getObjectBoxModel() {
               ? null
               : fbb.writeString(object.thumbnailPath!);
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(20);
+          final textOffset = fbb.writeList(
+              object.text.map(fbb.writeString).toList(growable: false));
+          fbb.startTable(21);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
@@ -237,6 +244,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addBool(16, object.isFavorite);
           fbb.addOffset(17, nameOffset);
           fbb.addBool(18, object.isDeleted);
+          fbb.addOffset(19, textOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -261,6 +269,10 @@ ModelDefinition getObjectBoxModel() {
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
               const fb.StringReader(asciiOptimization: true)
                   .vTableGetNullable(buffer, rootOffset, 24),
+              const fb.ListReader<String>(
+                      fb.StringReader(asciiOptimization: true),
+                      lazy: false)
+                  .vTableGet(buffer, rootOffset, 42, []),
               const fb.BoolReader().vTableGet(buffer, rootOffset, 32, false),
               const fb.BoolReader().vTableGet(buffer, rootOffset, 34, false))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
@@ -405,6 +417,10 @@ class Photo_ {
   /// see [Photo.isDeleted]
   static final isDeleted =
       QueryBooleanProperty<Photo>(_entities[0].properties[14]);
+
+  /// see [Photo.text]
+  static final text =
+      QueryStringVectorProperty<Photo>(_entities[0].properties[15]);
 }
 
 /// [History] entity fields to define ObjectBox queries.

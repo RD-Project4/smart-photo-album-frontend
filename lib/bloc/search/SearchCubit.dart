@@ -42,6 +42,7 @@ class SearchCubit extends Cubit<SearchState> {
     if (state.labelList.length > 0)
       ObjectStore.get().addHistory(History(state.labelList[0]));
     var photoList = ObjectStore.get().getPhotoBy(
+        text: state.text.isNotEmpty ? state.text : null,
         labelList: state.labelList,
         dateRange: state.dateRange,
         locationList: state.locationList);

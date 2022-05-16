@@ -47,7 +47,6 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
                   ]),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   IconText(
                     icon: Icons.search_outlined,
@@ -123,7 +122,8 @@ class IconText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Expanded(
+        child: InkWell(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +139,7 @@ class IconText extends StatelessWidget {
         ],
       ),
       onTap: onTap,
-    );
+    ));
   }
 }
 

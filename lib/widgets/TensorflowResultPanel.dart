@@ -1,56 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/tensorflow/TensorflowProvider.dart';
+import 'package:smart_album/widgets/ListedChips.dart';
+import 'package:smart_album/widgets/OutlineCard.dart';
+import 'package:smart_album/widgets/ShiftingTabBar.dart';
 
 import '../FolderPage.dart';
 import 'ColorfulProgressBar.dart';
 
 class TensorflowResultPanel {
   static open(BuildContext context, Photo element) async {
+    var result = TensorflowProvider.recognizeTextInFile(element.path);
+
     await showModalBottomSheet(
         context: context,
-        builder: (BuildContext context) => Container(
-            height: 300,
-            child: DefaultTabController(
-                length: 2,
-                child: Scaffold(
-                    appBar: TabBar(
-                      tabs: [
-                        Tab(text: "Object"),
-                        Tab(text: "Text"),
-                      ],
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey,
-                      isScrollable: true,
-                    ),
-                    body: TabBarView(children: [
-                      ListView(
-                          scrollDirection: Axis.vertical,
-                          children: element.labels
-                              .take(5)
-                              .map((label) => createLabel(context, label))
-                              .toList()),
-                      FutureBuilder<String>(
-                          future: TensorflowProvider.recognizeTextInFile(
-                              element.path),
-                          initialData: null,
-                          builder:
-                              (BuildContext context, AsyncSnapshot snapshot) {
-                            return (snapshot.connectionState ==
-                                        ConnectionState.done &&
-                                    snapshot.data != null)
-                                ? Text((snapshot.data as String).isNotEmpty
-                                    ? snapshot.data
-                                    : "No text was found")
-                                : Stack(children: [
-                                    Positioned(
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        child: ColorfulProgressBar()),
-                                  ]);
-                          })
-                    ])))));
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        builder: (BuildContext context) => DraggableScrollableSheet(
+            expand: false,
+            builder:
+                (BuildContext context, ScrollController scrollController) =>
+                    SingleChildScrollView(
+                      padding: EdgeInsets.all(10),
+                      controller: scrollController,
+                      child: Column(
+                        children: [
+                          OutlineCard(
+                              title: "Related to",
+                              margin: const EdgeInsets.all(10),
+                              child: ListedChips<String>(
+                                buildLabel: (item) => Text(item),
+                                itemList: element.labels,
+                                onTap: (item) {
+                                  Navigator.pushNamed(context, '/folderPage',
+                                      arguments: FolderPageArguments(
+                                          title: item,
+                                          photoList: context
+                                              .read<PhotoCubit>()
+                                              .getPhotoListByLabel(item)));
+                                },
+                              )),
+                          OutlineCard(
+                              title: "Text",
+                              margin: const EdgeInsets.all(10),
+                              child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Column(
+                                      children: element.text
+                                          .map((string) => Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 10),
+                                                child: Text(string),
+                                              ))
+                                          .toList())))
+                        ],
+                      ),
+                    )));
   }
 
   static Widget createLabel(BuildContext context, String label) {

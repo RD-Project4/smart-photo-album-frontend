@@ -41,9 +41,8 @@ class UploadCubit extends Cubit<UploadState> {
         }
       }
     }
-    emit(state.clone());
     context.read<PhotoCubit>().refresh(context);
-    ObjectStore.get().clearAndStorePhotoList(photoList);
+    emit(state.clone());
   }
 
   removePhotoFromCloud(BuildContext context, Photo photo) async {
