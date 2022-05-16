@@ -1,3 +1,5 @@
+import 'package:smart_album/api/api.dart';
+
 class Share {
   String shareId;
   List<String> sharePhotoList;
@@ -9,4 +11,8 @@ class Share {
       : shareId = json["shareId"],
         sharePhotoList = json["shareContentId"].split(","),
         userIdList = json["shareObject"].split(",");
+
+  getShareLink() {
+    return Api.toShareLink(shareId);
+  }
 }

@@ -1,15 +1,7 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:smart_album/api/api.dart';
-import 'package:smart_album/pages/tabs/Setting.dart';
-import 'package:smart_album/widgets/TabsDrawer.dart';
 import 'package:smart_album/model/FriendInfo.dart';
 import 'package:smart_album/util/DialogUtil.dart';
 
@@ -32,6 +24,9 @@ class _FriendsPageState extends State<FriendsPage> {
 
   loadData() async {
     _friends = await Api.get().getFriendInfo();
+    setState(() {
+      _friends = _friends;
+    });
   }
 
   void _handleList(List<FriendInfo> list) {
@@ -58,32 +53,6 @@ class _FriendsPageState extends State<FriendsPage> {
     if (mounted) {
       setState(() {});
     }
-  }
-
-  /// 用户个人信息
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.all(20),
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          ClipOval(
-              child: Image.network(
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F0720%252F27836c7fj00qwiper0016c000hs00hsg.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646826366&t=14ab6dfab50dc92f5d07cdc12c9a5ddf",
-            width: 80.0,
-          )),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Text(
-          //     Setting.userName,
-          //     textScaleFactor: 1.2,
-          //   ),
-          // ),
-          // Text(Setting.userEmail),
-        ],
-      ),
-    );
   }
 
   /// 首字母分割线
@@ -178,36 +147,37 @@ class _FriendsPageState extends State<FriendsPage> {
                 icon: Icon(Icons.person_add))
           ],
         ),
-        body: AzListView(
-          data: _friends,
-          itemCount: _friends.length,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) return _buildHeader();
-            FriendInfo model = _friends[index];
-            return _buildListItem(model);
-          },
-          physics: BouncingScrollPhysics(),
-          indexBarData: SuspensionUtil.getTagIndexList(_friends),
-          indexHintBuilder: (context, hint) {
-            return Container(
-              alignment: Alignment.center,
-              width: 60.0,
-              height: 60.0,
-              decoration: BoxDecoration(
-                color: Colors.blue[700]!.withAlpha(200),
-                shape: BoxShape.circle,
+        body: RefreshIndicator(
+            onRefresh: () async => await loadData(),
+            child: AzListView(
+              data: _friends,
+              itemCount: _friends.length,
+              itemBuilder: (BuildContext context, int index) {
+                FriendInfo model = _friends[index];
+                return _buildListItem(model);
+              },
+              physics: BouncingScrollPhysics(),
+              indexBarData: SuspensionUtil.getTagIndexList(_friends),
+              indexHintBuilder: (context, hint) {
+                return Container(
+                  alignment: Alignment.center,
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[700]!.withAlpha(200),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(hint,
+                      style: TextStyle(color: Colors.white, fontSize: 30.0)),
+                );
+              },
+              indexBarMargin: EdgeInsets.all(10),
+              indexBarOptions: IndexBarOptions(
+                needRebuild: true,
+                decoration: getIndexBarDecoration(Colors.grey[50]!),
+                downDecoration: getIndexBarDecoration(Colors.grey[200]!),
               ),
-              child: Text(hint,
-                  style: TextStyle(color: Colors.white, fontSize: 30.0)),
-            );
-          },
-          indexBarMargin: EdgeInsets.all(10),
-          indexBarOptions: IndexBarOptions(
-            needRebuild: true,
-            decoration: getIndexBarDecoration(Colors.grey[50]!),
-            downDecoration: getIndexBarDecoration(Colors.grey[200]!),
-          ),
-        ));
+            )));
   }
 }
 
@@ -230,21 +200,9 @@ class _AddFriendState extends State<AddFriend> {
   // Widget? searchRes;
 
   _addFriend() async {
-    // var apiUrl = Uri.parse('http://124.223.68.12:8233/smartAlbum/addfriend.do');
-    // var response = await http.post(apiUrl, body: {
-    //   "userAccount": Setting.userAccount, //自己的邮箱
-    //   "userEmail": _newFriendEmail //对方的邮箱
-    // });
-    // // print('Response status : ${response.statusCode}');
-    // // print('Response status : ${response.body}');
-    // Navigator.of(context).pop();
-
-    // if (jsonDecode(response.body)["status"] == 0) {
-    //   showToast('Add successfully');
-    //   if (widget.reloadFriendsFn != null) {
-    //     widget.reloadFriendsFn();
-    //   }
-    // }
+    await Api.get().addFriend(_newFriendEmail);
+    widget.reloadFriendsFn();
+    Navigator.pop(context);
   }
 
   @override

@@ -148,7 +148,7 @@ class _PhotoPageState extends State<PhotoPage> {
                 children: [
                   // FutureBuilder(
                   //     initialData: null,
-                  //     future: Scan.parse(photo.path), // TODO @clw 你的二维码
+                  //     future: Scan.parse(photo.path),
                   //     builder: (context, snapshot) =>snapshot.data != null
                   //           ? UrlTip(url: snapshot.data as String)
                   //           : Container()

@@ -40,7 +40,10 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
                     colors: <Color>[Color(0xffe6e9f0), Color(0xffeef2f3)],
                   ),
                   boxShadow: [
-                    BoxShadow(color: Colors.grey, offset: Offset(0, -5.0),blurRadius: 10)
+                    BoxShadow(
+                        color: Colors.grey,
+                        offset: Offset(0, -5.0),
+                        blurRadius: 10)
                   ]),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -48,7 +51,7 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
                 children: [
                   IconText(
                     icon: Icons.search_outlined,
-                    text: "Similar",
+                    text: "Overview",
                     onTap: () {
                       TensorflowResultPanel.open(context, photo);
                     },
@@ -57,7 +60,10 @@ class _PhotoToolBarState extends State<PhotoToolBar> {
                       icon: Icons.share_outlined,
                       text: "Share",
                       onTap: () {
-                        ShareUtil.openShareBottomSheet(context, 1);
+                        if (photo.isCloud) {
+                          ShareUtil.openShareBottomSheet(context, [photo]);
+                        } else
+                          showToast("The photo have to be uploaded to cloud!");
                       }),
                   IconText(
                       icon: Icons.edit_outlined,

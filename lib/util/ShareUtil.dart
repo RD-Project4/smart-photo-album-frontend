@@ -1,18 +1,17 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'dart:ui' as ui;
+import 'package:smart_album/api/api.dart';
 import 'package:smart_album/model/FriendInfo.dart';
+import 'package:smart_album/model/Photo.dart';
 
 class ShareUtil {
-  static Future openShareBottomSheet(BuildContext context, int photoNum) async {
+  static Future openShareBottomSheet(
+      BuildContext parentContext, List<Photo> photoList) async {
     final option = await showModalBottomSheet(
-        context: context,
+        context: parentContext,
         builder: (BuildContext context) {
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -27,9 +26,10 @@ class ShareUtil {
                       color: Colors.black),
                   children: <TextSpan>[
                     TextSpan(
-                        text: '$photoNum',
+                        text: photoList.length.toString(),
                         style: TextStyle(color: Colors.blueAccent)),
-                    TextSpan(text: ' photo${photoNum > 1 ? 's' : ''} with:'),
+                    TextSpan(
+                        text: ' photo${photoList.length > 1 ? 's' : ''} with:'),
                   ],
                 ),
               )),
@@ -37,15 +37,15 @@ class ShareUtil {
                 title: Text('Everyone', textAlign: TextAlign.center),
                 onTap: () {
                   Navigator.pop(context, '分享给所有人');
-                  shareToEveryone(context,
-                      "www.smartalbum.top/share?share_id=dm2654sao231dw2sa231d");
+                  shareToEveryone(parentContext, photoList);
                 },
               ),
               ListTile(
                 title: Text('Only my friends', textAlign: TextAlign.center),
                 onTap: () {
                   Navigator.pop(context, '只分享给朋友');
-                  Navigator.pushNamed(context, '/friends-select');
+                  Navigator.pushNamed(parentContext, '/friends-select',
+                      arguments: photoList);
                 },
               ),
               ListTile(
@@ -65,23 +65,19 @@ class ShareUtil {
     print(option);
   }
 
-  static void shareToEveryone(BuildContext context, String url) {
-    // TODO: 从api获取分享链接并赋值给shareUrl
-    // var shareUrl = FriendsSelectPage.url;
-    showLink(context, url);
+  static void shareToEveryone(
+      BuildContext context, List<Photo> photoList) async {
+    String id = await Api.get().shareToEveryone(photoList);
+    showLink(context, Api.toShareLink(id));
   }
 
-  static void shareToFriends(
-      BuildContext context, List<FriendInfo> friends, String url) {
-    print(friends);
-
-    // TODO: 从api获取分享链接并赋值给shareUrl
-    // var shareUrl = FriendsSelectPage.url;
-    showLink(context, url);
+  static void shareToFriends(BuildContext context, List<FriendInfo> friends,
+      List<Photo> photoList) async {
+    String id = await Api.get().shareTo(photoList, friends);
+    showLink(context, Api.toShareLink(id));
   }
 
   static void showLink(BuildContext context, String shareUrl) {
-
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {

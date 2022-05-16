@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:oktoast/oktoast.dart';
 import 'package:smart_album/api/api.dart';
+import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/user/UserCubit.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/util/Global.dart';
@@ -58,8 +59,8 @@ class _LoginFormState extends State<LoginForm> {
           textStyle: TextStyle(fontSize: 20));
     } else if (state == LoginState.LOGIN_SUCCESS) {
       // Tabs.loginstate = 0;
-      Navigator.of(context)
-          .pop(); //arguments: {"userId": this.userId, "userEmail": this.userEmail}
+      Navigator.of(context).pop();
+      context.read<PhotoCubit>().refresh(context);
     } else {
       showToast("Login error", textStyle: TextStyle(fontSize: 20));
     }

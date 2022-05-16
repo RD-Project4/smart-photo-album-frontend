@@ -33,7 +33,6 @@ class _SettingState extends State<Setting> {
   IconData changeIcon = Icons.arrow_drop_up_outlined;
   int _status = 4;
   String _msg = '';
-  UserCubit? userCubit;
   var mainColor = Color.fromRGBO(243, 247, 249, 1);
 
   @override
@@ -81,17 +80,9 @@ class _SettingState extends State<Setting> {
   }
 
   /// 登陆后显示的组件
-  Widget _buildSettingsAfterLogin() {
+  Widget _buildSettingsAfterLogin(bool isLogin) {
     return _buildSettingCard(
       [
-        SettingSelection(
-          icon: Icons.group,
-          title: Text("My Friends"),
-          onPressed: () {
-            Navigator.pushNamed(context, '/friends');
-          },
-          iconColor: Colors.indigo,
-        ),
         SettingSelection(
           icon: Icons.favorite,
           title: Text("My Favorites"),
@@ -100,17 +91,42 @@ class _SettingState extends State<Setting> {
           },
           iconColor: Colors.red,
         ),
-        SettingSelection(
-          icon: Icons.share,
-          title: Text("My Share"),
-          onPressed: () {
-            if (context.read<UserCubit>().isLogin())
-              Navigator.pushNamed(context, '/manage-share');
-            else
-              showToast("Please login first");
-          },
-          iconColor: Colors.green,
-        ),
+        isLogin
+            ? SettingSelection(
+                icon: Icons.group,
+                title: Text("My Friends"),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/friends');
+                },
+                iconColor: Colors.indigo,
+              )
+            : Container(),
+        isLogin
+            ? SettingSelection(
+                icon: Icons.share,
+                title: Text("My Share"),
+                onPressed: () {
+                  if (context.read<UserCubit>().isLogin())
+                    Navigator.pushNamed(context, '/manage-share');
+                  else
+                    showToast("Please login first");
+                },
+                iconColor: Colors.green,
+              )
+            : Container(),
+        isLogin
+            ? SettingSelection(
+                icon: Icons.cloud_rounded,
+                title: Text('Backup manager'),
+                onPressed: () {
+                  if (context.read<UserCubit>().isLogin())
+                    Navigator.pushNamed(context, '/uploadList');
+                  else
+                    showToast("Please login first");
+                },
+                iconColor: Colors.blue,
+              )
+            : Container(),
         SettingSelection(
           icon: Icons.delete_rounded,
           title: Text("Trash bin"),
@@ -118,17 +134,6 @@ class _SettingState extends State<Setting> {
             Navigator.pushNamed(context, '/trashbin');
           },
           iconColor: Colors.grey,
-        ),
-        SettingSelection(
-          icon: Icons.cloud_rounded,
-          title: Text('Backup manager'),
-          onPressed: () {
-            if (context.read<UserCubit>().isLogin())
-              Navigator.pushNamed(context, '/uploadList');
-            else
-              showToast("Please login first");
-          },
-          iconColor: Colors.blue,
         ),
       ],
     );
@@ -149,82 +154,73 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    if (userCubit == null && mounted) {
-      setState(() {
-        userCubit = context.read<UserCubit>();
-      });
-    }
-
-    return Scaffold(
-        backgroundColor: mainColor,
-        body: SingleChildScrollView(
-            child: Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: Column(children: [
-                  // AspectRatio(
-                  //   //Aspectratio
-                  //   aspectRatio: 20 / 9,
-                  //   child: Image.network(
-                  //     value['imageUrl'],
-                  //     fit: BoxFit.cover,
-                  //   ),
-                  // ),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 20),
-                            child: _buildUserInfo()),
+    return BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) => Scaffold(
+            backgroundColor: mainColor,
+            body: SingleChildScrollView(
+                child: Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Column(children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 20),
+                                child: _buildUserInfo()),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  _buildSettingsAfterLogin(), // 登入后才可显示
-                  // userCubit!.isLogin() ? _buildSettingsAfterLogin() : Container(),
-                  _buildSettingCard([
-                    SettingSelection(
-                      icon: Icons.settings,
-                      title: Text("Settings"),
-                      onPressed: () {},
-                      iconColor: Color(0xff8ea2b1),
-                    ),
-                    SettingSelection(
-                      icon: Icons.error,
-                      title: Text("About"),
-                      onPressed: () {},
-                      iconColor: Color(0xff5ca5eb),
-                    ),
-                    SettingSelection(
-                      icon: Icons.help,
-                      title: Text("Help and Feedback"),
-                      onPressed: () {},
-                      iconColor: Color(0xff68cdc3),
-                    ),
-                  ]),
-                  BlocBuilder<UserCubit, UserState>(
-                      builder: (context, state) => state.user != null
-                          ? Column(children: [
-                              ElevatedButton(
-                                // 登入后才可显示
-                                style: ButtonStyle(
-                                    minimumSize: MaterialStateProperty.all(Size(
-                                        MediaQuery.of(context).size.width - 40,
-                                        50)),
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.red)),
-                                onPressed: () {
-                                  context.read<UserCubit>().logout();
-                                  showToast("Log out");
-                                },
-                                child: Text("Log Out"),
-                              ),
-                              SizedBox(
-                                height: 100,
-                              )
-                            ])
-                          : Container())
-                ]))));
+                      _buildSettingsAfterLogin(state.user != null),
+                      _buildSettingCard([
+                        SettingSelection(
+                          icon: Icons.settings,
+                          title: Text("Settings"),
+                          onPressed: () {},
+                          iconColor: Color(0xff8ea2b1),
+                        ),
+                        SettingSelection(
+                          icon: Icons.error,
+                          title: Text("About"),
+                          onPressed: () {},
+                          iconColor: Color(0xff5ca5eb),
+                        ),
+                        SettingSelection(
+                          icon: Icons.help,
+                          title: Text("Help and Feedback"),
+                          onPressed: () {},
+                          iconColor: Color(0xff68cdc3),
+                        ),
+                      ]),
+                      BlocBuilder<UserCubit, UserState>(
+                          builder: (context, state) => state.user != null
+                              ? Column(children: [
+                                  ElevatedButton(
+                                    // 登入后才可显示
+                                    style: ButtonStyle(
+                                        minimumSize: MaterialStateProperty.all(
+                                            Size(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    40,
+                                                50)),
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.red)),
+                                    onPressed: () {
+                                      context.read<UserCubit>().logout();
+                                      showToast("Log out");
+                                    },
+                                    child: Text("Log Out"),
+                                  ),
+                                  SizedBox(
+                                    height: 100,
+                                  )
+                                ])
+                              : Container())
+                    ])))));
   }
 }
 

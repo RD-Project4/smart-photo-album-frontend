@@ -214,6 +214,10 @@ class Api {
     return Photo.fromJson(response.data["data"]);
   }
 
+  static toShareLink(String id) {
+    return BASE_URL + 'share.do?sharelink.do?shareId=' + id;
+  }
+
   Future<String> shareTo(
       List<Photo> photoList, List<FriendInfo> shareTo) async {
     for (var photo in photoList) {
@@ -229,13 +233,13 @@ class Api {
     return response.data["data"]; // Share id
   }
 
-  shareToEveryone(List<Photo> photoList) async {
+  Future<String> shareToEveryone(List<Photo> photoList) async {
     for (var photo in photoList) {
       if (!photo.isCloud) throw Exception("Include non cloud photo!");
     }
     var response = await dio.post('addshare.do', data: {
-      "picIdList": photoList.map((photo) => photo.cloudId),
-      "shareObjectList": [],
+      "picIdList": photoList.map((photo) => photo.cloudId).toList(),
+      "shareObjectList": List.empty(),
       "isAll": true,
       "shareOwner": authentication?.userAccount
     });

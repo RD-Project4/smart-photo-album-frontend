@@ -1,19 +1,14 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:lpinyin/lpinyin.dart';
-import 'package:smart_album/PhotoList.dart';
+import 'package:smart_album/api/api.dart';
 import 'package:smart_album/model/FriendInfo.dart';
-import 'package:smart_album/pages/tabs/Setting.dart';
+import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/ShareUtil.dart';
-import 'package:smart_album/widgets/TabsDrawer.dart';
 
 class FriendsSelectPage extends StatefulWidget {
-  static var url = '';
+  final List<Photo> photoList;
+
+  const FriendsSelectPage(this.photoList);
 
   @override
   State<StatefulWidget> createState() => _FriendsSelectPageState();
@@ -31,56 +26,11 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   }
 
   void loadData() async {
-    // print('showing friends');
-    // print(Setting.userAccount);
-    // var apiurl =
-    //     Uri.parse('http://124.223.68.12:8233/smartAlbum/showuserfriend.do');
-    // var response =
-    //     await http.post(apiurl, body: {"userAccount": Setting.userAccount});
-
-    // print('Response status : ${response.statusCode}');
-    // print('Response status : ${response.body}');
-    // setState(() {
-    //   TabsDrawer.list = jsonDecode(response.body)["data"];
-    // });
-
-    //加载联系人列表
-    // rootBundle.loadString('assets/data/friends.json').then((value) {
-    //   print(value);
-    //   List list = json.decode(value);
-    //   print(list);
-    //   list.forEach((v) {
-    //     _friends.add(FriendInfo.fromJson(v));
-    //   });
-    //   _handleList(_friends);
-    // });
-    //   print(TabsDrawer.list);
-
-    //   TabsDrawer.list.forEach((v) {
-    //     _friends.add(FriendInfo.fromJson(v));
-    //   });
-    //   _handleList(_friends);
-    // }
-
-    // void _handleList(List<FriendInfo> list) {
-    //   if (list.isEmpty) return;
-    //   for (int i = 0, length = list.length; i < length; i++) {
-    //     String pinyin = PinyinHelper.getPinyinE(list[i].userName);
-    //     String tag = pinyin.substring(0, 1).toUpperCase();
-    //     list[i].userNamePinyin = pinyin;
-    //     if (RegExp("[A-Z]").hasMatch(tag)) {
-    //       list[i].tagIndex = tag;
-    //     } else {
-    //       list[i].tagIndex = "#";
-    //     }
-    //   }
-    //   // A-Z sort.
-    //   SuspensionUtil.sortListBySuspensionTag(_friends);
-
-    //   // show sus tag.
-    //   SuspensionUtil.setShowSuspensionStatus(_friends);
-
-    //   setState(() {});
+    await Api.get().getFriendInfo().then((friendList) => {
+          setState(() {
+            _friends = friendList;
+          })
+        });
   }
 
   /// 悬停效果
@@ -160,8 +110,7 @@ class _FriendsSelectPageState extends State<FriendsSelectPage> {
   /// 分享
   void _share() {
     Navigator.pop(context);
-    ShareUtil.shareToFriends(context, _selectedFriends,
-        "www.smartalbum.top/share?share_id=dm2654sao231dw2sa231d");
+    ShareUtil.shareToFriends(context, _selectedFriends, widget.photoList);
   }
 
   @override

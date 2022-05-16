@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:material_dialogs/material_dialogs.dart';
-import 'package:material_dialogs/widgets/buttons/icon_button.dart';
-import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+import 'package:smart_album/api/api.dart';
+import 'package:smart_album/model/Share.dart';
+import 'package:smart_album/util/DialogUtil.dart';
 import 'package:smart_album/util/ShareUtil.dart';
+import 'package:smart_album/widgets/LoadingCircle.dart';
 
 class ManageSharePage extends StatefulWidget {
   @override
@@ -15,33 +13,28 @@ class ManageSharePage extends StatefulWidget {
 }
 
 class _ManageSharePageState extends State<ManageSharePage> {
-  var recordList = [];
+  List<Share>? recordList;
+
+  refreshShare() {
+    Api.get().getShareList().then((shareList) => setState(() {
+          recordList = shareList;
+        }));
+  }
 
   @override
   void initState() {
     super.initState();
-
-    var _fakeData = [];
-
-    for (var i = 0; i < 20; i++) {
-      _fakeData.add({
-        "link": "www.baidu.com",
-        "time": DateTime.now(),
-      });
-    }
-
-    setState(() {
-      recordList = _fakeData;
-    });
+    refreshShare();
   }
 
-  Widget _buildRecord(String link, DateTime time) {
+  Widget _buildRecord(Share share) {
     return ListTile(
+      onTap: () { ShareUtil.showLink(context, share.getShareLink());},
       title: Row(
         children: [
           Expanded(
             child: Text(
-              "www.baidu.com",
+              share.userIdList.join(","),
               overflow: TextOverflow.ellipsis,
             ),
             flex: 7,
@@ -49,54 +42,26 @@ class _ManageSharePageState extends State<ManageSharePage> {
           IconButton(
             icon: Icon(Icons.content_copy),
             onPressed: () {
-              Clipboard.setData(ClipboardData(text: link));
+              Clipboard.setData(ClipboardData(text: share.getShareLink()));
               showToast("Link copied");
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.qr_code_2),
-            onPressed: () {
-              ShareUtil.showLink(context, link);
             },
           ),
           ElevatedButton(
             onPressed: () {
-              Dialogs.materialDialog(
-                  msg: "Are you sure you want to cancel sharing? you can\'t undo this",
-                  title: "Cancel Sharing",
-                  color: Colors.white,
-                  context: context,
-
-                  actions: [
-                    IconsOutlineButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      text: 'No',
-                      iconData: Icons.cancel_outlined,
-                      textStyle: TextStyle(color: Colors.grey),
-                      iconColor: Colors.grey,
-                    ),
-                    IconsButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        // TODO: 取消分享
-                      },
-                      text: 'Confirm',
-                      iconData: Icons.delete,
-                      color: Colors.red,
-                      textStyle: TextStyle(color: Colors.white),
-                      iconColor: Colors.white,
-                    ),
-                  ]);
+              DialogUtil.showConfirmDialog(context, "Revoke Sharing",
+                  "Are you sure you want to revoke sharing? You can\'t undo this",
+                  () async {
+                await Api.get().deleteShare(share);
+                Navigator.pop(context);
+                refreshShare();
+              });
             },
-            child: Text("Cancel"),
+            child: Text("Revoke"),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red)),
           ),
         ],
       ),
-      subtitle: Text(DateFormat('yyyy-MM-dd  kk:mm').format(time)),
     );
   }
 
@@ -112,16 +77,19 @@ class _ManageSharePageState extends State<ManageSharePage> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
+        elevation: 0,
       ),
-      body: ListView.separated(
-        itemBuilder: (context, index) {
-          var record = recordList[index];
-          return _buildRecord(record["link"], record["time"]);
-        },
-        itemCount: recordList.length,
-        separatorBuilder: (BuildContext context, int index) =>
-            Divider(height: 1.0, color: Colors.grey),
-      ),
+      body: recordList != null
+          ? ListView.separated(
+              itemBuilder: (context, index) {
+                var share = recordList![index];
+                return _buildRecord(share);
+              },
+              itemCount: recordList!.length,
+              separatorBuilder: (BuildContext context, int index) =>
+                  Divider(height: 1.0, color: Colors.grey),
+            )
+          : SizedBox.expand(child: Center(child: LoadingCircle())),
     );
   }
 }
