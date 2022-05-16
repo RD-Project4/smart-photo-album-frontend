@@ -34,8 +34,8 @@ class FavoritePage extends StatelessWidget {
                         BlocProvider.of<PhotoCubit>(context)
                             .markOrUnMarkPhotoAsFavorite(photo);
                         cubit.setModeView();
-                        Navigator.of(context).pop();
                       });
+                      Navigator.of(context).pop();
                     });
                   },
                 )

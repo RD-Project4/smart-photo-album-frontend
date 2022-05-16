@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
+import 'package:smart_album/bloc/photo/PhotoState.dart';
 import 'package:smart_album/bloc/uploadManager/UploadCubit.dart';
 import 'package:smart_album/bloc/uploadManager/UploadState.dart';
 import 'package:smart_album/bloc/user/UserCubit.dart';
@@ -68,32 +69,39 @@ class UploadList extends StatelessWidget {
                         )),
                 decoration: BoxDecoration(color: Colors.blueAccent),
               )),
-          TextButton(
-            onPressed: () {},
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Icon(Icons.cloud),
+          BlocBuilder<PhotoCubit, PhotoState>(
+            builder: (context, state) {
+              List<Photo> photoList =
+                  state.photoList.where((photo) => photo.isCloud).toList();
+              return TextButton(
+                onPressed: () {},
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Icon(Icons.cloud),
+                    ),
+                    Expanded(
+                        flex: 16,
+                        child: ListTile(
+                          title: Text("Cloud Storage Space"),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  "Used: ${photoList.length * 1.2} MB，Total: 1 GB"),
+                              LinearProgressIndicator(
+                                backgroundColor: Colors.grey[200],
+                                valueColor: AlwaysStoppedAnimation(Colors.blue),
+                                value: photoList.length * 1.2 / (1 * 1024),
+                              )
+                            ],
+                          ),
+                        ))
+                  ],
                 ),
-                Expanded(
-                    flex: 16,
-                    child: ListTile(
-                      title: Text("Cloud Storage Space"),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Used: 1 GB，Total: 15 GB"),
-                          LinearProgressIndicator(
-                            backgroundColor: Colors.grey[200],
-                            valueColor: AlwaysStoppedAnimation(Colors.blue),
-                            value: 1 / 15,
-                          )
-                        ],
-                      ),
-                    ))
-              ],
-            ),
+              );
+            },
           ),
           Expanded(child:
               BlocBuilder<UploadCubit, UploadState>(builder: (context, state) {

@@ -54,11 +54,33 @@ class SearchQuery extends StatelessWidget {
           margin: spacing,
           title: "Search History",
           child: BlocBuilder<SearchCubit, SearchState>(
-            builder: ((context, state) => state.historyList == null
-                ? LoadingCircle()
-                : MultiChoiceChip(
-                    Set.from(state.historyList!.map((e) => e.name)))),
-          )));
+              builder: ((context, state) => state.historyList == null
+                  ? LoadingCircle()
+                  : Wrap(
+                      children: state.historyList!.map((item) {
+                        return Container(
+                          padding: const EdgeInsets.all(2.0),
+                          child: ChoiceChip(
+                            selected: false,
+                            label: Text(item.name),
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: Colors.grey.shade200, width: 1.0),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            selectedColor: Colors.blueAccent,
+                            backgroundColor: Colors.transparent,
+                            labelStyle: TextStyle(
+                              color: Colors.black,
+                            ),
+                            onSelected: (isSelected) {
+                              cubit.setLabelList([item.name]);
+                              cubit.search();
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    )))));
     widgetList.addAll([
       BlocBuilder<SearchCubit, SearchState>(
           builder: (context, state) => OutlineCard(

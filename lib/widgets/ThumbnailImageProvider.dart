@@ -36,10 +36,9 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
 
   Future<ui.Codec> _loadFromFile(
       ThumbnailImageProvider key, DecoderCallback decode) async {
-    var cache = await lruMap.get(photo.entityId);
-    if (cache != null) return cache;
+    var data = await lruMap.get(photo.entityId);
+    if (data != null) return decode(data);
 
-    var data;
     if (photo.isLocal) {
       final assetEntity = await AssetEntity.fromId(photo.entityId!);
       data = await assetEntity?.thumbnailDataWithOption(
@@ -53,9 +52,8 @@ class ThumbnailImageProvider extends ImageProvider<ThumbnailImageProvider> {
       throw StateError(
           '${photo.path} is empty and cannot be loaded as an image.');
     } else {
-      var codec = await decode(data);
-      lruMap.set(photo.entityId, codec);
-      return codec;
+      lruMap.set(photo.entityId, data);
+      return decode(data);
     }
   }
 

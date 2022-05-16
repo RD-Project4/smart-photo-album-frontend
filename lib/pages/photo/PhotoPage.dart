@@ -123,7 +123,7 @@ class _PhotoPageState extends State<PhotoPage> {
         appBar: LightAppBar(
           context,
           photo.name,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.white.withOpacity(0.8),
           actions: _buildAction(context, photo),
         ),
         extendBodyBehindAppBar: true,

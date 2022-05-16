@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MultiChoiceChip extends StatefulWidget {
-  final Set<String> reportList;
+  final Set<String> availableList;
   final Function(Set<String>)? onSelectionChanged;
-  late final Set<String> initSelected;
+  late final Set<String>? initSelected;
 
-  MultiChoiceChip(this.reportList,
-      {this.onSelectionChanged, Set<String>? initSelected}) {
-    this.initSelected = initSelected ?? Set();
-  }
+  MultiChoiceChip(this.availableList,
+      {this.onSelectionChanged, this.initSelected});
 
   @override
   _MultiSelectChipState createState() => _MultiSelectChipState();
@@ -20,25 +18,35 @@ class _MultiSelectChipState extends State<MultiChoiceChip> {
   @override
   void initState() {
     super.initState();
-    selectedChoices = widget.initSelected;
+    selectedChoices = widget.initSelected ?? Set();
   }
 
   @override
   void didUpdateWidget(covariant MultiChoiceChip oldWidget) {
     super.didUpdateWidget(oldWidget);
-    selectedChoices = widget.initSelected;
+    if (widget.initSelected != null) selectedChoices = widget.initSelected!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      children: widget.reportList.map((item) {
+      children: widget.availableList.map((item) {
+        bool isSelected = selectedChoices.contains(item);
+
         return Container(
           padding: const EdgeInsets.all(2.0),
           child: ChoiceChip(
             label: Text(item),
-            selectedColor: Colors.blueAccent.withOpacity(0.3),
-            selected: selectedChoices.contains(item),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.grey.shade200, width: 1.0),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            selectedColor: Colors.blueAccent,
+            backgroundColor: Colors.transparent,
+            labelStyle: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+            ),
+            selected: isSelected,
             onSelected: (selected) {
               setState(() {
                 selectedChoices.contains(item)

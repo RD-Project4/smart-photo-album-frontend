@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:smart_album/api/api.dart';
 import 'package:smart_album/pages/tabs/Setting.dart';
 import 'package:smart_album/widgets/TabsDrawer.dart';
 import 'package:smart_album/model/FriendInfo.dart';
@@ -29,24 +30,8 @@ class _FriendsPageState extends State<FriendsPage> {
     loadData();
   }
 
-
-   loadData() async {
-    //加载联系人列表
-    // rootBundle.loadString('assets/data/friends.json').then((value) {
-    //   // print(value);
-    //   List list = json.decode(value);
-    //   // print(list);
-    //   list.forEach((v) {
-    //     _friends.add(FriendInfo.fromJson(v));
-    //   });
-    //   _handleList(_friends);
-    // });
-    // print(TabsDrawer.list);
-
-    // TabsDrawer.list.forEach((v) {
-    //   _friends.add(FriendInfo.fromJson(v));
-    // });
-    // _handleList(_friends);
+  loadData() async {
+    _friends = await Api.get().getFriendInfo();
   }
 
   void _handleList(List<FriendInfo> list) {

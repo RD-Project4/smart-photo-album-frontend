@@ -143,7 +143,7 @@ class ObjectStore {
     var query = _photoBox.query().build();
     PropertyQuery<String> pq = query.property(Photo_.location);
     pq.distinct = true;
-    return pq.find();
+    return pq.find().where((city) => city.isNotEmpty).toList();
   }
 
   Stream<List<Category>> getCategoryStream() {

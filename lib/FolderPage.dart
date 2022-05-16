@@ -33,10 +33,11 @@ class FolderPage extends StatelessWidget {
                       : LightAppBar(context, arguments.title)),
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
-          body: PhotoGroupedView(
-              photos: arguments.photoList.toList(),
-              onTap: (photo, index, sortedPhotoList) =>
-                  open(context, sortedPhotoList, index)),
+          body: BlocBuilder<PhotoListCubit, PhotoListState>(
+              builder: (context, state) => PhotoGroupedView(
+                  photos: arguments.photoList.toList(),
+                  onTap: (photo, index, sortedPhotoList) =>
+                      open(context, sortedPhotoList, index))),
           // body: GridView.count(
           //     // 照片
           //     crossAxisCount: 2,

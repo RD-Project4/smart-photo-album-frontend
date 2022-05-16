@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:exif/exif.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -96,8 +97,22 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
 
     for (AssetEntity entity in photoMapFromLocal.values) {
-      var path = (await entity.file)?.path;
+      var file = await entity.originFile;
+      var path = file?.path;
       if (path == null) continue;
+
+      final data = await readExifFromBytes(await file!.readAsBytes());
+
+      DateTime createTime = DateTime.now();
+      if (data.isNotEmpty) {
+        if (data.containsKey('Image DateTime')) {
+          String dataTime = data['Image DateTime']!.printable;
+          List<String> parts = dataTime.split(" ");
+          parts[0] = parts[0].replaceAll(":", "-");
+          String finalDateTime = parts.join(" ");
+          createTime = DateTime.parse(finalDateTime);
+        }
+      }
 
       List<Category> labels =
           (await TensorflowProvider.recognizeObjectInFile(path));
@@ -111,17 +126,8 @@ class PhotoCubit extends Cubit<PhotoState> {
         location = await GeoUtil.locationFromCoordinates(
             latLng.latitude!, latLng.longitude!);
 
-      photoToStoreList.add(Photo(
-          entity.id,
-          entity.title!,
-          path,
-          labelsString,
-          entity.createDateTime,
-          entity.width,
-          entity.height,
-          location,
-          false,
-          true));
+      photoToStoreList.add(Photo(entity.id, entity.title!, path, labelsString,
+          createTime, entity.width, entity.height, location, false, true));
     }
 
     for (Photo photo in photoToStoreList) {

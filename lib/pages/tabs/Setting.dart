@@ -157,75 +157,74 @@ class _SettingState extends State<Setting> {
 
     return Scaffold(
         backgroundColor: mainColor,
-        appBar: AppBar(
-          backgroundColor: mainColor,
-          foregroundColor: mainColor,
-          elevation: 0,
-        ),
         body: SingleChildScrollView(
-            child: Column(children: [
-          // AspectRatio(
-          //   //Aspectratio
-          //   aspectRatio: 20 / 9,
-          //   child: Image.network(
-          //     value['imageUrl'],
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          Row(
-            children: [
-              Expanded(
-                flex: 4,
-                child: Container(
-                    margin: EdgeInsets.only(left: 20, bottom: 20),
-                    child: _buildUserInfo()),
-              ),
-            ],
-          ),
-          _buildSettingsAfterLogin(), // 登入后才可显示
-          // userCubit!.isLogin() ? _buildSettingsAfterLogin() : Container(),
-          _buildSettingCard([
-            SettingSelection(
-              icon: Icons.settings,
-              title: Text("Settings"),
-              onPressed: () {},
-              iconColor: Color(0xff8ea2b1),
-            ),
-            SettingSelection(
-              icon: Icons.error,
-              title: Text("About"),
-              onPressed: () {},
-              iconColor: Color(0xff5ca5eb),
-            ),
-            SettingSelection(
-              icon: Icons.help,
-              title: Text("Help and Feedback"),
-              onPressed: () {},
-              iconColor: Color(0xff68cdc3),
-            ),
-          ]),
-          BlocBuilder<UserCubit, UserState>(
-              builder: (context, state) => state.user != null
-                  ? Column(children: [
-                      ElevatedButton(
-                        // 登入后才可显示
-                        style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all(Size(
-                                MediaQuery.of(context).size.width - 40, 50)),
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.red)),
-                        onPressed: () {
-                          context.read<UserCubit>().logout();
-                          showToast("Log out");
-                        },
-                        child: Text("Log Out"),
+            child: Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Column(children: [
+                  // AspectRatio(
+                  //   //Aspectratio
+                  //   aspectRatio: 20 / 9,
+                  //   child: Image.network(
+                  //     value['imageUrl'],
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 20),
+                            child: _buildUserInfo()),
                       ),
-                      SizedBox(
-                        height: 100,
-                      )
-                    ])
-                  : Container())
-        ])));
+                    ],
+                  ),
+                  _buildSettingsAfterLogin(), // 登入后才可显示
+                  // userCubit!.isLogin() ? _buildSettingsAfterLogin() : Container(),
+                  _buildSettingCard([
+                    SettingSelection(
+                      icon: Icons.settings,
+                      title: Text("Settings"),
+                      onPressed: () {},
+                      iconColor: Color(0xff8ea2b1),
+                    ),
+                    SettingSelection(
+                      icon: Icons.error,
+                      title: Text("About"),
+                      onPressed: () {},
+                      iconColor: Color(0xff5ca5eb),
+                    ),
+                    SettingSelection(
+                      icon: Icons.help,
+                      title: Text("Help and Feedback"),
+                      onPressed: () {},
+                      iconColor: Color(0xff68cdc3),
+                    ),
+                  ]),
+                  BlocBuilder<UserCubit, UserState>(
+                      builder: (context, state) => state.user != null
+                          ? Column(children: [
+                              ElevatedButton(
+                                // 登入后才可显示
+                                style: ButtonStyle(
+                                    minimumSize: MaterialStateProperty.all(Size(
+                                        MediaQuery.of(context).size.width - 40,
+                                        50)),
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red)),
+                                onPressed: () {
+                                  context.read<UserCubit>().logout();
+                                  showToast("Log out");
+                                },
+                                child: Text("Log Out"),
+                              ),
+                              SizedBox(
+                                height: 100,
+                              )
+                            ])
+                          : Container())
+                ]))));
   }
 }
 

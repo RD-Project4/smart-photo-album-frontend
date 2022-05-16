@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/bloc/search/SearchState.dart';
+import 'package:smart_album/pages/photo/PhotoPage.dart';
 import 'package:smart_album/widgets/OutlineCard.dart';
 import 'package:smart_album/widgets/ThumbnailImageProvider.dart';
 
@@ -49,14 +50,29 @@ class SearchResult extends StatelessWidget {
                       height: 200,
                       child: Swiper(
                         itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                              decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            image: DecorationImage(
-                              image: ThumbnailImageProvider(photoList[index]),
-                              fit: BoxFit.cover,
-                            ),
-                          ));
+                          return InkWell(
+                            child: Container(
+                                decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              image: DecorationImage(
+                                image: ThumbnailImageProvider(photoList[index]),
+                                fit: BoxFit.cover,
+                              ),
+                            )),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    return PhotoPage(
+                                      photoList: photoList,
+                                      initialIndex: index,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
                         },
                         itemCount: photoList.length,
                         viewportFraction: 0.8,
