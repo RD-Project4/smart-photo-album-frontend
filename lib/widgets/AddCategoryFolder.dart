@@ -29,6 +29,11 @@ class AddCategoryFolder extends StatelessWidget {
                           context, "Error", "Folder name should not be empty");
                       return;
                     }
+                    if (cubit.state.labelList.length <= 0) {
+                      DialogUtil.showWarningDialog(context, "Error",
+                          "You should select at least one label");
+                      return;
+                    }
                     cubit.addCategory();
                     Navigator.pop(context);
                   },

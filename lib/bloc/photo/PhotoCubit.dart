@@ -126,12 +126,7 @@ class PhotoCubit extends Cubit<PhotoState> {
         location = await GeoUtil.locationFromCoordinates(
             latLng.latitude!, latLng.longitude!);
 
-      var text = await TensorflowProvider.recognizeTextInFile(path);
-      List<String> textList;
-      if (text.isNotEmpty)
-        textList = text.split("\n");
-      else
-        textList = [];
+      var textList = await TensorflowProvider.recognizeTextInFile(path);
 
       photoToStoreList.add(Photo(
           entity.id,

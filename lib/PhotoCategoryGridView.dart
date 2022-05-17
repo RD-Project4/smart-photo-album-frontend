@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
@@ -7,7 +5,7 @@ import 'package:smart_album/bloc/categoryFolder/CategoryFolderCubit.dart';
 import 'package:smart_album/bloc/categoryFolder/CategoryFolderState.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/photo/PhotoState.dart';
-import 'package:smart_album/model/Category.dart';
+import 'package:smart_album/model/Folder.dart';
 import 'package:smart_album/model/Photo.dart';
 import 'package:smart_album/util/Labels.dart';
 import 'package:smart_album/widgets/LoadingCircle.dart';
@@ -18,7 +16,7 @@ import '../util/CommonUtil.dart';
 
 class PhotoCategoryGridView extends StatelessWidget {
   final SuperCategory superCategory;
-  final void Function(Category, List<Photo>)? onTap;
+  final void Function(Folder, List<Photo>)? onTap;
   final EdgeInsets? padding;
 
   const PhotoCategoryGridView(this.superCategory, {this.onTap, this.padding});
@@ -32,10 +30,7 @@ class PhotoCategoryGridView extends StatelessWidget {
               if (categoryState.categoryList == null) return LoadingCircle();
               var categoryList = categoryState.categoryList!
                   .where((category) => category.labelList
-                      .firstWhere(
-                          (label) => superCategory.labels.contains(label),
-                          orElse: () => "")
-                      .isNotEmpty)
+                      .any((label) => superCategory.labels.contains(label)))
                   .toList();
               var photoListList = categoryList.map((category) {
                 return categoryState.getPhotoByCategory(
@@ -47,9 +42,17 @@ class PhotoCategoryGridView extends StatelessWidget {
                 itemCount: photoListList.length,
                 itemBuilder: (context, index) {
                   var category = categoryList[index];
-                  var photoList = photoListList[index];
-                  var previewPhoto =
-                      photoList.length > 0 ? photoList[0] : Photo.placeholder();
+                  var photoList = photoListList[index]
+                      .where((photo) => !category.excludeList
+                          .any((exclude) => exclude.id == photo.id))
+                      .toList();
+                  var includeList = category.includeList.where((include) =>
+                      !photoList.any((photo) => photo.id == include.id));
+                  photoList.addAll(includeList);
+                  var previewPhoto = photoList.length > 0
+                      ? photoList[photoList.length - 1]
+                      : Photo.placeholder();
+                  category.previewPhoto = previewPhoto;
 
                   bool isSelectedMode =
                       categoryState.mode == ListMode.Selection;
@@ -130,7 +133,7 @@ class PhotoCategoryGridView extends StatelessWidget {
             })));
   }
 
-  void _onPhotoTappedInSelectionMode(BuildContext context, Category category) {
+  void _onPhotoTappedInSelectionMode(BuildContext context, Folder category) {
     var cubit = context.read<CategoryFolderCubit>();
     cubit.setModeSelection();
     cubit.addOrRemoveSelectedItem(category);

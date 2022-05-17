@@ -13,7 +13,7 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'model/Category.dart';
+import 'model/Folder.dart';
 import 'model/HIstory.dart';
 import 'model/Photo.dart';
 
@@ -23,7 +23,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 8452154140893309457),
       name: 'Photo',
-      lastPropertyId: const IdUid(20, 4372493872483911245),
+      lastPropertyId: const IdUid(21, 3688901984922784376),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -106,7 +106,14 @@ final _entities = <ModelEntity>[
             id: const IdUid(20, 4372493872483911245),
             name: 'text',
             type: 30,
-            flags: 0)
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(21, 3688901984922784376),
+            name: 'customerId',
+            type: 11,
+            flags: 520,
+            indexId: const IdUid(6, 5678352109928059198),
+            relationTarget: 'Folder')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
@@ -131,34 +138,43 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(3, 4139173113446546881),
-      name: 'Category',
-      lastPropertyId: const IdUid(6, 2943526286783902201),
+      id: const IdUid(4, 3988333816905384208),
+      name: 'Folder',
+      lastPropertyId: const IdUid(4, 6936635929912885754),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 2364032299298431250),
+            id: const IdUid(1, 7806712655624194496),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 7040229653329637807),
+            id: const IdUid(2, 1055669601261508952),
             name: 'name',
             type: 9,
             flags: 2048,
-            indexId: const IdUid(4, 4839437694175533174)),
+            indexId: const IdUid(5, 3299306306008633591)),
         ModelProperty(
-            id: const IdUid(3, 3869856611413703840),
+            id: const IdUid(3, 3941263676056720313),
             name: 'labelList',
             type: 30,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 4441611100883772125),
+            id: const IdUid(4, 6936635929912885754),
             name: 'locationList',
             type: 30,
             flags: 0)
       ],
-      relations: <ModelRelation>[],
+      relations: <ModelRelation>[
+        ModelRelation(
+            id: const IdUid(1, 5641568532956430053),
+            name: 'includeList',
+            targetId: const IdUid(1, 8452154140893309457)),
+        ModelRelation(
+            id: const IdUid(2, 3579282537210510735),
+            name: 'excludeList',
+            targetId: const IdUid(1, 8452154140893309457))
+      ],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -182,11 +198,11 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(3, 4139173113446546881),
-      lastIndexId: const IdUid(4, 4839437694175533174),
-      lastRelationId: const IdUid(0, 0),
+      lastEntityId: const IdUid(4, 3988333816905384208),
+      lastIndexId: const IdUid(6, 5678352109928059198),
+      lastRelationId: const IdUid(2, 3579282537210510735),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [4139173113446546881],
       retiredIndexUids: const [7713753588704185151],
       retiredPropertyUids: const [
         5711374106246872086,
@@ -194,7 +210,11 @@ ModelDefinition getObjectBoxModel() {
         4775042554793791797,
         3168296054505618822,
         427707142129404978,
-        2943526286783902201
+        2943526286783902201,
+        2364032299298431250,
+        7040229653329637807,
+        3869856611413703840,
+        4441611100883772125
       ],
       retiredRelationUids: const [],
       modelVersion: 5,
@@ -204,7 +224,7 @@ ModelDefinition getObjectBoxModel() {
   final bindings = <Type, EntityDefinition>{
     Photo: EntityDefinition<Photo>(
         model: _entities[0],
-        toOneRelations: (Photo object) => [],
+        toOneRelations: (Photo object) => [object.customer],
         toManyRelations: (Photo object) => {},
         getId: (Photo object) => object.id,
         setId: (Photo object, int id) {
@@ -228,7 +248,7 @@ ModelDefinition getObjectBoxModel() {
           final nameOffset = fbb.writeString(object.name);
           final textOffset = fbb.writeList(
               object.text.map(fbb.writeString).toList(growable: false));
-          fbb.startTable(21);
+          fbb.startTable(22);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, pathOffset);
           fbb.addOffset(2, labelsOffset);
@@ -245,6 +265,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addOffset(17, nameOffset);
           fbb.addBool(18, object.isDeleted);
           fbb.addOffset(19, textOffset);
+          fbb.addInt64(20, object.customer.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -284,7 +305,9 @@ ModelDefinition getObjectBoxModel() {
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 36, false)
             ..isDeleted =
                 const fb.BoolReader().vTableGet(buffer, rootOffset, 40, false);
-
+          object.customer.targetId =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 44, 0);
+          object.customer.attach(store);
           return object;
         }),
     History: EntityDefinition<History>(
@@ -313,15 +336,18 @@ ModelDefinition getObjectBoxModel() {
 
           return object;
         }),
-    Category: EntityDefinition<Category>(
+    Folder: EntityDefinition<Folder>(
         model: _entities[2],
-        toOneRelations: (Category object) => [],
-        toManyRelations: (Category object) => {},
-        getId: (Category object) => object.id,
-        setId: (Category object, int id) {
+        toOneRelations: (Folder object) => [],
+        toManyRelations: (Folder object) => {
+              RelInfo<Folder>.toMany(1, object.id): object.includeList,
+              RelInfo<Folder>.toMany(2, object.id): object.excludeList
+            },
+        getId: (Folder object) => object.id,
+        setId: (Folder object, int id) {
           object.id = id;
         },
-        objectToFB: (Category object, fb.Builder fbb) {
+        objectToFB: (Folder object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
           final labelListOffset = fbb.writeList(
               object.labelList.map(fbb.writeString).toList(growable: false));
@@ -330,7 +356,7 @@ ModelDefinition getObjectBoxModel() {
               : fbb.writeList(object.locationList!
                   .map(fbb.writeString)
                   .toList(growable: false));
-          fbb.startTable(7);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, labelListOffset);
@@ -342,7 +368,7 @@ ModelDefinition getObjectBoxModel() {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
 
-          final object = Category(
+          final object = Folder(
               const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 6, ''),
               const fb.ListReader<String>(
@@ -354,7 +380,10 @@ ModelDefinition getObjectBoxModel() {
                       lazy: false)
                   .vTableGetNullable(buffer, rootOffset, 10))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-
+          InternalToManyAccess.setRelInfo(object.includeList, store,
+              RelInfo<Folder>.toMany(1, object.id), store.box<Folder>());
+          InternalToManyAccess.setRelInfo(object.excludeList, store,
+              RelInfo<Folder>.toMany(2, object.id), store.box<Folder>());
           return object;
         })
   };
@@ -421,6 +450,10 @@ class Photo_ {
   /// see [Photo.text]
   static final text =
       QueryStringVectorProperty<Photo>(_entities[0].properties[15]);
+
+  /// see [Photo.customer]
+  static final customer =
+      QueryRelationToOne<Photo, Folder>(_entities[0].properties[16]);
 }
 
 /// [History] entity fields to define ObjectBox queries.
@@ -432,19 +465,27 @@ class History_ {
   static final name = QueryStringProperty<History>(_entities[1].properties[1]);
 }
 
-/// [Category] entity fields to define ObjectBox queries.
-class Category_ {
-  /// see [Category.id]
-  static final id = QueryIntegerProperty<Category>(_entities[2].properties[0]);
+/// [Folder] entity fields to define ObjectBox queries.
+class Folder_ {
+  /// see [Folder.id]
+  static final id = QueryIntegerProperty<Folder>(_entities[2].properties[0]);
 
-  /// see [Category.name]
-  static final name = QueryStringProperty<Category>(_entities[2].properties[1]);
+  /// see [Folder.name]
+  static final name = QueryStringProperty<Folder>(_entities[2].properties[1]);
 
-  /// see [Category.labelList]
+  /// see [Folder.labelList]
   static final labelList =
-      QueryStringVectorProperty<Category>(_entities[2].properties[2]);
+      QueryStringVectorProperty<Folder>(_entities[2].properties[2]);
 
-  /// see [Category.locationList]
+  /// see [Folder.locationList]
   static final locationList =
-      QueryStringVectorProperty<Category>(_entities[2].properties[3]);
+      QueryStringVectorProperty<Folder>(_entities[2].properties[3]);
+
+  /// see [Folder.includeList]
+  static final includeList =
+      QueryRelationToMany<Folder, Photo>(_entities[2].relations[0]);
+
+  /// see [Folder.excludeList]
+  static final excludeList =
+      QueryRelationToMany<Folder, Photo>(_entities[2].relations[1]);
 }

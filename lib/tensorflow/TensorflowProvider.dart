@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart';
 
 import 'package:flutter/services.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:smart_album/util/Labels.dart';
 import 'package:smart_album/util/ServiceUtil.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -120,14 +120,14 @@ class TensorflowProvider {
       ..sort((a, b) => b.score.compareTo(a.score));
   }
 
-  static Future<String> recognizeTextInFile(String path) async {
-    final textDetector = GoogleMlKit.vision.textDetector();
-    final RecognisedText recognisedText =
+  static Future<List<String>> recognizeTextInFile(String path) async {
+    final textDetector = TextRecognizer();
+    final RecognizedText recognisedText =
         await textDetector.processImage(InputImage.fromFilePath(path));
-    return recognisedText.text;
+    return recognisedText.blocks.map((block) => block.text).toList();
   }
 
-  static Future<List<String>> getLabels() async {
+  static List<String> getLabels() {
     List<String> labelList = [];
     for (var superCategory in superCategories) {
       labelList.addAll(superCategory.labels);

@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/model/Photo.dart';
-import 'package:smart_album/tensorflow/TensorflowProvider.dart';
 import 'package:smart_album/widgets/ListedChips.dart';
 import 'package:smart_album/widgets/OutlineCard.dart';
-import 'package:smart_album/widgets/ShiftingTabBar.dart';
 
 import '../FolderPage.dart';
-import 'ColorfulProgressBar.dart';
 
 class TensorflowResultPanel {
   static open(BuildContext context, Photo element) async {
-    var result = TensorflowProvider.recognizeTextInFile(element.path);
-
     await showModalBottomSheet(
         context: context,
         isScrollControlled: true,

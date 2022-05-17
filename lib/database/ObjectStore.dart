@@ -1,4 +1,4 @@
-import 'package:smart_album/model/Category.dart';
+import 'package:smart_album/model/Folder.dart';
 import 'package:smart_album/model/HIstory.dart';
 import 'package:tuple/tuple.dart';
 
@@ -44,12 +44,12 @@ class ObjectStore {
 
   late final Box<Photo> _photoBox;
   late final Box<History> _historyBox;
-  late final Box<Category> _categoryBox;
+  late final Box<Folder> _categoryBox;
 
   ObjectStore._create(this._store) {
     this._photoBox = _store.box<Photo>();
     this._historyBox = _store.box<History>();
-    this._categoryBox = _store.box<Category>();
+    this._categoryBox = _store.box<Folder>();
   }
 
   static Future<ObjectStore> create() async {
@@ -152,18 +152,18 @@ class ObjectStore {
     return pq.find().where((city) => city.isNotEmpty).toList();
   }
 
-  Stream<List<Category>> getCategoryStream() {
+  Stream<List<Folder>> getCategoryStream() {
     return _categoryBox
         .query()
         .watch(triggerImmediately: true)
         .map((query) => query.find());
   }
 
-  addCategory(Category category) {
+  storeCategory(Folder category) {
     _categoryBox.put(category);
   }
 
-  removeCategoryList(List<Category> category) {
+  removeCategoryList(List<Folder> category) {
     _categoryBox.removeMany(category.map((e) => e.id).toList());
   }
 }

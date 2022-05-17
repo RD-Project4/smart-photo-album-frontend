@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:smart_album/bloc/categoryFolder/CategoryFolderCubit.dart';
 import 'package:smart_album/bloc/photo/PhotoCubit.dart';
 import 'package:smart_album/bloc/uploadManager/UploadCubit.dart';
 import 'package:smart_album/bloc/user/UserCubit.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (context) => PhotoCubit()),
           BlocProvider(create: (context) => UserCubit()),
-          BlocProvider(create: (context) => UploadCubit())
+          BlocProvider(create: (context) => UploadCubit()),
+          BlocProvider(create: (context) => CategoryFolderCubit()),
         ],
         child: MaterialApp(
             onGenerateRoute: onGenerateRoute,

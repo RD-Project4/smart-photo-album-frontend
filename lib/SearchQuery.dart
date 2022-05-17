@@ -42,15 +42,12 @@ class SearchQuery extends StatelessWidget {
           child: BlocBuilder<SearchCubit, SearchState>(
               builder: ((context, state) => state.historyList == null
                   ? LoadingCircle()
-                  : FutureBuilder(
-                      future: TensorflowProvider.getLabels(),
-                      builder: (context, snapshot) => snapshot.data == null
-                          ? Container()
-                          : MultiChoiceChip(
-                              Set.from(snapshot.data as List<String>),
-                              onSelectionChanged: (result) =>
-                                  cubit.setLabelList(result.toList()),
-                            ))))));
+                  : MultiChoiceChip(
+                      TensorflowProvider.getLabels(),
+                      onSelectionChanged: (result) =>
+                          cubit.setLabelList(result.toList()),
+                      hasMore: true,
+                    )))));
     if (showHistory)
       widgetList.add(OutlineCard(
           margin: spacing,
@@ -90,7 +87,7 @@ class SearchQuery extends StatelessWidget {
               margin: spacing,
               title: "Location",
               child: MultiChoiceChip(
-                Set.from(cubit.getCities()),
+                cubit.getCities(),
                 initSelected: state.locationList.toSet(),
                 onSelectionChanged: (cities) =>
                     cubit.setLocationList(cities.toList()),

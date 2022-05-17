@@ -1,5 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 import 'package:smart_album/api/api.dart';
+import 'package:smart_album/model/Folder.dart';
 
 @Entity()
 class Photo {
@@ -22,6 +23,7 @@ class Photo {
   bool isLocal; // 是否在本地存在
   bool isFavorite = false;
   bool isDeleted = false; // 在回收站吗
+  final customer = ToOne<Folder>();
 
   Photo(
       this.entityId,

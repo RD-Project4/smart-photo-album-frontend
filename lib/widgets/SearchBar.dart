@@ -55,12 +55,11 @@ class _SearchBarContent extends StatelessWidget {
             ),
             onChanged: (data) =>
                 cubit.setLabelList(data.map((label) => label.name).toList()),
-            findSuggestions: (query) async =>
-                (await TensorflowProvider.getLabels())
-                    .where((label) => label.startsWith(query))
-                    .where((label) => !cubit.containsLabel(label))
-                    .map((label) => Label(label))
-                    .toList(),
+            findSuggestions: (query) async => TensorflowProvider.getLabels()
+                .where((label) => label.startsWith(query))
+                .where((label) => !cubit.containsLabel(label))
+                .map((label) => Label(label))
+                .toList(),
             controller: state.inputController,
             showCursor: state.widget.showCursor,
             focusNode: state.inputController.node,

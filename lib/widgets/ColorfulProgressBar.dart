@@ -5,10 +5,10 @@ class ColorfulProgressBar extends StatefulWidget {
   ColorfulProgressBar({Key? key}) : super(key: key);
 
   @override
-  State<ColorfulProgressBar> createState() => ColorfulProgressBarState();
+  State<ColorfulProgressBar> createState() => _ColorfulProgressBarState();
 }
 
-class ColorfulProgressBarState extends State<ColorfulProgressBar>
+class _ColorfulProgressBarState extends State<ColorfulProgressBar>
     with TickerProviderStateMixin {
   late AnimationController controller;
 

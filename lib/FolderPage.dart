@@ -12,14 +12,30 @@ import 'widgets/SelectionToolBar.dart';
 class FolderPageArguments {
   final String title;
   final List<Photo> photoList;
+  final List<Photo> Function(List<Photo> selectPhoto, List<Photo> allPhoto)?
+      onRemoveFromFolder;
 
-  FolderPageArguments({required this.title, required this.photoList});
+  FolderPageArguments(
+      {required this.title, required this.photoList, this.onRemoveFromFolder});
 }
 
-class FolderPage extends StatelessWidget {
+class FolderPage extends StatefulWidget {
   final FolderPageArguments arguments;
 
   const FolderPage({Key? key, required this.arguments}) : super(key: key);
+
+  @override
+  State<FolderPage> createState() => _FolderPageState();
+}
+
+class _FolderPageState extends State<FolderPage> {
+  late List<Photo> currentPhotoList;
+
+  @override
+  void initState() {
+    super.initState();
+    currentPhotoList = widget.arguments.photoList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +45,42 @@ class FolderPage extends StatelessWidget {
           appBar: PreferredSize(
               child: BlocBuilder<PhotoListCubit, PhotoListState>(
                   builder: (context, state) => state.mode == ListMode.Selection
-                      ? SafeArea(bottom: false, child: SelectionToolBar())
-                      : LightAppBar(context, arguments.title)),
+                      ? SafeArea(
+                          bottom: false,
+                          child: SelectionToolBar(
+                              actionsBuilder: widget
+                                          .arguments.onRemoveFromFolder !=
+                                      null
+                                  ? (selectPhoto) {
+                                      return [
+                                        IconButton(
+                                            onPressed: () {
+                                              var newPhotoList = widget
+                                                      .arguments
+                                                      .onRemoveFromFolder!(
+                                                  selectPhoto,
+                                                  currentPhotoList);
+                                              setState(() {
+                                                currentPhotoList = newPhotoList;
+                                              });
+                                              context.read<PhotoListCubit>()
+                                                ..setModeView();
+                                            },
+                                            icon: Icon(Icons.move_up_outlined))
+                                      ];
+                                    }
+                                  : null))
+                      : LightAppBar(
+                          context,
+                          widget.arguments.title,
+                        )),
               preferredSize: Size.fromHeight(
                   AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight)),
           body: BlocBuilder<PhotoListCubit, PhotoListState>(
               builder: (context, state) => PhotoGroupedView(
-                  photos: arguments.photoList.toList(),
+                  photos: widget.arguments.photoList.toList(),
                   onTap: (photo, index, sortedPhotoList) =>
                       open(context, sortedPhotoList, index))),
-          // body: GridView.count(
-          //     // 照片
-          //     crossAxisCount: 2,
-          //     shrinkWrap: true,
-          //     children: arguments.photoList!
-          //         .map((element) => Container(
-          //             margin: EdgeInsets.all(3.0),
-          //             decoration: BoxDecoration(
-          //               image: DecorationImage(
-          //                 image: FileImage(File(element.path)),
-          //                 fit: BoxFit.cover,
-          //               ),
-          //             )))
-          //         .toList())
         ));
   }
 

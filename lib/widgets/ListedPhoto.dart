@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_album/bloc/SelectableList/SelectableListCubit.dart';
 import 'package:smart_album/bloc/photo_list/PhotoListCubit.dart';
 import 'package:smart_album/model/Photo.dart';
-import 'package:smart_album/util/Global.dart';
 import 'package:smart_album/widgets/ThumbnailImageProvider.dart';
-
-import '../Events.dart';
 
 /// 首页照片墙中的单个照片
 class ListedPhoto extends StatefulWidget {

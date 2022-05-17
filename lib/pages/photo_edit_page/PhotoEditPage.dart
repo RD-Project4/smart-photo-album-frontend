@@ -4,13 +4,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:group_button/group_button.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:smart_album/Events.dart';
 import 'package:smart_album/model/Photo.dart';
-import 'package:smart_album/util/Global.dart';
 import 'package:smart_album/widgets/filter/FilterSelector.dart';
 
 class PhotoEditPage extends StatefulWidget {
@@ -75,7 +71,6 @@ class _PhotoEditPage extends State<PhotoEditPage> {
         showToast('Image saved');
       }
 
-      Global.eventBus.fire(ReloadPhotosEvent());
       Navigator.pop(context);
     }
 
@@ -123,11 +118,10 @@ class _PhotoEditPage extends State<PhotoEditPage> {
               FilterSelector(
                   filters: _filters, onFilterChanged: _onFilterChanged),
               Container(
-                margin: EdgeInsets.only(left: 20,right: 20),
-                child:  Row(
+                margin: EdgeInsets.only(left: 20, right: 20),
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                   children: [
                     TextButton(
                         onPressed: () {
@@ -147,7 +141,6 @@ class _PhotoEditPage extends State<PhotoEditPage> {
                   ],
                 ),
               ),
-
             ],
           ),
         )
